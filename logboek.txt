@@ -1,0 +1,30 @@
+Logboek Web Topics Advanced - 2021-2022
+
+
+- Week 1 - maandag 29/11/2021
+
+ - Te doen deze week
+
+    * Navigatie (routes) toevoegen
+    * Login/registratie code toevoegen
+    * Databank (mongoDB) toevoegen
+    * 
+  
+
+ - Gedaan
+
+    * 
+
+
+  - Opgeloste problemen
+
+    *
+
+
+  - Op te lossen problemen
+
+    *
+
+  - Bronnen
+
+    *

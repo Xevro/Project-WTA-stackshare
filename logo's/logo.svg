@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="155px" height="170px" viewBox="0 0 155 170" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 2</title>
+    <defs>
+        <radialGradient cx="60.8225839%" cy="-26.6620868%" fx="60.8225839%" fy="-26.6620868%" r="131.610491%" gradientTransform="translate(0.608226,-0.266621),scale(1.000000,0.875000),rotate(82.381394),translate(-0.608226,0.266621)" id="radialGradient-1">
+            <stop stop-color="#23A4F3" offset="0%"></stop>
+            <stop stop-color="#4D55E2" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="124.646974%" cy="-17.9304122%" fx="124.646974%" fy="-17.9304122%" r="135.7589%" gradientTransform="translate(1.246470,-0.179304),scale(1.000000,0.875000),rotate(130.875734),translate(-1.246470,0.179304)" id="radialGradient-2">
+            <stop stop-color="#2B95F0" offset="0%"></stop>
+            <stop stop-color="#4562E5" offset="61.7320053%"></stop>
+            <stop stop-color="#6920D6" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-238.000000, -134.000000)">
+            <g id="Group-2" transform="translate(238.000000, 134.000000)">
+                <g id="Group">
+                    <polygon id="Rectangle" fill="url(#radialGradient-1)" points="0 48 70 91.188523 70 128 0.107542056 84.8594806"></polygon>
+                    <polygon id="Rectangle" fill="url(#radialGradient-2)" points="0 90 70 133.188523 70 170 0.107542056 126.859481"></polygon>
+                    <polygon id="Rectangle" fill="#1A1364" points="0 43.3129248 70 3.8191672e-14 70 25.3081772 38.7131226 43.3129248 70 61.3282128 70 86"></polygon>
+                </g>
+                <g id="Group" transform="translate(120.000000, 85.000000) scale(-1, 1) translate(-120.000000, -85.000000) translate(85.000000, 0.000000)">
+                    <polygon id="Rectangle" fill="url(#radialGradient-1)" points="0 48 70 91.188523 70 128 0.107542056 84.8594806"></polygon>
+                    <polygon id="Rectangle" fill="url(#radialGradient-2)" points="0 90 70 133.188523 70 170 0.107542056 126.859481"></polygon>
+                    <polygon id="Rectangle" fill="#1A1364" points="0 43.3129248 70 3.8191672e-14 70 25.3081772 38.7131226 43.3129248 70 61.3282128 70 86"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
