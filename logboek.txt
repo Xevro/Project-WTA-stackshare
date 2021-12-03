@@ -7,13 +7,16 @@ Logboek Web Topics Advanced - 2021-2022
 
     * Navigatie (routes) toevoegen aan backend (testen in insomnia).
     * Databank (mongoDB) toevoegen.
+    * Readme backend deel toevoegen.
+    * Frontend login pagina designen en uitwerken.
+    * Frontend registratie pagina designen en uitwerken.
 
 
  - Gedaan
 
     * Basis backend api met mongoose en express opgesteld.
     * Login/registratie code toevoegen.
-    
+
 
   - Opgeloste problemen
 
@@ -36,7 +39,6 @@ Logboek Web Topics Advanced - 2021-2022
  - Te doen deze week
 
     * Navigatie (routes) toevoegen aan backend (testen in insomnia).
-    * Login/registratie code toevoegen.
     * Databank (mongoDB) toevoegen.
 
 
