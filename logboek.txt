@@ -5,16 +5,15 @@ Logboek Web Topics Advanced - 2021-2022
 
  - Te doen deze week
 
-    * Navigatie (routes) toevoegen
-    * Login/registratie code toevoegen
-    * Databank (mongoDB) toevoegen
-    * 
-  
+    * Navigatie (routes) toevoegen aan backend (testen in insomnia).
+    * Databank (mongoDB) toevoegen.
+
 
  - Gedaan
 
-    * 
-
+    * Basis backend api met mongoose en express opgesteld.
+    * Login/registratie code toevoegen.
+    
 
   - Opgeloste problemen
 
@@ -25,6 +24,45 @@ Logboek Web Topics Advanced - 2021-2022
 
     *
 
+
   - Bronnen
 
     *
+
+
+
+- Week 2 - maandag 06/12/2021
+
+ - Te doen deze week
+
+    * Navigatie (routes) toevoegen aan backend (testen in insomnia).
+    * Login/registratie code toevoegen.
+    * Databank (mongoDB) toevoegen.
+
+
+ - Gedaan
+
+    *
+
+  - Opgeloste problemen
+
+    *
+
+
+  - Op te lossen problemen
+
+    *
+
+
+  - Bronnen
+
+    *
+
+
+
+
+
+
+
+
+
