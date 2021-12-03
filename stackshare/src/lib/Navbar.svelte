@@ -1,13 +1,13 @@
 <script>
-    import {page, session} from '$app/stores';
+    import {page} from '$app/stores';
 </script>
 
-<nav class="navbar navbar-light">
+<nav class="navbar">
     <div class="container">
-        <a rel="prefetch" class="navbar-brand" href="/">StackShare</a>
-        <ul class="nav navbar-nav pull-xs-right">
-            <li class="nav-item">
-                <a rel="prefetch" class="nav-link" class:active={$page.path === '/'} href="/">Home</a>
+        <a class="" href="/">StackShare</a>
+        <ul class="">
+            <li class="">
+                <a rel="prefetch" class="" class:active={$page.path === '/'} href="/">Home</a>
             </li>
         </ul>
     </div>
