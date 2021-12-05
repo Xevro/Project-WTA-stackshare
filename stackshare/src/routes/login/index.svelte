@@ -1,27 +1,27 @@
 <script lang="ts">
     import {User, UserAuth} from '../../models';
     import {UserProxyService} from '../../services/backend-services/user-proxy.service';
+    import {StoreCookie} from '../../services/core-services/store-cookie';
 
     let user: User = {username: '', password: ''};
     let inProgress = false;
     let error = null;
     const userProxy = new UserProxyService();
+    const store = new StoreCookie();
 
     function submitForm() {
-        try {
-            inProgress = true;
-            userProxy.loginMethod(user)
-                .then(response => response.json())
-                .then((data: UserAuth) => {
-                    inProgress = false;
-                    error = data?.message;
-                    user = {username: '', password: ''};
-                    // redirect to homepage
-                });
-        } catch (err) {
+        inProgress = true;
+        userProxy.loginMethod(user).then(response => response.json())
+            .then((data: UserAuth) => {
+                inProgress = false;
+                error = data?.message;
+                store.setCookie('stackshare', data.token);
+                user = {username: '', password: ''};
+                // redirect to homepage
+            }).catch((err) => {
             error = err.response.data.message;
             inProgress = false;
-        }
+        });
     }
 </script>
 

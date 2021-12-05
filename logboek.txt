@@ -1,5 +1,6 @@
 Logboek Web Topics Advanced - 2021-2022
 
+Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaSet/61acb70e07757933ef22bc60/explorer/myFirstDatabase/users/find
 
 - Week 1 - maandag 29/11/2021
 
@@ -14,6 +15,7 @@ Logboek Web Topics Advanced - 2021-2022
     * Detail pagina toevoegen van een post
     * Reacties op detail pagina toevoegen
     * Like knop + en - toevoegen.
+    * Uitlog functie maken
 
 
  - Gedaan

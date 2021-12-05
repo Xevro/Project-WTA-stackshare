@@ -11,4 +11,12 @@ export class UserProxyService extends CrudDatabase<unknown> {
         };
         return await this.postRequest(url, userData, headers);
     }
+
+    async registerMethod(userData: User): Promise<unknown> {
+        const url = RoutesModel.register;
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        return await this.postRequest(url, userData, headers);
+    }
 }
