@@ -10,6 +10,10 @@ Logboek Web Topics Advanced - 2021-2022
     * Readme backend deel toevoegen.
     * Frontend login pagina designen en uitwerken.
     * Frontend registratie pagina designen en uitwerken.
+    * Lijst van posts tonen op homepage
+    * Detail pagina toevoegen van een post
+    * Reacties op detail pagina toevoegen
+    * Like knop + en - toevoegen.
 
 
  - Gedaan
