@@ -9,6 +9,9 @@
             <li class="">
                 <a rel="prefetch" class="" class:active={$page.path === '/'} href="/">Home</a>
             </li>
+            <li class="">
+                <a rel="prefetch" class="" class:active={$page.path === '/login'} href="/login">Login</a>
+            </li>
         </ul>
     </div>
 </nav>
