@@ -1,6 +1,6 @@
 <script lang="ts">
     import {QuestionsProxyService} from '../services/backend-services/questions-proxy.service';
-    import type {Questions} from '../models/questions.model';
+    import type {Questions} from '../models';
 
     let questions: Questions;
     let error = '';
@@ -29,6 +29,7 @@
         {#each questions.data as question}
             <li>
                 <p>{question.title}</p>
+                <p>{question.categories}</p>
             </li>
         {/each}
     </ul>
