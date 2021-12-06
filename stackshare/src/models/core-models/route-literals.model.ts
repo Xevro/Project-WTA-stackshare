@@ -4,4 +4,5 @@ export class RouteLiterals {
     static register = 'register';
 
     static questions = 'questions';
+    static categories = 'categories';
 }

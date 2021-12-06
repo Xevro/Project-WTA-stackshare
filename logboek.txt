@@ -22,6 +22,7 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
 
     * Basis backend api met mongoose en express opgesteld.
     * Login/registratie code toevoegen.
+    * JWT token authenticatie toegevoegd.
 
 
   - Opgeloste problemen
@@ -44,13 +45,21 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
 
  - Te doen deze week
 
-    * Navigatie (routes) toevoegen aan backend (testen in insomnia).
-    * Databank (mongoDB) toevoegen.
+    * Readme backend deel toevoegen.
+    * Frontend login pagina designen en uitwerken.
+    * Frontend registratie pagina designen en uitwerken.
+    * Lijst van posts tonen op homepage
+    * Detail pagina toevoegen van een post
+    * Reacties op detail pagina toevoegen
+    * Like knop + en - toevoegen.
+    * Uitlog functie maken
 
 
  - Gedaan
 
-    *
+    * Databank (mongoDB) toevoegen.
+    * Navigatie (routes: categories, questions) toevoegd aan backend.
+    
 
   - Opgeloste problemen
 

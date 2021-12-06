@@ -5,6 +5,7 @@
     let questions: Questions;
     let error = '';
     const questionsProxy = new QuestionsProxyService();
+    const categoriesProxy = new QuestionsProxyService();
 
     questionsProxy.getAllQuestions().then(response => response.json())
         .then((response: Questions) => {

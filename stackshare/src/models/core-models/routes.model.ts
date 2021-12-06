@@ -6,5 +6,5 @@ export class RoutesModel {
     static register = RouteLiterals.baseUrl + '/' + RouteLiterals.register;
 
     static questions = RouteLiterals.baseUrl + '/' + RouteLiterals.questions;
-
+    static categories = RouteLiterals.baseUrl + '/' + RouteLiterals.categories;
 }
