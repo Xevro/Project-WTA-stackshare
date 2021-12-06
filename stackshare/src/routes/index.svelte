@@ -10,7 +10,6 @@
         .then((response: Questions) => {
             questions = response;
         }).catch((err) => {
-        console.log(err);
         error = 'Could not load the questions';
     });
 </script>
@@ -30,6 +29,8 @@
             <li>
                 <p>{question.title}</p>
                 <p>{question.categories}</p>
+                <p>{question.description}</p>
+                <p>Written by {question.user.name} on {question.created_at}</p>
             </li>
         {/each}
     </ul>

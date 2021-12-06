@@ -1,13 +1,25 @@
 const mongoose = require('mongoose');
 
 const questionSchema = new mongoose.Schema({
+    uuid: {
+        type: String,
+        required: true
+    },
     title: {
+        type: String,
+        required: true
+    },
+    description: {
         type: String,
         required: true
     },
     categories: {
         type: Array,
         required: false
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
     },
     createdAt: {
         type: Date,

@@ -12,6 +12,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         select: false
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    uuid: {
+        type: String,
+        required: true
     }
 });
 
