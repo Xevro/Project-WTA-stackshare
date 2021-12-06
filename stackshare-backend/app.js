@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config({path: '.env'});
 require('./models/User-repository');
 require('./models/Question-repository');
+require('./models/Categories-repository');
 require('./handlers/jwt-validation');
 
 mongoose.connect(process.env.DATABASE, {
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use('/', require('./routes/authentication'));
 app.use('/questions', require('./routes/questions'))
+app.use('/categories', require('./routes/categories'))
 
 
 app.get('/', (req, res) => {
