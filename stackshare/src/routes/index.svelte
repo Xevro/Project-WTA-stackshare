@@ -1,17 +1,26 @@
 <script lang="ts">
-    import {QuestionsProxyService} from '../services/backend-services/questions-proxy.service';
-    import type {Questions} from '../models';
+    import {CategoriesProxyService, QuestionsProxyService} from '../services/backend-services';
+    import type {Categories, Questions} from '../models';
 
     let questions: Questions;
+    let categories: Categories;
     let error = '';
     const questionsProxy = new QuestionsProxyService();
-    const categoriesProxy = new QuestionsProxyService();
+    const categoriesProxy = new CategoriesProxyService();
 
     questionsProxy.getAllQuestions().then(response => response.json())
         .then((response: Questions) => {
             questions = response;
         }).catch((err) => {
         error = 'Could not load the questions';
+    });
+
+    categoriesProxy.getAllCategories().then(response => response.json())
+        .then((response: Categories) => {
+            categories = response;
+            console.log(response);
+        }).catch((err) => {
+        error = 'Could not load the categories';
     });
 </script>
 
@@ -21,6 +30,17 @@
 
 {#if error}
     <span class="error-message">{error}</span>
+{/if}
+
+{#if categories && !error}
+    <p>Total questions: {categories.totalCount}</p>
+    <ul>
+        {#each categories.data as category}
+            <li>
+                <p>{category.name}</p>
+            </li>
+        {/each}
+    </ul>
 {/if}
 
 {#if questions && !error}

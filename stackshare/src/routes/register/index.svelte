@@ -1,9 +1,9 @@
 <script lang="ts">
     import {User, UserAuth} from '../../models';
-    import {UserProxyService} from '../../services/backend-services/user-proxy.service';
+    import {UserProxyService} from '../../services/backend-services';
     import {StoreCookie} from '../../services/core-services/store-cookie';
 
-    let user: User = {username: '', password: ''};
+    let user = {username: '', password: ''} as User;
     let inProgress = false;
     let error = null;
     const userProxy = new UserProxyService();
@@ -17,7 +17,7 @@
                     inProgress = false;
                     error = data?.message;
                     store.setCookie('stackshare', data.token);
-                    user = {username: '', password: ''};
+                    user = {username: '', password: ''} as User;
                     // redirect to homepage
                 }).catch((err) => {
                 error = err.response.data.message;

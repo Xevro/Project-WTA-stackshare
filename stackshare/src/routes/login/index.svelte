@@ -1,6 +1,6 @@
 <script lang="ts">
     import {User, UserAuth} from '../../models';
-    import {UserProxyService} from '../../services/backend-services/user-proxy.service';
+    import {UserProxyService} from '../../services/backend-services';
     import {StoreCookie} from '../../services/core-services/store-cookie';
 
     let user = {username: '', password: ''} as User;
