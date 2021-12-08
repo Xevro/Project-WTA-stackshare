@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const passport = require('passport')
 const Categories = mongoose.model('Categories');
 
-router.get('/', passport.authenticate('jwt', {session: false}),
+router.get('/',
     async (req, res) => {
         const categories = await Categories.find();
         res.json({
@@ -13,7 +13,7 @@ router.get('/', passport.authenticate('jwt', {session: false}),
         });
     });
 
-router.get('/:categoryId', passport.authenticate('jwt', {session: false}),
+router.get('/:categoryId',
     async (req, res) => {
         const categories = await Categories.findOne({uuid: req.params.categoryId});
         res.json(categories);

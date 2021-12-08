@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const passport = require('passport')
 const Questions = mongoose.model('Questions');
 
-router.get('/', passport.authenticate('jwt', {session: false}),
+router.get('/',
     async (req, res) => {
         const questions = await Questions.find().populate('user');
         res.json({
@@ -13,7 +13,7 @@ router.get('/', passport.authenticate('jwt', {session: false}),
         });
     });
 
-router.get('/:questionId', passport.authenticate('jwt', {session: false}),
+router.get('/:questionId',
     async (req, res) => {
         const question = await Questions.findOne({uuid: req.params.questionId});
         res.json(question);
