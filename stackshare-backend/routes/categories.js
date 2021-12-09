@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const passport = require('passport')
+//const passport = require('passport')
 const Categories = mongoose.model('Categories');
 
 router.get('/',
