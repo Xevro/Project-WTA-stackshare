@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-    <title>Login</title>
+    <title>StackShare - Login</title>
 </svelte:head>
 
 <form class="" on:submit|preventDefault="{submitForm}">

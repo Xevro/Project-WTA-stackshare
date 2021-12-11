@@ -3,5 +3,5 @@
 </script>
 
 <svelte:head>
-    <title>Add your question</title>
+    <title>StackShare - Add your question</title>
 </svelte:head>
