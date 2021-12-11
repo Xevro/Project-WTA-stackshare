@@ -34,17 +34,19 @@
                     <div class="title-section">
                         <p>{question.title}</p>
                         <div class="written-by">
-                            <p>Written by {question.user.name} on {question.created_date}</p>
+                            <p>Written by {question?.user?.name ?? '--'} on {question?.created_date}</p>
                         </div>
                     </div>
                     <p id="description">
-                        { question.description.length > 250 ? question.description.substring(0, 250 - 3) + '...' : question.description }
+                        { question?.description?.length > 250 ? question?.description.substring(0, 250 - 3) + '...' : question?.description }
                     </p>
-                    <div class="categories">
-                        {#each question.categories as category}
-                            <p>{category}</p>
-                        {/each}
-                    </div>
+                    {#if question.categories}
+                        <div class="categories">
+                            {#each question?.categories as category}
+                                <p>{category}</p>
+                            {/each}
+                        </div>
+                    {/if}
                 </div>
             </a>
         {/each}

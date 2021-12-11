@@ -5,7 +5,7 @@
 <nav class="navbar">
     <div class="logo">
         <a href="/">
-            <img class="logo-stackshare" src="./static/logo-stackshare.png" alt="StackShare logo">
+            <img class="logo-stackshare" src="/static/logo-stackshare.png" alt="StackShare logo">
         </a>
     </div>
     <ul class="nav-links">

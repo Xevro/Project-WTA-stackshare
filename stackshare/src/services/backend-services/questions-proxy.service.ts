@@ -16,7 +16,7 @@ export class QuestionsProxyService extends CrudDatabase<any> {
     }
 
     async getQuestionById(questionId: string): Promise<any> {
-        const url = RoutesModel.questions;
+        const url = RoutesModel.questions + '/' + questionId;
         const headers = {
             'Content-Type': 'application/json',
         };
