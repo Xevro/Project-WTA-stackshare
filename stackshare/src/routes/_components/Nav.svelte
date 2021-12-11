@@ -14,6 +14,7 @@
         <div class="menu">
             <li><a rel="prefetch" class="link" class:active={$page.path === '/'} href="/">Home</a></li>
             <li><a rel="prefetch" class="link" class:active={$page.path === '/login'} href="/login">Login</a></li>
+            <li><a rel="prefetch" class="link" class:active={$page.path === '/register'} href="/register">Register</a></li>
         </div>
     </ul>
 </nav>
@@ -33,7 +34,6 @@
 
     .nav-links {
       a {
-        font-family: 'Titillium Web', system-ui, sans-serif;
         font-size: 1.1rem;
         color: #222;
         text-decoration: none;

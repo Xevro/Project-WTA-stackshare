@@ -5,7 +5,8 @@ export interface Question {
     uuid: string;
     title: string;
     description: string;
-    createdDate: string;
+    created_at: number;
+    created_date?: string;
     categories: string[];
     user: User;
 }

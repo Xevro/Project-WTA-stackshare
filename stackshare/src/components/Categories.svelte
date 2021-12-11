@@ -9,7 +9,6 @@
     categoriesProxy.getAllCategories().then(response => response.json())
         .then((response: Categories) => {
             categories = response;
-            console.log(response);
         }).catch((err) => {
         error = 'Could not load the categories';
     });
