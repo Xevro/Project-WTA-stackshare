@@ -48,8 +48,6 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
     * Readme backend deel toevoegen.
     * Frontend login pagina designen en uitwerken.
     * Frontend registratie pagina designen en uitwerken.
-    * Lijst van posts tonen op homepage
-    * Detail pagina toevoegen van een post
     * Reacties op detail pagina toevoegen
     * Like knop + en - toevoegen.
     * Uitlog functie maken
@@ -59,7 +57,42 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
 
     * Databank (mongoDB) toevoegen.
     * Navigatie (routes: categories, questions) toevoegd aan backend.
-    
+    * Lijst van posts tonen op homepage
+    * Detail pagina toevoegen van een post
+    * Design toevoegd aan navbar en homepage
+
+
+  - Opgeloste problemen
+
+    *
+
+
+  - Op te lossen problemen
+
+    *
+
+
+  - Bronnen
+
+    *
+
+
+- Week 3 - maandag 13/12/2021
+
+ - Te doen deze week
+
+    * Readme backend deel toevoegen.
+    * Frontend login pagina designen en uitwerken.
+    * Frontend registratie pagina designen en uitwerken.
+    * Reacties op detail pagina toevoegen
+    * Like knop + en - toevoegen.
+    * Uitlog functie maken
+
+
+ - Gedaan
+
+    *
+
 
   - Opgeloste problemen
 
