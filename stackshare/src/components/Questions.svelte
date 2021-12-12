@@ -3,12 +3,14 @@
     import {QuestionsProxyService} from '../services/backend-services';
 
     let questions: Questions;
+    let loading = true;
     let error = '';
     const questionsProxy = new QuestionsProxyService();
 
     questionsProxy.getAllQuestions().then(response => response.json())
         .then((response: Questions) => {
             questions = response;
+            loading = false
             for (let question of questions.data) {
                 let date = new Date(question.created_at * 1000);
                 let hours = date.getHours();
@@ -18,6 +20,7 @@
                     hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
             }
         }).catch((err) => {
+        loading = false;
         error = 'Could not load the questions';
     });
 </script>
@@ -26,7 +29,13 @@
     <span class="error-message">{error}</span>
 {/if}
 
-{#if questions && !error}
+{#if loading}
+    <div class="questions">
+        <p>Loading questions data...</p>
+    </div>
+{/if}
+
+{#if questions && !error && !loading}
     <div class="questions">
         {#each questions.data as question}
             <a href="/questions/{question.uuid}">
