@@ -21,8 +21,8 @@ const questionSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     },
-    createdAt: {
-        type: Date,
+    created_at: {
+        type: Number,
         default: Date.now
     }
 }, {
