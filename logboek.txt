@@ -25,21 +25,6 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
     * JWT token authenticatie toegevoegd.
 
 
-  - Opgeloste problemen
-
-    *
-
-
-  - Op te lossen problemen
-
-    *
-
-
-  - Bronnen
-
-    *
-
-
 
 - Week 2 - maandag 06/12/2021
 
@@ -62,20 +47,6 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
     * Design toevoegd aan navbar en homepage
 
 
-  - Opgeloste problemen
-
-    *
-
-
-  - Op te lossen problemen
-
-    *
-
-
-  - Bronnen
-
-    *
-
 
 - Week 3 - maandag 13/12/2021
 
@@ -91,22 +62,7 @@ Database: https://cloud.mongodb.com/v2/61acb5f3024b32671a03af84#metrics/replicaS
 
  - Gedaan
 
-    *
-
-
-  - Opgeloste problemen
-
-    *
-
-
-  - Op te lossen problemen
-
-    *
-
-
-  - Bronnen
-
-    *
+    * 
 
 
 
