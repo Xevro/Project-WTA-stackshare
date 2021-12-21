@@ -3,6 +3,16 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
+function generateUUID() {
+    let dt = new Date().getTime();
+    return 'xxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, (c) => {
+        const r = (dt + Math.random() * 16) % 16 | 0;
+        dt = Math.floor(dt / 16);
+        return ((c === 'x') ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
+
 router.post('/login', async (req, res, next) => {
     const user = await User.findOne({username: req.body.username}).select('+password');
     const isAuthenticated = await (user && user.verifyPassword(req.body.password));
@@ -23,8 +33,10 @@ router.post('/login', async (req, res, next) => {
 router.post('/register', async (req, res, next) => {
     try {
         const user = await (new User({
+            uuid: generateUUID(),
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            email: req.body.email
         }).save());
         res.json({
             _id: user._id,

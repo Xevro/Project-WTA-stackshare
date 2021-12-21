@@ -12,12 +12,10 @@
         .then((response: Question) => {
             question = response;
             loading = false;
-            let date = new Date(question.created_at * 1000);
+            let date = new Date(question.created_at);
             let hours = date.getHours();
             let minutes = '0' + date.getMinutes();
-            let seconds = '0' + date.getSeconds();
-            question.created_date = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay() + ' ' +
-                hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+            question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
         }).catch((err) => {
         loading = false;
         error = 'Could not load the questions';

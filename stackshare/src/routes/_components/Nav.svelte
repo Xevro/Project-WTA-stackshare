@@ -29,10 +29,7 @@
             <div class="menu">
                 <li><a rel="prefetch" class="link" class:active={$page.path === '/'} href="/">Home</a></li>
                 {#if !loggedIn}
-                    <li><a rel="prefetch" class="link" class:active={$page.path === '/login'} href="/login">Login</a>
-                    </li>
-                    <li><a rel="prefetch" class="link" class:active={$page.path === '/register'}
-                           href="/register">Register</a></li>
+                    <li><a rel="prefetch" class="link" class:active={$page.path === '/authenticate'} href="/authenticate">Login / register</a></li>
                 {:else}
                     <li><a rel="prefetch" class="link" class:active={$page.path === '/add/question'}
                            href="/add/question">Add question</a>
