@@ -15,6 +15,7 @@
             .then((data: UserAuth) => {
                 inProgress = false;
                 error = data.message ?? '';
+                user.password = '';
                 if (data.token) {
                     store.setCookie('stackshare', data.token);
                     user = {username: '', password: ''} as User;

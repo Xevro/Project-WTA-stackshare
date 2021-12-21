@@ -24,16 +24,52 @@
 {/if}
 
 {#if categories && !error && !loading}
-    <p>Total questions: {categories.totalCount}</p>
-    <ul>
-        {#each categories.data as category}
-            <li>
-                <p>{category.name}</p>
-            </li>
-        {/each}
-    </ul>
+    <div class="categories-overview">
+        <h3>Populair categories</h3>
+        <div class="categories-list">
+            {#each categories.data as category}
+                <div class="item">
+                    <p>{category.name}</p>
+                </div>
+            {/each}
+        </div>
+    </div>
 {/if}
 
 {#if (error)}
     <p>Lege lijst tonen of verbergen.</p>
 {/if}
+
+<style lang="scss">
+
+  .categories-overview {
+    margin-left: 10%;
+    margin-right: 10%;
+
+    .categories-list {
+
+      display: flex;
+
+      .item {
+        margin-left: 5px;
+        margin-right: 5px;
+        background-color: #5148D5;
+        border-radius: 10px;
+        padding: 5px 8px;
+        color: #FFF;
+
+        p {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .categories-overview {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+</style>

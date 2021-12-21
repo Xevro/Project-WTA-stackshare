@@ -54,9 +54,8 @@
     {#if error}
         <span class="error-message">{error}</span>
     {/if}
-    <input class="" bind:value="{question.title}" type="text" placeholder="Title" required>
-    <input class="" bind:value="{question.description}" type="text" placeholder="description"
-           required>
+    <input class="input-field" bind:value="{question.title}" type="text" placeholder="Title" required>
+    <input class="input-field" bind:value="{question.description}" type="text" placeholder="description" required>
 
     {#if allCategories}
         <select id="categories" multiple="multiple" on:change={getSelectedCategories}>
@@ -68,3 +67,12 @@
 
     <button class="login-button primary-button" disabled="{inProgress}">Add the question</button>
 </form>
+
+<style lang="scss">
+    form {
+      display: flex;
+      input {
+        display: flex;
+      }
+    }
+</style>
