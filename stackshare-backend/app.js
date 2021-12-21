@@ -1,6 +1,7 @@
 const app = require('express')();
 const cors = require('cors');
 const mongoose = require('mongoose');
+const passport = require('passport');
 const bodyParser = require('body-parser');
 
 require('dotenv').config({path: '.env'});
@@ -28,6 +29,10 @@ app.use('/categories', require('./routes/categories'))
 
 app.get('/', (req, res) => {
     res.end('StackShare API V1.0');
+})
+
+app.get('/status', passport.authenticate('jwt', {session: false}), (req, res) => {
+    res.json({'status': true});
 })
 
 app.use((req, res) => {

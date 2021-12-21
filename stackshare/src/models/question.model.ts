@@ -1,4 +1,5 @@
 import type {User} from './user.model';
+import type {Category} from './category.model';
 
 export interface Question {
     _id: string;
@@ -7,6 +8,6 @@ export interface Question {
     description: string;
     created_at: number;
     created_date?: string;
-    categories: string[];
+    categories: Category[];
     user: User;
 }

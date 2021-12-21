@@ -13,10 +13,13 @@ const questionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    categories: {
-        type: Array,
-        required: false
-    },
+    categories: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Categories',
+            required: false
+        }
+    ],
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User'

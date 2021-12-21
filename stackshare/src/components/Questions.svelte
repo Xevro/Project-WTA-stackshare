@@ -52,7 +52,7 @@
                     {#if question.categories}
                         <div class="categories">
                             {#each question?.categories as category}
-                                <p>{category}</p>
+                                <p>{category.name}</p>
                             {/each}
                         </div>
                     {/if}

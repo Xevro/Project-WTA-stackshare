@@ -15,12 +15,12 @@
             userProxy.registerMethod(user).then(response => response.json())
                 .then((data: UserAuth) => {
                     inProgress = false;
-                    error = data?.message;
+                    error = data.message ?? '';
                     store.setCookie('stackshare', data.token);
                     user = {username: '', password: ''} as User;
-                    // redirect to homepage
+                    location.href = '/';
                 }).catch((err) => {
-                error = err.response.data.message;
+                error = err.message;
                 inProgress = false;
             });
         } else {

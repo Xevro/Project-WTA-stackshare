@@ -1,5 +1,19 @@
 <script lang="ts">
     import {page} from '$app/stores';
+    import {UserProxyService} from '../../services/backend-services';
+
+    const userProxy = new UserProxyService();
+    let loggedIn = false;
+    let loading = true;
+
+    userProxy.checkUserStatus().then(response => response.json())
+        .then(() => {
+            loggedIn = true;
+            loading = false;
+        }).catch(() => {
+        loggedIn = false;
+        loading = false;
+    });
 </script>
 
 <nav class="navbar">
@@ -8,15 +22,28 @@
             <img class="logo-stackshare" src="/static/logo-stackshare.png" alt="StackShare logo">
         </a>
     </div>
-    <ul class="nav-links">
-        <input type="checkbox" id="checkbox_toggle"/>
-        <label for="checkbox_toggle" class="hamburger">&#9776;</label>
-        <div class="menu">
-            <li><a rel="prefetch" class="link" class:active={$page.path === '/'} href="/">Home</a></li>
-            <li><a rel="prefetch" class="link" class:active={$page.path === '/login'} href="/login">Login</a></li>
-            <li><a rel="prefetch" class="link" class:active={$page.path === '/register'} href="/register">Register</a></li>
-        </div>
-    </ul>
+    {#if !loading}
+        <ul class="nav-links">
+            <input type="checkbox" id="checkbox_toggle"/>
+            <label for="checkbox_toggle" class="hamburger">&#9776;</label>
+            <div class="menu">
+                <li><a rel="prefetch" class="link" class:active={$page.path === '/'} href="/">Home</a></li>
+                {#if !loggedIn}
+                    <li><a rel="prefetch" class="link" class:active={$page.path === '/login'} href="/login">Login</a>
+                    </li>
+                    <li><a rel="prefetch" class="link" class:active={$page.path === '/register'}
+                           href="/register">Register</a></li>
+                {:else}
+                    <li><a rel="prefetch" class="link" class:active={$page.path === '/add/question'}
+                           href="/add/question">Add question</a>
+                    </li>
+                    <li><a rel="prefetch" class="link" class:active={$page.path === '/profile'}
+                           href="/profile">Profiel</a>
+                    </li>
+                {/if}
+            </div>
+        </ul>
+    {/if}
 </nav>
 
 <style lang="scss">

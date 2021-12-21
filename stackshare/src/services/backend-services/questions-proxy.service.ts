@@ -1,17 +1,15 @@
 import {CrudDatabase} from '../core-services/crud-database.base';
 import {RoutesModel} from '../../models';
-//import {StoreCookie} from '../core-services/store-cookie';
+import {StoreCookie} from '../core-services/store-cookie';
 
 export class QuestionsProxyService extends CrudDatabase<any> {
-    //store = new StoreCookie();
+    store = new StoreCookie();
 
     async getAllQuestions(): Promise<any> {
-        //const authToken = this.store.getCookie('stackshare');
         const url = RoutesModel.questions;
         const headers = {
             'Content-Type': 'application/json',
         };
-        // 'Authorization': 'Bearer ' + authToken
         return await this.getRequest(url, headers);
     }
 
@@ -21,5 +19,15 @@ export class QuestionsProxyService extends CrudDatabase<any> {
             'Content-Type': 'application/json',
         };
         return await this.getRequest(url, headers);
+    }
+
+    async addQuestion(question): Promise<any> {
+        const authToken = this.store.getCookie('stackshare');
+        const url = RoutesModel.addQuestion;
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+        };
+        return await this.postRequest(url, question, headers);
     }
 }

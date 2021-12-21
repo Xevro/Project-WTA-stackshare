@@ -31,7 +31,7 @@
 
 {#if loading}
     <div class="question-information">
-        <p>Loading data...</p>
+        <p>Loading StackShare data...</p>
     </div>
 {/if}
 

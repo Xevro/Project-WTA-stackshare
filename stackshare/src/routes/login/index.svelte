@@ -14,12 +14,14 @@
         userProxy.loginMethod(user).then(response => response.json())
             .then((data: UserAuth) => {
                 inProgress = false;
-                error = data?.message;
-                store.setCookie('stackshare', data.token);
-                user = {username: '', password: ''} as User;
-                // redirect to homepage
+                error = data.message ?? '';
+                if (data.token) {
+                    store.setCookie('stackshare', data.token);
+                    user = {username: '', password: ''} as User;
+                    location.href = '/';
+                }
             }).catch((err) => {
-            error = err.response.data.message;
+            error = 'Could not login';
             inProgress = false;
         });
     }
