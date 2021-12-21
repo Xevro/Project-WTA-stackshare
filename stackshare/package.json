@@ -32,6 +32,7 @@
   },
   "type": "module",
   "dependencies": {
-    "cookie": "^0.4.1"
+    "cookie": "^0.4.1",
+    "svelte-multiselect": "^1.2.3"
   }
 }

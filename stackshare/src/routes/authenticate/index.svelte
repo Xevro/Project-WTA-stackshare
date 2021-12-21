@@ -424,13 +424,13 @@
 
   @media (max-width: 870px) {
     .container {
-      min-height: 1100px;
+      min-height: 1130px;
       height: 100%;
     }
 
     .sign-in-signup {
       width: 100%;
-      top: 80%;
+      top: 85%;
       transform: translate(-50%, -100%);
       transition: 1s .8s ease-in-out;
       left: 50%;
@@ -441,6 +441,7 @@
     }
 
     .panels-container {
+      margin-top: 30px;
       grid-template-columns: 1fr;
       grid-template-rows: 1fr 2fr 1fr;
     }
@@ -503,8 +504,6 @@
       }
 
       &.sign-up-mode {
-        margin-top: -40px;
-
         &:before {
           transform: translate(-50%, 100%);
           bottom: 32%;

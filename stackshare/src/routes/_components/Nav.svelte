@@ -29,7 +29,8 @@
             <div class="menu">
                 <li><a rel="prefetch" class="link" class:active={$page.path === '/'} href="/">Home</a></li>
                 {#if !loggedIn}
-                    <li><a rel="prefetch" class="link" class:active={$page.path === '/authenticate'} href="/authenticate">Login / register</a></li>
+                    <li><a rel="prefetch" class="link" class:active={$page.path === '/authenticate'}
+                           href="/authenticate">Login / register</a></li>
                 {:else}
                     <li><a rel="prefetch" class="link" class:active={$page.path === '/add/question'}
                            href="/add/question">Add question</a>
@@ -66,7 +67,6 @@
   }
 
   .logo {
-
     .logo-stackshare {
       max-height: 58px;
     }
@@ -109,6 +109,7 @@
     }
 
     .menu {
+      z-index: 999;
       margin-top: 23px;
       display: none;
       position: absolute;
@@ -125,7 +126,7 @@
       li:hover {
         display: inline-block;
         background-color: #989898;
-        transition: 0.3s ease;
+        transition: 0.4s ease;
       }
     }
 
