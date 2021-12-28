@@ -4,7 +4,7 @@
     import MultiSelect from 'svelte-multiselect';
 
     let question = {title: '', description: '', categories: []} as Question;
-    let inProgress = true;
+    let inProgress, titleError, categoryError, descError = false;
     let error = null;
     let allCategories: Category[];
     const questionProxy = new QuestionsProxyService();
@@ -25,20 +25,26 @@
     });
 
     function submitForm() {
+        titleError = !(question.title);
+        descError = !(question.description);
+        categoryError = (question.categories.length <= 0);
         inProgress = true;
-        questionProxy.addQuestion(question).then(response => response.json())
-            .then((data) => {
+        if (!titleError && !categoryError && !descError) {
+            questionProxy.addQuestion(question).then(response => response.json())
+                .then((data) => {
+                    inProgress = false;
+                    if (data.message == 'not found') {
+                        error = 'Could not send the question';
+                    }
+                    if (data) {
+                        location.href = '/';
+                    }
+                }).catch((err) => {
+                error = 'Could not send the question';
                 inProgress = false;
-                if (data.message == 'not found') {
-                    error = 'Could not send the question';
-                }
-                if (data) {
-                    location.href = '/';
-                }
-            }).catch((err) => {
-            error = 'Could not send the question';
-            inProgress = false;
-        });
+            });
+        }
+        inProgress = false;
     }
 
     function getSelectedCategories() {
@@ -62,20 +68,42 @@
 <div class="add-question">
     <form on:submit|preventDefault="{submitForm}" class="add-question-form">
         <h2 class="title">Add a question</h2>
+        <p>The community is here to help you with specific coding, algorithm, or language problems.
+            Avoid asking opinion-based questions.</p>
         {#if error}
             <div class="error">
                 <span class="error-message">{error}</span>
             </div>
         {/if}
+        {#if titleError}
+            <div class="error">
+                <span class="error-message">Title can't be empty</span>
+            </div>
+        {/if}
         <div class="input-field">
             <input type="text" bind:value="{question.title}" placeholder="Title"/>
         </div>
-        <div class="input-field">
-            <input type="text" bind:value="{question.description}" placeholder="Description"/>
+        {#if descError}
+            <div class="error">
+                <span class="error-message">Description can't be empty</span>
+            </div>
+        {/if}
+        <div class="textarea-field">
+            <textarea rows="10" bind:value="{question.description}" placeholder="Description"></textarea>
         </div>
 
         {#if showCategories}
-            <MultiSelect bind:selected on:change={getSelectedCategories} options={showCategories}/>
+            <div class="category-box">
+                <p>Tags</p>
+                <p>Add up to 5 tags to describe what your question is about.</p>
+                {#if categoryError}
+                    <div class="error">
+                        <span class="error-message">Please select a category</span>
+                    </div>
+                {/if}
+                <MultiSelect class="multi-selector" bind:selected on:change={getSelectedCategories}
+                             options={showCategories}/>
+            </div>
         {/if}
         <input type="submit" class="button" disabled="{inProgress}"/>
     </form>
@@ -84,7 +112,7 @@
 <style lang="scss">
   .add-question {
     position: absolute;
-    top: 40%;
+    top: 45%;
     transform: translate(-50%, -50%);
     left: 50%;
     width: 50%;
@@ -98,11 +126,13 @@
     flex-direction: column;
     padding: 0 5rem;
     transition: all 0.2s 0.7s;
-    overflow: hidden;
 
     &.add-question-form {
       z-index: 2;
-      height: 500px;
+
+      p {
+        max-width: 550px;
+      }
     }
 
     .error {
@@ -122,11 +152,11 @@
   }
 
   .input-field {
-    max-width: 380px;
+    max-width: 550px;
     width: 100%;
     background-color: #f0f0f0;
     margin: 10px 0;
-    height: 55px;
+    height: 46px;
     border-radius: 55px;
     display: grid;
     grid-template-columns: 100%;
@@ -146,6 +176,43 @@
         color: #aaa;
         font-weight: 500;
       }
+    }
+  }
+
+  .textarea-field {
+    max-width: 550px;
+    width: 100%;
+    background-color: #f0f0f0;
+    margin: 10px 0;
+    height: 230px;
+    border-radius: 15px;
+    display: grid;
+    grid-template-columns: 100%;
+    padding: 10px .7rem;
+    position: relative;
+
+    textarea {
+      background: none;
+      outline: none;
+      border: none;
+      line-height: 1;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #333;
+
+      &::placeholder {
+        color: #aaa;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .category-box {
+    max-width: 550px;
+    width: 100%;
+
+    p:first-of-type {
+      font-size: 1.1rem;
     }
   }
 
@@ -204,9 +271,9 @@
 
     .add-question {
       width: 100%;
-      top: 55%;
+      top: 90%;
       transform: translate(-50%, -100%);
-      transition: 1s .8s ease-in-out;
+      transition: 1s .9s ease-in-out;
       left: 50%;
     }
 
