@@ -21,6 +21,14 @@ export class QuestionsProxyService extends CrudDatabase<any> {
         return await this.getRequest(url, headers);
     }
 
+    async getAllComments(questionId: string): Promise<any> {
+        const url = RoutesModel.questions + '/' + questionId + '/comments';
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        return await this.getRequest(url, headers);
+    }
+
     async addQuestion(question): Promise<any> {
         const authToken = this.store.getCookie('stackshare');
         const url = RoutesModel.addQuestion;
