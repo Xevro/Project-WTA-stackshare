@@ -1,12 +1,26 @@
 <script lang="ts">
     import {page} from '$app/stores';
-    import {Question} from '../../models';
+    import {Comments, Question} from '../../models';
     import {QuestionsProxyService} from '../../services/backend-services';
 
     let question: Question;
+    let comments: Comments;
     let loading = true;
     let error = '';
     const questionsProxy = new QuestionsProxyService();
+
+    questionsProxy.getQuestionById($page.params.question).then(response => response.json())
+        .then((response: Question) => {
+            question = response;
+            loading = false;
+            let date = new Date(question.created_at);
+            let hours = date.getHours();
+            let minutes = '0' + date.getMinutes();
+            question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
+        }).catch((err) => {
+        loading = false;
+        error = 'Could not load the questions';
+    });
 
     questionsProxy.getQuestionById($page.params.question).then(response => response.json())
         .then((response: Question) => {
@@ -38,6 +52,12 @@
         <p class="title">{question?.title ?? ''}</p>
         <p>{question?.description ?? '' }</p>
         <p>{question?.created_date ?? '--' }</p>
+    </div>
+
+    <div>
+        {#each comments as message}
+            {message}
+        {/each}
     </div>
 {/if}
 

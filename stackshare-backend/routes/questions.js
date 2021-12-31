@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 const Questions = mongoose.model('Questions');
+const Comments = mongoose.model('Comments');
 
 function generateUUID() {
     let dt = new Date().getTime();
@@ -13,6 +14,7 @@ function generateUUID() {
     });
 }
 
+// Get all questions
 router.get('/', async (req, res) => {
     const questions = await Questions.find().populate('user').populate('categories');
     res.json({
@@ -21,11 +23,22 @@ router.get('/', async (req, res) => {
     });
 });
 
+// Get question by id
 router.get('/:questionId', async (req, res) => {
     const question = await Questions.findOne({uuid: req.params.questionId}).populate('user');
     res.json(question);
 });
 
+// Get question by id
+router.get('/:questionId/comments', async (req, res) => {
+    const comments = await Comments.find({question_uuid: req.params.questionId}).populate('user');
+    res.json({
+        data: comments,
+    });
+});
+
+
+// Add new question
 router.post('/add', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
     try {
         const question = await (new Questions({
@@ -43,6 +56,7 @@ router.post('/add', passport.authenticate('jwt', {session: false}), async (req, 
         });
     }
 });
+
 
 
 /*router.put(
