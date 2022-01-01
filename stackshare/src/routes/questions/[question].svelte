@@ -95,6 +95,7 @@
                 <button on:click={countLikesDown}>Down</button>
             </div>
             <div class="question-information">
+                <p style="color: red">Todo: Edit and delete function</p>
                 <p class="title">{question?.title ?? ''}</p>
                 <p>{question?.description ?? '' }</p>
                 <p>{question?.categories[0] ?? '' }</p>
@@ -113,6 +114,7 @@
                 <div class="message">
                     <p>{comment.message}</p>
                     <div class="written-by">
+                        <p style="color: red">Todo: delete function when it's the current userId</p>
                         <p>Written by {comment?.user?.name ?? '--'} on {comment?.created_date ?? '--'}</p>
                     </div>
                 </div>
@@ -121,6 +123,7 @@
 
         <div class="add-comment">
             <form on:submit|preventDefault="{submitNewComment}" class="add-comment-form">
+                <p>Add a comment</p>
                 {#if errorAddComment}
                     <div class="error">
                         <span class="error-message">{error}</span>
@@ -203,7 +206,7 @@
       .add-comment-form {
         display: flex;
         flex-direction: column;
-
+        
         .error {
           width: 390px;
           margin-left: 10px;
@@ -212,6 +215,24 @@
 
           .error-message {
             color: #de3232;
+          }
+        }
+
+        .button {
+          width: 100px;
+          background-color: #6151ee;
+          border: none;
+          outline: none;
+          height: 40px;
+          border-radius: 49px;
+          color: #fff;
+          font-weight: 500;
+          font-size: 1rem;
+          margin: 10px 0;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #4539c4;
           }
         }
       }
