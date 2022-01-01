@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {CategoriesProxyService, QuestionsProxyService} from '../../../services/backend-services';
+    import {CategoriesProxyService, QuestionsProxyService, UserProxyService} from '../../../services/backend-services';
     import type {Categories, Category, Question} from '../../../models';
     import MultiSelect from 'svelte-multiselect';
 
@@ -9,6 +9,7 @@
     let allCategories: Category[];
     const questionProxy = new QuestionsProxyService();
     const categoriesProxy = new CategoriesProxyService();
+    const userProxy = new UserProxyService();
     let showCategories: String[] = [];
     let selected;
 
@@ -25,26 +26,31 @@
     });
 
     function submitForm() {
-        titleError = !(question.title);
-        descError = !(question.description);
-        categoryError = (question.categories.length <= 0);
-        inProgress = true;
-        if (!titleError && !categoryError && !descError) {
-            questionProxy.addQuestion(question).then(response => response.json())
-                .then((data) => {
-                    inProgress = false;
-                    if (data.message == 'not found') {
+        userProxy.checkUserStatus().then(response => response.json())
+            .then(() => {
+                titleError = !(question.title);
+                descError = !(question.description);
+                categoryError = (question.categories.length <= 0);
+                inProgress = true;
+                if (!titleError && !categoryError && !descError) {
+                    questionProxy.addQuestion(question).then(response => response.json())
+                        .then((data) => {
+                            inProgress = false;
+                            if (data.message == 'not found') {
+                                error = 'Could not send the question';
+                            }
+                            if (data) {
+                                location.href = '/';
+                            }
+                        }).catch((err) => {
                         error = 'Could not send the question';
-                    }
-                    if (data) {
-                        location.href = '/';
-                    }
-                }).catch((err) => {
-                error = 'Could not send the question';
+                        inProgress = false;
+                    });
+                }
                 inProgress = false;
-            });
-        }
-        inProgress = false;
+            }).catch(() => {
+            alert("You can't add a question when you are not logged in.");
+        });
     }
 
     function getSelectedCategories() {
@@ -101,8 +107,8 @@
                         <span class="error-message">Please select a category</span>
                     </div>
                 {/if}
-                <MultiSelect class="multi-selector" bind:selected on:change={getSelectedCategories}
-                             options={showCategories}/>
+                <MultiSelect bind:selected on:change={getSelectedCategories}
+                             options={showCategories} class="multi-selector"/>
             </div>
         {/if}
         <input type="submit" class="button" disabled="{inProgress}"/>
@@ -110,22 +116,20 @@
 </div>
 
 <style lang="scss">
+
   .add-question {
     position: absolute;
     top: 45%;
     transform: translate(-50%, -50%);
     left: 50%;
     width: 50%;
-    transition: 1s .7s ease-in-out;
     z-index: 5;
   }
 
-  form {
+  .add-question-form {
     display: flex;
-    align-items: center;
     flex-direction: column;
     padding: 0 5rem;
-    transition: all 0.2s 0.7s;
 
     &.add-question-form {
       z-index: 2;
@@ -160,7 +164,7 @@
     border-radius: 55px;
     display: grid;
     grid-template-columns: 100%;
-    padding: 0 1rem;
+    padding: 0 11px;
     position: relative;
 
     input {
@@ -228,7 +232,6 @@
     font-size: 1rem;
     margin: 10px 0;
     cursor: pointer;
-    transition: 0.5s;
 
     &:hover {
       background-color: #4539c4;
@@ -255,7 +258,7 @@
       left: 25%;
     }
 
-    form {
+    .add-question-form {
       &.add-question-form {
         opacity: 0;
         z-index: 1;
@@ -273,7 +276,6 @@
       width: 100%;
       top: 90%;
       transform: translate(-50%, -100%);
-      transition: 1s .9s ease-in-out;
       left: 50%;
     }
 

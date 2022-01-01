@@ -5,6 +5,8 @@ export interface Comment {
     uuid: string;
     message: string;
     question_uuid: string;
+    likes: number;
     created_at: number;
+    created_date?: string;
     user: User;
 }

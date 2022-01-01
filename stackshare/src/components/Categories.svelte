@@ -18,7 +18,7 @@
 </script>
 
 {#if loading}
-    <div>
+    <div class="categories-overview">
         <p>Loading categories data...</p>
     </div>
 {/if}
@@ -37,14 +37,16 @@
 {/if}
 
 {#if (error)}
-    <p>Lege lijst tonen of verbergen.</p>
+    <div class="categories-overview">
+        <p>Lege lijst tonen of verbergen.</p>
+    </div>
 {/if}
 
 <style lang="scss">
 
   .categories-overview {
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
 
     .categories-list {
 

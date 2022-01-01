@@ -6,6 +6,7 @@ export interface Question {
     uuid: string;
     title: string;
     description: string;
+    likes: number;
     created_at: number;
     created_date?: string;
     categories: Category[];

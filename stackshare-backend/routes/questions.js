@@ -52,7 +52,25 @@ router.post('/add', passport.authenticate('jwt', {session: false}), async (req, 
     } catch (err) {
         next({
             status: 400,
-            message: err.message + 'This post could not be added.'
+            message: err.message + 'This question could not be added.'
+        });
+    }
+});
+
+// Add new comment
+router.post('/:questionId/comment/add', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
+    try {
+        const comment = await (new Comments({
+            uuid: generateUUID(),
+            message: req.body.message,
+            user: req.user._id,
+            question_uuid: req.params.questionId
+        }).save());
+        res.json(comment);
+    } catch (err) {
+        next({
+            status: 400,
+            message: err.message + 'This comment could not be added.'
         });
     }
 });

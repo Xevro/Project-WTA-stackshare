@@ -13,6 +13,10 @@ const questionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    likes: {
+        type: Number,
+        default: 0
+    },
     categories: [
         {
             type: mongoose.Schema.ObjectId,
