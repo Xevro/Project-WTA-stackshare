@@ -34,9 +34,10 @@
 
 {#if loggedIn}
     <button on:click={logout}>Log out</button>
+    <p style="color: red">todo: Add information and edit option</p>
 {:else}
     <div class="not-logged-in">
-        <p>You can't add a question when you are not logged in.</p>
+        <p>You have to be logged in to see your profile.</p>
         <a href="/">Go back to the homepage</a>
     </div>
 {/if}

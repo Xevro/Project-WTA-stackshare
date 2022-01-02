@@ -206,7 +206,7 @@
       .add-comment-form {
         display: flex;
         flex-direction: column;
-        
+
         .error {
           width: 390px;
           margin-left: 10px;

@@ -9,6 +9,3 @@
 
 <CategoriesList/>
 <QuestionsList/>
-<style>
-
-</style>

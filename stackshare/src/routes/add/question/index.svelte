@@ -118,11 +118,7 @@
 <style lang="scss">
 
   .add-question {
-    position: absolute;
-    top: 45%;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    width: 50%;
+    width: 100%;
     z-index: 5;
   }
 
@@ -133,6 +129,7 @@
 
     &.add-question-form {
       z-index: 2;
+      align-items: center;
 
       p {
         max-width: 550px;
@@ -260,6 +257,7 @@
 
     .add-question-form {
       &.add-question-form {
+        align-items: center;
         opacity: 0;
         z-index: 1;
       }
@@ -274,9 +272,6 @@
 
     .add-question {
       width: 100%;
-      top: 90%;
-      transform: translate(-50%, -100%);
-      left: 50%;
     }
 
     .container .add-question {
