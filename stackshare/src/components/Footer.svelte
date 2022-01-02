@@ -4,9 +4,9 @@
         <p>Find the solution to your problem through a big community.</p>
         <div class="footer-menu">
             <ul class="f-menu">
-                <li><a href="">Home</a></li>
-                <li><a href="">Add a question</a></li>
-                <li><a href="">Login</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/add/question">Add a question</a></li>
+                <li><a href="/authenticate">Login</a></li>
             </ul>
         </div>
     </div>

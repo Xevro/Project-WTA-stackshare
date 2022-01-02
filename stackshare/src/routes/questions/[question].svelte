@@ -70,6 +70,13 @@
             alert("You can't add a comment when you are not logged in.");
         });
     }
+
+    function countCommentLikesUp() {
+    }
+
+    function countCommentLikesDown() {
+    }
+
 </script>
 
 <svelte:head>
@@ -111,11 +118,22 @@
     {#if !loadingComments}
         {#each comments.data as comment}
             <div class="comment-content">
-                <div class="message">
-                    <p>{comment.message}</p>
-                    <div class="written-by">
-                        <p style="color: red">Todo: delete function when it's the current userId</p>
-                        <p>Written by {comment?.user?.name ?? '--'} on {comment?.created_date ?? '--'}</p>
+                <div class="comment-info">
+                    <div class="comment-likes">
+                        {#if comment.likes !== ''}
+                            <button on:click={countCommentLikesUp}>Up</button>
+                            <p>{comment?.likes}</p>
+                            <button on:click={countCommentLikesDown}>Down</button>
+                        {:else}
+                            <p>Likes --</p>
+                        {/if}
+                    </div>
+                    <div class="message">
+                        <p>{comment?.message ?? '--'}</p>
+                        <div class="written-by">
+                            <p style="color: red">Todo: delete function when it's the current userId</p>
+                            <p>Written by {comment?.user?.name ?? '--'} on {comment?.created_date ?? '--'}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -174,30 +192,24 @@
       background-color: #f3f3f3;
       padding: 4px 20px;
 
-      .message {
-        p:first-of-type {
-          font-size: 1.05rem;
-          margin: 2px 0 4px;
-        }
-
-        .written-by p {
-          font-size: .9rem;
-        }
-      }
-
-      #description {
-        color: #989898;
-      }
-
-      .categories {
+      .comment-info {
         display: flex;
 
-        p {
-          color: #FFF;
-          padding: 4px 10px;
-          margin: 4px;
-          background-color: #5148D5;
-          border-radius: 20px;
+        .comment-likes {
+          width: 40px;
+        }
+
+        .message {
+          p:first-of-type {
+            font-size: 1.05rem;
+            margin: 2px 0 4px;
+          }
+
+          .written-by {
+            p {
+              font-size: .9rem;
+            }
+          }
         }
       }
     }
@@ -206,6 +218,11 @@
       .add-comment-form {
         display: flex;
         flex-direction: column;
+
+        p {
+          font-size: 1.1rem;
+          margin-bottom: 0;
+        }
 
         .error {
           width: 390px;

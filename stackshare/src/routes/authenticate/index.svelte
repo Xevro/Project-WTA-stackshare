@@ -10,6 +10,11 @@
     const userProxy = new UserProxyService();
     const store = new StoreCookie();
 
+    userProxy.checkUserStatus().then(response => response.json())
+        .then((result) => {
+            location.href = '/';
+        });
+
     function submitLoginForm() {
         inProgress = true;
         userProxy.loginMethod(user).then(response => response.json())
