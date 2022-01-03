@@ -39,12 +39,14 @@ export class QuestionsProxyService extends CrudDatabase<any> {
         return await this.postRequest(url, question, headers);
     }
 
-    async updateLikesCountById(questionId: string): Promise<any> {
-        const url = RoutesModel.questions + '/' + questionId;
+    async updateLikesCountById(questionId: string, question): Promise<any> {
+        const authToken = this.store.getCookie('stackshare');
+        const url = RoutesModel.questions + '/' + questionId + '/count';
         const headers = {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
         };
-        return await this.getRequest(url, headers);
+        return await this.patchRequest(url, question, headers);
     }
 
     async addComment(questionId: string, comment): Promise<any> {

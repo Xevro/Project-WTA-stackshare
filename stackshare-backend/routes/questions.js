@@ -75,28 +75,23 @@ router.post('/:questionId/comment/add', passport.authenticate('jwt', {session: f
     }
 });
 
+router.patch('/:questionId/count', (req, res) => {
+    Questions.updateOne({uuid: req.params.questionId}, req.body,
+        (err) => {
+            if (err) {
+                res.json({
+                    err: err,
+                    success: false,
+                    msg: 'Failed to update count value'
+                })
+            } else {
+                res.json({success: true})
+            }
+        }
+    )
+});
 
-
-/*router.put(
-  '/:storyId',
-  passport.authenticate('jwt', { session: false }),
-  async (req, res) => {
-    let story = await Story.findOne({ _id: req.params.storyId })
-    if (!story.user.equals(req.user._id)) {
-      res
-        .status(401)
-        .json({
-          message: 'You cannot edit a story that you do not own!'
-        })
-      return
-    }
-    story.title = req.body.title
-    story.content = req.body.content
-    story = await story.save()
-    res.json(story)
-  }
-)
-
+/*
 router.delete(
   '/:storyId',
   passport.authenticate('jwt', { session: false }),

@@ -8,22 +8,30 @@
     let newComment = {message: ''} as Comment;
     let loading, loadingComments = true;
     let error, errorComments, messageError, errorAddComment = null;
-    let inProgress = false;
+    let inProgress, isLoggedIn = false;
     const questionsProxy = new QuestionsProxyService();
     const userProxy = new UserProxyService();
 
-    questionsProxy.getQuestionById($page.params.question).then(response => response.json())
-        .then((response: Question) => {
-            question = response;
+    const getQuestionData = () => {
+        questionsProxy.getQuestionById($page.params.question).then(response => response.json())
+            .then((response: Question) => {
+                question = response;
+                loading = false;
+                let date = new Date(question.created_at);
+                let hours = date.getHours();
+                let minutes = '0' + date.getMinutes();
+                question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
+            }).catch((err) => {
             loading = false;
-            let date = new Date(question.created_at);
-            let hours = date.getHours();
-            let minutes = '0' + date.getMinutes();
-            question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
-        }).catch((err) => {
-        loading = false;
-        error = 'Could not load the questions';
+            error = 'Could not load the questions';
+        });
+    }
+
+    userProxy.checkUserStatus().then(response => response.json()).then(() => {
+        isLoggedIn = !(newComment.message);
     });
+
+    getQuestionData();
 
     questionsProxy.getAllComments($page.params.question).then(response => response.json())
         .then((response: Comments) => {
@@ -41,9 +49,23 @@
     });
 
     function countLikesUp() {
+        if (isLoggedIn) {
+            questionsProxy.updateLikesCountById(question.uuid, {likes: question.likes + 1}).then(() => {
+                getQuestionData();
+            });
+        } else {
+            alert("You have to be logged in to update the count.");
+        }
     }
 
     function countLikesDown() {
+        if (isLoggedIn) {
+            questionsProxy.updateLikesCountById(question.uuid, {likes: question.likes - 1}).then(() => {
+                getQuestionData();
+            });
+        } else {
+            alert("You have to be logged in to update the count.");
+        }
     }
 
     function submitNewComment() {
@@ -95,6 +117,8 @@
     {/if}
 
     {#if !loading && !error && question}
+        <p>Todo: Add delete button if this is create by the logged in user.</p>
+        <p>Add edit button that toggles full view when created by user who is logged in</p>
         <div class="questions-content">
             <div class="question-likes">
                 <button on:click={countLikesUp}>Up</button>

@@ -14,4 +14,12 @@ export abstract class CrudDatabase<Type> {
             body: JSON.stringify(body)
         });
     }
+
+    async patchRequest(url: string, body: Type, headers = {}): Promise<any> {
+        return await fetch(url, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify(body)
+        });
+    }
 }
