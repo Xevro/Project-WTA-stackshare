@@ -13,8 +13,9 @@
     let categories: Category[] = [];
     let newComment = {message: ''} as Comment;
     let loading, loadingComments = true;
+    let editButtonText = 'Edit question';
     let error, errorComments, messageError, errorAddComment = null;
-    let inProgress, isLoggedIn, didCountUp, didCountDown = false;
+    let inProgress, isLoggedIn, didCountUp, didCountDown, editView, editTitleError, editDescriptionError = false;
 
     const questionsProxy = new QuestionsProxyService();
     const categoriesProxy = new CategoriesProxyService();
@@ -183,6 +184,25 @@
             }
         }
     }
+
+    function toggleEditView() {
+        editView = !editView;
+        if (editView) {
+            editButtonText = 'Cancel edit';
+        } else {
+            editButtonText = 'Edit question';
+        }
+    }
+
+    function submitEditForm() {
+        editTitleError = question.title === '';
+        editDescriptionError = question.description === '';
+        if (!editTitleError && !editDescriptionError) {
+            questionsProxy.updateQuestion(question.uuid, question).then(response => response.json()).then((results) => {
+                editView = false;
+            });
+        }
+    }
 </script>
 
 <svelte:head>
@@ -201,35 +221,61 @@
     {/if}
 
     {#if !loading && !error && question}
-        <p style="color: red">Add edit button that toggles full view when created by user who is logged in</p>
         <div class="buttons-group">
             {#if isLoggedIn}
-                <button>Edit</button>
-                <button on:click={deleteQuestion}>Delete</button>
+                <button on:click={toggleEditView} class="button-edit">{editButtonText}</button>
+                <button on:click={deleteQuestion} class="button-delete">Delete</button>
             {/if}
         </div>
-        <div class="questions-content">
-            <div class="question-likes">
-                {#if isLoggedIn}
-                    <button on:click={countLikesUp}>Up</button>
-                    <p>{question?.likes}</p>
-                    <button on:click={countLikesDown}>Down</button>
-                {/if}
-            </div>
-            <div class="question-information">
-                <p style="color: red">Todo: Edit and delete function</p>
-                <p class="title">{question?.title ?? ''}</p>
-                <p>{question?.description ?? '' }</p>
-                <div class="categories-list">
-                {#each categories as category}
-                    {#if category.name}
-                        <p>{category.name}</p>
+
+        {#if !editView}
+            <div class="questions-content">
+                <div class="question-likes">
+                    {#if isLoggedIn}
+                        <button on:click={countLikesUp}>Up</button>
+                        <p>{question?.likes}</p>
+                        <button on:click={countLikesDown}>Down</button>
                     {/if}
-                {/each}
                 </div>
-                <p>Written by {question?.user?.name ?? '--' } on {question?.created_date ?? '--' }</p>
+                <div class="question-information">
+                    <p class="title">{question?.title ?? ''}</p>
+                    <p>{question?.description ?? '' }</p>
+                    <div class="categories-list">
+                        {#each categories as category}
+                            {#if category.name}
+                                <p>{category.name}</p>
+                            {/if}
+                        {/each}
+                    </div>
+                    <p>Written by {question?.user?.name ?? '--' } on {question?.created_date ?? '--' }</p>
+                </div>
             </div>
-        </div>
+        {:else}
+            <div class="edit-question">
+                <form on:submit|preventDefault="{submitEditForm}" class="edit-question-form">
+                    <p>Update the question</p>
+                    <label>Title</label>
+                    {#if editTitleError}
+                        <div class="error">
+                            <span class="error-message">The description can't be empty</span>
+                        </div>
+                    {/if}
+                    <div class="input-field">
+                        <input type="text" bind:value="{question.title}" placeholder="Title">
+                    </div>
+                    <label>Description</label>
+                    {#if editDescriptionError}
+                        <div class="error">
+                            <span class="error-message">The description can't be empty</span>
+                        </div>
+                    {/if}
+                    <div class="textarea-field">
+                        <textarea rows="5" bind:value="{question.description}" placeholder="Message"></textarea>
+                    </div>
+                    <input type="submit" class="button" disabled="{inProgress}" value="Update"/>
+                </form>
+            </div>
+        {/if}
     {/if}
 
     {#if errorComments}
@@ -301,6 +347,35 @@
 
     .buttons-group {
       float: right;
+
+      .button-edit, .button-delete {
+        border: none;
+        outline: none;
+        height: 30px;
+        border-radius: 49px;
+        color: #fff;
+        font-size: .9rem;
+        margin: 10px 0;
+        cursor: pointer;
+      }
+
+      .button-edit {
+        width: 110px;
+        background-color: #6151ee;
+
+        &:hover {
+          background-color: #4539c4;
+        }
+      }
+
+      .button-delete {
+        width: 85px;
+        background-color: #ce2d2d;
+
+        &:hover {
+          background-color: #4539c4;
+        }
+      }
     }
 
     .questions-content {
@@ -363,10 +438,12 @@
       }
     }
 
-    .add-comment {
-      .add-comment-form {
-        display: flex;
-        flex-direction: column;
+    .add-comment, .edit-question {
+      .add-comment-form, .edit-question-form {
+
+        label {
+          margin-top: 10px;
+        }
 
         p {
           font-size: 1.1rem;
@@ -399,6 +476,31 @@
 
           &:hover {
             background-color: #4539c4;
+          }
+        }
+      }
+
+      .input-field {
+        background-color: #f0f0f0;
+        margin: 10px 0;
+        height: 40px;
+        border-radius: 55px;
+        display: grid;
+        padding: 0 1rem;
+        position: relative;
+
+        input {
+          background: none;
+          outline: none;
+          border: none;
+          line-height: 1;
+          font-weight: 500;
+          font-size: 1rem;
+          color: #333;
+
+          &::placeholder {
+            color: #aaa;
+            font-weight: 500;
           }
         }
       }

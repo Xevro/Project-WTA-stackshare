@@ -59,6 +59,16 @@ export class QuestionsProxyService extends CrudDatabase<any> {
         return await this.patchRequest(url, comment, headers);
     }
 
+    async updateQuestion(questionId: string, question): Promise<any> {
+        const authToken = this.store.getCookie('stackshare');
+        const url = RoutesModel.questions + '/' + questionId;
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+        };
+        return await this.patchRequest(url, question, headers);
+    }
+
     async addComment(questionId: string, comment): Promise<any> {
         const authToken = this.store.getCookie('stackshare');
         const url = RoutesModel.questions + '/' + questionId + '/comment/add';

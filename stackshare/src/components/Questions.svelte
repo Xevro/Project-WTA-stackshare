@@ -10,7 +10,7 @@
     questionsProxy.getAllQuestions().then(response => response.json())
         .then((response: Questions) => {
             questions = response;
-            loading = false
+            loading = false;
             for (let question of questions.data) {
                 let date = new Date(question.created_at);
                 question.created_date = date.toDateString() + ' ' + date.getHours() + ':' + ('0' + date.getMinutes()).substr(-2);
@@ -35,7 +35,8 @@
 
 {#if questions && !error && !loading}
     <div class="questions">
-        {#each questions.data as question}
+        <h3>Most recent questions</h3>
+        {#each questions.data.sort((q1, q2) => q1.created_at < q2.created_at) as question}
             <a href="/questions/{question.uuid}">
                 <div class="question-content">
                     <div class="title-section">

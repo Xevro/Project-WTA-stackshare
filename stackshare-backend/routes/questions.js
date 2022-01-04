@@ -143,5 +143,21 @@ router.delete('/:questionId/comment/:commentId', passport.authenticate('jwt', {s
     });
 });
 
+// Update a question
+router.patch('/:questionId', (req, res) => {
+    Questions.updateOne({uuid: req.params.questionId}, req.body,
+        (err) => {
+            if (err) {
+                res.json({
+                    err: err,
+                    success: false,
+                    msg: 'Failed to update the question'
+                })
+            } else {
+                res.json({success: true})
+            }
+        }
+    )
+});
 
 module.exports = router;
