@@ -78,4 +78,14 @@ export class QuestionsProxyService extends CrudDatabase<any> {
         };
         return await this.deleteRequest(url, body, headers);
     }
+
+    async deleteComment(questionId: string, commentId: string, body = {}): Promise<any> {
+        const authToken = this.store.getCookie('stackshare');
+        const url = RoutesModel.questions + '/' + questionId + '/comment/' + commentId;
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+        };
+        return await this.deleteRequest(url, body, headers);
+    }
 }

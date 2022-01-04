@@ -93,7 +93,7 @@
                             errorAddComment = 'Could not add the comment';
                         }
                         if (data) {
-                            location.href = '/';
+                            location.reload();
                         }
                     }).catch((err) => {
                     errorAddComment = 'Could not add the comment';
@@ -140,7 +140,27 @@
                     alert("You can't delete this question");
                 });
             } else {
-                alert("You can't delete a question that does not belong to you or you have to login.");
+                alert("You can't delete a question that does not belong to you or you have to login");
+            }
+        }
+    }
+
+    function deleteComment(comment) {
+        if (confirm("Are you sure you want to delete this comment?")) {
+            if (storeService.getCookie('stackshare-id')) {
+                questionsProxy.deleteComment(question.uuid, comment.uuid, {
+                    user: {_id: storeService.getCookie('stackshare-id')}
+                }).then((result) => {
+                    if (result.status === 401) {
+                        alert("You can't delete this comment");
+                    } else {
+                        location.reload();
+                    }
+                }).catch((err) => {
+                    alert("You can't delete a comment that does not belong to you");
+                });
+            } else {
+                alert("You can't delete a comment that does not belong to you or you have to login");
             }
         }
     }
@@ -197,6 +217,12 @@
     {#if !loadingComments && comments.data && question}
         {#each comments.data as comment}
             <div class="comment-content">
+                <div class="buttons-group">
+                    {#if isLoggedIn}
+                        <button>Edit</button>
+                        <button on:click={deleteComment(comment)}>Delete</button>
+                    {/if}
+                </div>
                 <div class="comment-info">
                     <div class="comment-likes">
                         {#if isLoggedIn}

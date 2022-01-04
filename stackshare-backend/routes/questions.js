@@ -75,6 +75,7 @@ router.post('/:questionId/comment/add', passport.authenticate('jwt', {session: f
     }
 });
 
+// Update the count of a question
 router.patch('/:questionId/count', (req, res) => {
     Questions.updateOne({uuid: req.params.questionId}, req.body,
         (err) => {
@@ -91,6 +92,7 @@ router.patch('/:questionId/count', (req, res) => {
     )
 });
 
+// Update the count of a comment
 router.patch('/:questionId/comment/:commentId/count', (req, res) => {
     Comments.updateOne({_id: req.params.commentId}, req.body,
         (err) => {
@@ -107,21 +109,39 @@ router.patch('/:questionId/comment/:commentId/count', (req, res) => {
     )
 });
 
+// Delete a question with all comments
 router.delete('/:questionId', passport.authenticate('jwt', {session: false}), async (req, res) => {
-        let question = await Questions.findOne({uuid: req.params.questionId})
-        if (!question.user.equals(req.body.user._id)) {
-            res.status(401).json({
-                message: 'You cannot delete a question that you do not own!'
-            });
-            return;
-        }
-        await Questions.deleteOne({uuid: req.params.questionId});
-        await Comments.deleteMany({question_uuid: req.params.questionId});
+    let question = await Questions.findOne({uuid: req.params.questionId})
+    if (!question.user.equals(req.body.user._id)) {
+        res.status(401).json({
+            message: 'You cannot delete a question that you do not own!'
+        });
+        return;
+    }
+    await Questions.deleteOne({uuid: req.params.questionId});
+    await Comments.deleteMany({question_uuid: req.params.questionId});
+    res.json({
+        message: 'deleted the question and comments!',
+        status: true
+    });
+});
+
+// Delete a comment by Id
+router.delete('/:questionId/comment/:commentId', passport.authenticate('jwt', {session: false}), async (req, res) => {
+    let comment = await Comments.findOne({question_uuid: req.params.questionId, uuid: req.params.commentId})
+    if (!comment.user.equals(req.body.user._id)) {
+        res.status(401).json({
+            message: 'You cannot delete a comment that you do not own!'
+        });
+        return;
+    }
+    await Comments.deleteOne({uuid: req.params.commentId, user: req.body.user._id}).then(() => {
         res.json({
-            message: 'deleted the question and comments!',
+            message: 'deleted the comment!',
             status: true
         });
-    }
-);
+    });
+});
+
 
 module.exports = router;
