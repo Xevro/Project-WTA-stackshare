@@ -27,10 +27,12 @@
     <div class="categories-overview">
         <h3>Populair categories</h3>
         <div class="categories-list">
-            {#each categories.data as category}
-                <div class="item">
-                    <p>{category.name}</p>
-                </div>
+            {#each categories.data as category, i}
+                {#if i < 15}
+                    <div class="item">
+                        <p>{category.name}</p>
+                    </div>
+                {/if}
             {/each}
         </div>
     </div>
@@ -49,10 +51,11 @@
     margin-right: 15%;
 
     .categories-list {
-
       display: flex;
+      flex-wrap: wrap;
 
       .item {
+        margin-top: 10px;
         margin-left: 5px;
         margin-right: 5px;
         background-color: #5148D5;

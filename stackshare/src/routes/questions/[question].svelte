@@ -1,31 +1,48 @@
 <script lang="ts">
     import {page} from '$app/stores';
-    import {Comment, Comments, Question} from '../../models';
-    import {QuestionsProxyService, StoreCookie, UserProxyService} from '../../services/backend-services';
+    import {Category, Comment, Comments, Question} from '../../models';
+    import {
+        CategoriesProxyService,
+        QuestionsProxyService,
+        StoreCookie,
+        UserProxyService
+    } from '../../services/backend-services';
 
     let question: Question;
     let comments: Comments;
+    let categories: Category[] = [];
     let newComment = {message: ''} as Comment;
     let loading, loadingComments = true;
     let error, errorComments, messageError, errorAddComment = null;
     let inProgress, isLoggedIn, didCountUp, didCountDown = false;
+
     const questionsProxy = new QuestionsProxyService();
+    const categoriesProxy = new CategoriesProxyService();
     const userProxy = new UserProxyService();
     const storeService = new StoreCookie();
 
-    const getQuestionData = () => {
-        questionsProxy.getQuestionById($page.params.question).then(response => response.json())
-            .then((response: Question) => {
+    const getQuestionData = async () => {
+        await questionsProxy.getQuestionById($page.params.question).then(response => response.json())
+            .then(async (response: Question) => {
                 question = response;
                 loading = false;
                 let date = new Date(question.created_at);
-                let hours = date.getHours();
-                let minutes = '0' + date.getMinutes();
-                question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
+                question.created_date = date.toDateString() + ' ' + date.getHours() + ':' + ('0' + date.getMinutes()).substr(-2);
+            }).then(async () => {
+                await categoriesProxy.getAllCategories().then(response => response.json()).then((results) => {
+                    categories = question.categories;
+                    results.data.forEach(cat => {
+                        question.categories.forEach(category => {
+                            if (cat._id === category) {
+                                categories.push(cat);
+                            }
+                        });
+                    });
+                });
             }).catch((err) => {
-            loading = false;
-            error = 'Could not load the question, something went wrong!';
-        });
+                loading = false;
+                error = 'Could not load the question, something went wrong!';
+            });
     }
 
     const getAllComments = () => {
@@ -47,6 +64,8 @@
 
     userProxy.checkUserStatus().then(response => response.json()).then(() => {
         isLoggedIn = !(newComment.message);
+    }).catch((err) => {
+        isLoggedIn = false;
     });
 
     getQuestionData();
@@ -201,8 +220,13 @@
                 <p style="color: red">Todo: Edit and delete function</p>
                 <p class="title">{question?.title ?? ''}</p>
                 <p>{question?.description ?? '' }</p>
-                <p style="color: red">Fix categories</p>
-                <p>{question?.categories ?? '' }</p>
+                <div class="categories-list">
+                {#each categories as category}
+                    {#if category.name}
+                        <p>{category.name}</p>
+                    {/if}
+                {/each}
+                </div>
                 <p>Written by {question?.user?.name ?? '--' } on {question?.created_date ?? '--' }</p>
             </div>
         </div>
@@ -238,7 +262,6 @@
                     <div class="message">
                         <p>{comment?.message ?? '--'}</p>
                         <div class="written-by">
-                            <p style="color: red">Todo: delete function when it's the current userId</p>
                             <p>Written by {comment?.user?.name ?? '--'} on {comment?.created_date ?? '--'}</p>
                         </div>
                     </div>
@@ -296,6 +319,18 @@
 
         .title {
           font-size: 1.3rem;
+        }
+
+        .categories-list {
+          display: flex;
+
+          p {
+            color: #FFF;
+            padding: 4px 10px;
+            margin: 4px;
+            background-color: #5148D5;
+            border-radius: 20px;
+          }
         }
       }
     }

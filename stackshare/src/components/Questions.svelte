@@ -13,9 +13,7 @@
             loading = false
             for (let question of questions.data) {
                 let date = new Date(question.created_at);
-                let hours = date.getHours();
-                let minutes = '0' + date.getMinutes();
-                question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
+                question.created_date = date.toDateString() + ' ' + date.getHours() + ':' + ('0' + date.getMinutes()).substr(-2);
             }
         }).catch((err) => {
         loading = false;

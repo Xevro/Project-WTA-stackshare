@@ -67,10 +67,6 @@
             errorPassword = null;
         }
 
-        console.log('errorName', errorName);
-        console.log('errorPassword', errorPassword);
-        console.log('errorEmail', errorEmail);
-        console.log('errorUsername', errorUsername);
         if (user.passwordConfirm.trim() === user.password.trim() && errorName === null && errorPassword === null && errorEmail === null && errorUsername === null) {
             errorPasswordConfirm = null;
             inProgress = true;
