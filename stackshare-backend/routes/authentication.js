@@ -34,6 +34,7 @@ router.post('/register', async (req, res, next) => {
     try {
         const user = await (new User({
             uuid: generateUUID(),
+            name: req.body.name,
             username: req.body.username,
             password: req.body.password,
             email: req.body.email

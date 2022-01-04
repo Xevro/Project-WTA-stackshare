@@ -1,7 +1,7 @@
 <script lang="ts">
     import {page} from '$app/stores';
     import {Comment, Comments, Question} from '../../models';
-    import {QuestionsProxyService, UserProxyService} from '../../services/backend-services';
+    import {QuestionsProxyService, StoreCookie, UserProxyService} from '../../services/backend-services';
 
     let question: Question;
     let comments: Comments;
@@ -11,6 +11,7 @@
     let inProgress, isLoggedIn = false;
     const questionsProxy = new QuestionsProxyService();
     const userProxy = new UserProxyService();
+    const storeService = new StoreCookie();
 
     const getQuestionData = () => {
         questionsProxy.getQuestionById($page.params.question).then(response => response.json())
@@ -23,7 +24,7 @@
                 question.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
             }).catch((err) => {
             loading = false;
-            error = 'Could not load the questions';
+            error = 'Could not load the question, something went wrong!';
         });
     }
 
@@ -78,7 +79,6 @@
             if (!messageError) {
                 questionsProxy.addComment(question.uuid, newComment).then(response => response.json())
                     .then((data) => {
-                        inProgress = false;
                         if (data.message == 'not found') {
                             errorAddComment = 'Could not add the comment';
                         }
@@ -87,7 +87,6 @@
                         }
                     }).catch((err) => {
                     errorAddComment = 'Could not add the comment';
-                    inProgress = false;
                 });
             }
             inProgress = false;
@@ -118,6 +117,25 @@
         }
     }
 
+    function deleteQuestion() {
+        if (confirm("Are you sure you want to delete this question?")) {
+            if (storeService.getCookie('stackshare-id')) {
+                questionsProxy.deleteQuestion(question.uuid, {
+                    user: {_id: storeService.getCookie('stackshare-id')}
+                }).then((result) => {
+                    if (result.status === 401) {
+                        alert("You can't delete this question");
+                    } else {
+                        location.href = '/';
+                    }
+                }).catch((err) => {
+                    alert("You can't delete this question");
+                });
+            } else {
+                alert("You can't delete a question that does not belong to you or you have to login.");
+            }
+        }
+    }
 </script>
 
 <svelte:head>
@@ -136,39 +154,51 @@
     {/if}
 
     {#if !loading && !error && question}
-        <p>Todo: Add delete button if this is create by the logged in user.</p>
-        <p>Add edit button that toggles full view when created by user who is logged in</p>
+        <p style="color: red">Add edit button that toggles full view when created by user who is logged in</p>
+        <div class="buttons-group">
+            {#if isLoggedIn}
+                <button>Edit</button>
+                <button on:click={deleteQuestion}>Delete</button>
+            {/if}
+        </div>
         <div class="questions-content">
             <div class="question-likes">
-                <button on:click={countLikesUp}>Up</button>
-                <p>{question?.likes}</p>
-                <button on:click={countLikesDown}>Down</button>
+                {#if isLoggedIn}
+                    <button on:click={countLikesUp}>Up</button>
+                    <p>{question?.likes}</p>
+                    <button on:click={countLikesDown}>Down</button>
+                {/if}
             </div>
             <div class="question-information">
                 <p style="color: red">Todo: Edit and delete function</p>
                 <p class="title">{question?.title ?? ''}</p>
                 <p>{question?.description ?? '' }</p>
-                <p>{question?.categories[0] ?? '' }</p>
+                <p style="color: red">Fix categories</p>
+                <p>{question?.categories ?? '' }</p>
                 <p>Written by {question?.user?.name ?? '--' } on {question?.created_date ?? '--' }</p>
             </div>
         </div>
     {/if}
 
     {#if errorComments}
-        <span class="error-message">{errorComments}</span>
+        <div class="error-comments">
+            <span class="error-message">{errorComments}</span>
+        </div>
     {/if}
 
-    {#if !loadingComments}
+    {#if !loadingComments && comments.data && question}
         {#each comments.data as comment}
             <div class="comment-content">
                 <div class="comment-info">
                     <div class="comment-likes">
-                        {#if comment.likes !== ''}
-                            <button on:click={countCommentLikesUp(comment)}>Up</button>
-                            <p>{comment?.likes}</p>
-                            <button on:click={countCommentLikesDown(comment)}>Down</button>
-                        {:else}
-                            <p>Likes --</p>
+                        {#if isLoggedIn}
+                            {#if comment.likes !== ''}
+                                <button on:click={countCommentLikesUp(comment)}>Up</button>
+                                <p>{comment?.likes}</p>
+                                <button on:click={countCommentLikesDown(comment)}>Down</button>
+                            {:else}
+                                <p>Likes --</p>
+                            {/if}
                         {/if}
                     </div>
                     <div class="message">
@@ -182,32 +212,39 @@
             </div>
         {/each}
 
-        <div class="add-comment">
-            <form on:submit|preventDefault="{submitNewComment}" class="add-comment-form">
-                <p>Add a comment</p>
-                {#if errorAddComment}
-                    <div class="error">
-                        <span class="error-message">{error}</span>
+        {#if isLoggedIn}
+            <div class="add-comment">
+                <form on:submit|preventDefault="{submitNewComment}" class="add-comment-form">
+                    <p>Add a comment</p>
+                    {#if errorAddComment}
+                        <div class="error">
+                            <span class="error-message">{error}</span>
+                        </div>
+                    {/if}
+                    {#if messageError}
+                        <div class="error">
+                            <span class="error-message">Message can't be empty</span>
+                        </div>
+                    {/if}
+                    <div class="textarea-field">
+                        <textarea rows="5" bind:value="{newComment.message}" placeholder="Message"></textarea>
                     </div>
-                {/if}
-                {#if messageError}
-                    <div class="error">
-                        <span class="error-message">Message can't be empty</span>
-                    </div>
-                {/if}
-                <div class="textarea-field">
-                    <textarea rows="5" bind:value="{newComment.message}" placeholder="Message"></textarea>
-                </div>
-                <input type="submit" class="button" disabled="{inProgress}"/>
-            </form>
-        </div>
+                    <input type="submit" class="button" disabled="{inProgress}"/>
+                </form>
+            </div>
+        {/if}
     {/if}
 </div>
 
 <style lang="scss">
   .details-content {
+    margin-top: 25px;
     margin-left: 15%;
     margin-right: 15%;
+
+    .buttons-group {
+      float: right;
+    }
 
     .questions-content {
       .question-likes {

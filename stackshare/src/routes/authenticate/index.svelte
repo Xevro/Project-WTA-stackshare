@@ -5,7 +5,7 @@
 
     let user = {username: '', password: ''} as User;
     let inProgress = false;
-    let error, errorEmail, errorUsername, errorPassword, errorPasswordConfirm = null;
+    let error, errorEmail, errorName, errorUsername, errorPassword, errorPasswordConfirm = null;
     let showRegister = false;
     const userProxy = new UserProxyService();
     const store = new StoreCookie();
@@ -16,6 +16,7 @@
         });
 
     function submitLoginForm() {
+        error = null;
         inProgress = true;
         userProxy.loginMethod(user).then(response => response.json())
             .then((data: UserAuth) => {
@@ -24,6 +25,7 @@
                 user.password = '';
                 if (data.token) {
                     store.setCookie('stackshare', data.token);
+                    store.setCookie('stackshare-id', data._id);
                     user = {username: '', password: ''} as User;
                     location.href = '/';
                 }
@@ -42,10 +44,16 @@
     };
 
     function submitRegisterForm() {
+        error = null;
         if (!validateEmail(user.email)) {
             errorEmail = 'Email field is not in the right format';
         } else {
             errorEmail = null;
+        }
+        if (user.name === '') {
+            errorName = 'Name can\'t be empty';
+        } else {
+            errorName = null;
         }
         if (user.username === '') {
             errorUsername = 'Username can\'t be empty';
@@ -53,13 +61,17 @@
             errorUsername = null;
         }
 
-        if (!validatePassword(user.password)) {
+        if (!validatePassword(user.password.trim())) {
             errorPassword = 'Password does not meet the requirements';
         } else {
-            errorPassword = false;
+            errorPassword = null;
         }
 
-        if (user.passwordConfirm === user.password && errorPassword === null && errorEmail === null && errorUsername === null) {
+        console.log('errorName', errorName);
+        console.log('errorPassword', errorPassword);
+        console.log('errorEmail', errorEmail);
+        console.log('errorUsername', errorUsername);
+        if (user.passwordConfirm.trim() === user.password.trim() && errorName === null && errorPassword === null && errorEmail === null && errorUsername === null) {
             errorPasswordConfirm = null;
             inProgress = true;
             userProxy.registerMethod(user).then(response => response.json())
@@ -67,6 +79,7 @@
                     inProgress = false;
                     error = data.message ?? '';
                     store.setCookie('stackshare', data.token);
+                    store.setCookie('stackshare-id', data._id);
                     user = {username: '', password: ''} as User;
                     location.href = '/';
                 }).catch((err) => {
@@ -74,6 +87,9 @@
                 inProgress = false;
             });
         } else {
+            user.password = null;
+            user.passwordConfirm = null;
+            error = 'Something is not completely right';
             errorPasswordConfirm = 'Passwords does not match';
         }
     }
@@ -92,27 +108,47 @@
         <div class="sign-in-signup">
             <form on:submit|preventDefault="{submitLoginForm}" class="sign-in-form">
                 <h2 class="title">Sign in</h2>
+                <div class="field-label">
+                    <label>Username</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" bind:value="{user.username}" placeholder="Username"/>
+                </div>
+                <div class="field-label">
+                    <label>Password</label>
+                </div>
+                <div class="input-field">
+                    <input type="password" bind:value="{user.password}" placeholder="Password"/>
+                </div>
                 {#if error}
                     <div class="error">
                         <span class="error-message">{error}</span>
                     </div>
                 {/if}
-                <div class="input-field">
-                    <input type="text" bind:value="{user.username}" placeholder="Username"/>
-                </div>
-                <div class="input-field">
-                    <input type="password" bind:value="{user.password}" placeholder="Password"/>
-                </div>
                 <input type="submit" class="button" value="Login" disabled="{inProgress}"/>
             </form>
 
             <form on:submit|preventDefault="{submitRegisterForm}" class="sign-up-form">
                 <h2 class="title">Sign up</h2>
+                {#if errorName}
+                    <div class="error">
+                        <span class="error-message">{errorName}</span>
+                    </div>
+                {/if}
+                <div class="field-label">
+                    <label>Name</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" bind:value="{user.name}" placeholder="Name"/>
+                </div>
                 {#if errorUsername}
                     <div class="error">
                         <span class="error-message">{errorUsername}</span>
                     </div>
                 {/if}
+                <div class="field-label">
+                    <label>Username</label>
+                </div>
                 <div class="input-field">
                     <input type="text" bind:value="{user.username}" placeholder="Username"/>
                 </div>
@@ -121,6 +157,9 @@
                         <span class="error-message">{errorEmail}</span>
                     </div>
                 {/if}
+                <div class="field-label">
+                    <label>Email</label>
+                </div>
                 <div class="input-field">
                     <input type="email" bind:value="{user.email}" placeholder="Email"/>
                 </div>
@@ -138,6 +177,9 @@
                         </span>
                     </div>
                 {/if}
+                <div class="field-label">
+                    <label>Password</label>
+                </div>
                 <div class="input-field">
                     <input type="password" bind:value="{user.password}" placeholder="Password"/>
                 </div>
@@ -146,6 +188,9 @@
                         <span class="error-message">{errorPasswordConfirm}</span>
                     </div>
                 {/if}
+                <div class="field-label">
+                    <label>Password confirm</label>
+                </div>
                 <div class="input-field">
                     <input type="password" bind:value="{user.passwordConfirm}" placeholder="Password confirm"/>
                 </div>
@@ -183,7 +228,7 @@
   .container {
     position: relative;
     width: auto;
-    min-height: 100vh;
+    min-height: 105vh;
     overflow: hidden;
   }
 
@@ -249,6 +294,11 @@
     font-size: 2.2rem;
     color: #444;
     margin-bottom: 10px;
+  }
+
+  .field-label {
+    max-width: 380px;
+    width: 100%;
   }
 
   .input-field {

@@ -8,7 +8,7 @@ export class QuestionsProxyService extends CrudDatabase<any> {
     async getAllQuestions(): Promise<any> {
         const url = RoutesModel.questions;
         const headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         };
         return await this.getRequest(url, headers);
     }
@@ -16,7 +16,7 @@ export class QuestionsProxyService extends CrudDatabase<any> {
     async getQuestionById(questionId: string): Promise<any> {
         const url = RoutesModel.questions + '/' + questionId;
         const headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         };
         return await this.getRequest(url, headers);
     }
@@ -24,7 +24,7 @@ export class QuestionsProxyService extends CrudDatabase<any> {
     async getAllComments(questionId: string): Promise<any> {
         const url = RoutesModel.questions + '/' + questionId + '/comments';
         const headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         };
         return await this.getRequest(url, headers);
     }
@@ -51,7 +51,7 @@ export class QuestionsProxyService extends CrudDatabase<any> {
 
     async updateCommentLikeCountById(questionId: string, commentId: string, comment): Promise<any> {
         const authToken = this.store.getCookie('stackshare');
-        const url = RoutesModel.questions + '/' + questionId + '/comment/' + commentId+ '/count';
+        const url = RoutesModel.questions + '/' + questionId + '/comment/' + commentId + '/count';
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + authToken
@@ -67,5 +67,15 @@ export class QuestionsProxyService extends CrudDatabase<any> {
             'Authorization': 'Bearer ' + authToken
         };
         return await this.postRequest(url, comment, headers);
+    }
+
+    async deleteQuestion(questionId: string, body): Promise<any> {
+        const authToken = this.store.getCookie('stackshare');
+        const url = RoutesModel.questions + '/' + questionId;
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+        };
+        return await this.deleteRequest(url, body, headers);
     }
 }

@@ -38,7 +38,7 @@
 
 {#if (error)}
     <div class="categories-overview">
-        <p>Lege lijst tonen of verbergen.</p>
+        <p style="color:red;">Lege lijst tonen of verbergen!!!.</p>
     </div>
 {/if}
 

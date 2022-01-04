@@ -107,25 +107,21 @@ router.patch('/:questionId/comment/:commentId/count', (req, res) => {
     )
 });
 
-/*
-router.delete(
-  '/:storyId',
-  passport.authenticate('jwt', { session: false }),
-  async (req, res) => {
-    let story = await Story.findOne({ _id: req.params.storyId })
-    if (!story.user.equals(req.user._id)) {
-      res
-        .status(401)
-        .json({
-          message: 'You cannot delete a story that you do not own!'
-        })
-      return
+router.delete('/:questionId', passport.authenticate('jwt', {session: false}), async (req, res) => {
+        let question = await Questions.findOne({uuid: req.params.questionId})
+        if (!question.user.equals(req.body.user._id)) {
+            res.status(401).json({
+                message: 'You cannot delete a question that you do not own!'
+            });
+            return;
+        }
+        await Questions.deleteOne({uuid: req.params.questionId});
+        await Comments.deleteMany({question_uuid: req.params.questionId});
+        res.json({
+            message: 'deleted the question and comments!',
+            status: true
+        });
     }
-    await Story.deleteOne({ _id: story._id })
-    res.json({
-      message: 'deleted!'
-    })
-  }
-)*/
+);
 
 module.exports = router;

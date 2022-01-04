@@ -1,8 +1,9 @@
 <script lang="ts">
     import {page} from '$app/stores';
-    import {UserProxyService} from '../../services/backend-services';
+    import {StoreCookie, UserProxyService} from '../../services/backend-services';
 
     const userProxy = new UserProxyService();
+    const storeService = new StoreCookie();
     let loggedIn = false;
     let loading = true;
 
@@ -13,6 +14,8 @@
         }).catch(() => {
         loggedIn = false;
         loading = false;
+        storeService.deleteCookie('stackshare');
+        storeService.deleteCookie('stackshare-id');
     });
 </script>
 

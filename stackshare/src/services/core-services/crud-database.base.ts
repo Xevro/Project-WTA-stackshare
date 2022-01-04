@@ -22,4 +22,12 @@ export abstract class CrudDatabase<Type> {
             body: JSON.stringify(body)
         });
     }
+
+    async deleteRequest(url: string, body: Type, headers = {}): Promise<any> {
+        return await fetch(url, {
+            method: 'DELETE',
+            headers,
+            body: JSON.stringify(body)
+        });
+    }
 }

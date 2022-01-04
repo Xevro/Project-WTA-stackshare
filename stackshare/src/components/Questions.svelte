@@ -24,7 +24,9 @@
 </script>
 
 {#if error}
-    <span class="error-message">{error}</span>
+    <div class="questions">
+        <span class="error-message">{error}</span>
+    </div>
 {/if}
 
 {#if loading}
