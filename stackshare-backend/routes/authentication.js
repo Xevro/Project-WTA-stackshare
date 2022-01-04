@@ -12,7 +12,7 @@ function generateUUID() {
     });
 }
 
-
+// Post route login user
 router.post('/login', async (req, res, next) => {
     const user = await User.findOne({username: req.body.username}).select('+password');
     const isAuthenticated = await (user && user.verifyPassword(req.body.password));
@@ -30,6 +30,7 @@ router.post('/login', async (req, res, next) => {
     });
 });
 
+// Post route register a new user
 router.post('/register', async (req, res, next) => {
     try {
         const user = await (new User({

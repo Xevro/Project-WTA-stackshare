@@ -8,7 +8,7 @@
     let newComment = {message: ''} as Comment;
     let loading, loadingComments = true;
     let error, errorComments, messageError, errorAddComment = null;
-    let inProgress, isLoggedIn = false;
+    let inProgress, isLoggedIn, didCountUp, didCountDown = false;
     const questionsProxy = new QuestionsProxyService();
     const userProxy = new UserProxyService();
     const storeService = new StoreCookie();
@@ -54,9 +54,14 @@
 
     function countLikesUp() {
         if (isLoggedIn) {
-            questionsProxy.updateLikesCountById(question.uuid, {likes: question.likes + 1}).then(() => {
-                getQuestionData();
-            });
+            if (!didCountUp) {
+                questionsProxy.updateLikesCountById(question.uuid, {likes: question.likes + 1}).then(() => {
+                    didCountUp = true;
+                    getQuestionData();
+                });
+            } else {
+                alert("You can only count ones");
+            }
         } else {
             alert("You have to be logged in to update the count.");
         }
@@ -64,9 +69,14 @@
 
     function countLikesDown() {
         if (isLoggedIn) {
-            questionsProxy.updateLikesCountById(question.uuid, {likes: question.likes - 1}).then(() => {
-                getQuestionData();
-            });
+            if (!didCountDown) {
+                questionsProxy.updateLikesCountById(question.uuid, {likes: question.likes - 1}).then(() => {
+                    didCountDown = true;
+                    getQuestionData();
+                });
+            } else {
+                alert("You can only count ones");
+            }
         } else {
             alert("You have to be logged in to update the count.");
         }
@@ -97,7 +107,6 @@
 
     function countCommentLikesUp(comment) {
         if (isLoggedIn) {
-            console.log(comment);
             questionsProxy.updateCommentLikeCountById(question.uuid, comment.id, {likes: comment?.likes + 1}).then(() => {
                 getAllComments();
             });
@@ -108,7 +117,6 @@
 
     function countCommentLikesDown(comment) {
         if (isLoggedIn) {
-            console.log(comment);
             questionsProxy.updateCommentLikeCountById(question.uuid, comment.id, {likes: comment?.likes - 1}).then(() => {
                 getAllComments();
             });
