@@ -27,26 +27,29 @@
         });
     }
 
+    const getAllComments = () => {
+        questionsProxy.getAllComments($page.params.question).then(response => response.json())
+            .then((response: Comments) => {
+                comments = response;
+                loadingComments = false;
+                response.data.forEach(function (comment) {
+                    let date = new Date(comment.created_at);
+                    let hours = date.getHours();
+                    let minutes = '0' + date.getMinutes();
+                    comment.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
+                });
+            }).catch((err) => {
+            loadingComments = false;
+            errorComments = 'Could not load the comments';
+        });
+    }
+
     userProxy.checkUserStatus().then(response => response.json()).then(() => {
         isLoggedIn = !(newComment.message);
     });
 
     getQuestionData();
-
-    questionsProxy.getAllComments($page.params.question).then(response => response.json())
-        .then((response: Comments) => {
-            comments = response;
-            loadingComments = false;
-            response.data.forEach(function (comment) {
-                let date = new Date(comment.created_at);
-                let hours = date.getHours();
-                let minutes = '0' + date.getMinutes();
-                comment.created_date = date.toDateString() + ' ' + hours + ':' + minutes.substr(-2);
-            });
-        }).catch((err) => {
-        loadingComments = false;
-        errorComments = 'Could not load the comments';
-    });
+    getAllComments();
 
     function countLikesUp() {
         if (isLoggedIn) {
@@ -93,10 +96,26 @@
         });
     }
 
-    function countCommentLikesUp() {
+    function countCommentLikesUp(comment) {
+        if (isLoggedIn) {
+            console.log(comment);
+            questionsProxy.updateCommentLikeCountById(question.uuid, comment.id, {likes: comment?.likes + 1}).then(() => {
+                getAllComments();
+            });
+        } else {
+            alert("You have to be logged in to update the count.");
+        }
     }
 
-    function countCommentLikesDown() {
+    function countCommentLikesDown(comment) {
+        if (isLoggedIn) {
+            console.log(comment);
+            questionsProxy.updateCommentLikeCountById(question.uuid, comment.id, {likes: comment?.likes - 1}).then(() => {
+                getAllComments();
+            });
+        } else {
+            alert("You have to be logged in to update the count.");
+        }
     }
 
 </script>
@@ -145,9 +164,9 @@
                 <div class="comment-info">
                     <div class="comment-likes">
                         {#if comment.likes !== ''}
-                            <button on:click={countCommentLikesUp}>Up</button>
+                            <button on:click={countCommentLikesUp(comment)}>Up</button>
                             <p>{comment?.likes}</p>
-                            <button on:click={countCommentLikesDown}>Down</button>
+                            <button on:click={countCommentLikesDown(comment)}>Down</button>
                         {:else}
                             <p>Likes --</p>
                         {/if}

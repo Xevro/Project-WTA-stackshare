@@ -91,6 +91,22 @@ router.patch('/:questionId/count', (req, res) => {
     )
 });
 
+router.patch('/:questionId/comment/:commentId/count', (req, res) => {
+    Comments.updateOne({_id: req.params.commentId}, req.body,
+        (err) => {
+            if (err) {
+                res.json({
+                    err: err,
+                    success: false,
+                    msg: 'Failed to update count value'
+                })
+            } else {
+                res.json({success: true})
+            }
+        }
+    )
+});
+
 /*
 router.delete(
   '/:storyId',
