@@ -10,6 +10,7 @@
 
     let question: Question;
     let comments: Comments;
+    let editQuestion: Question;
     let categories: Category[] = [];
     let newComment = {message: ''} as Comment;
     let loading, loadingComments = true;
@@ -197,10 +198,24 @@
     function submitEditForm() {
         editTitleError = question.title === '';
         editDescriptionError = question.description === '';
-        if (!editTitleError && !editDescriptionError) {
-            questionsProxy.updateQuestion(question.uuid, question).then(response => response.json()).then((results) => {
-                editView = false;
-            });
+        if (question.user._id !== storeService.getCookie('stackshare-id')) {
+            alert("You can't edit a question that is not yours");
+        } else {
+            if (!editTitleError && !editDescriptionError) {
+                questionsProxy.updateQuestion(question.uuid, {
+                    title: question.title,
+                    description: question.description,
+                    user: question.user,
+                    _id: storeService.getCookie('stackshare-id')
+                }).then(response => response.json()).then((results) => {
+                    if (results.message) {
+                        alert(results.message);
+                    }
+                    editView = false;
+                }).catch((err) => {
+                    alert("You can't edit a question that is not yours");
+                });
+            }
         }
     }
 </script>
