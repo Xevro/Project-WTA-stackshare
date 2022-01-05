@@ -247,9 +247,11 @@
             <div class="questions-content">
                 <div class="question-likes">
                     {#if isLoggedIn}
-                        <button on:click={countLikesUp}>Up</button>
+                        <a class="like-buttons" on:click={countLikesUp}><img src="../static/arrow-up.svg"
+                                                                             width="30"></a>
                         <p>{question?.likes}</p>
-                        <button on:click={countLikesDown}>Down</button>
+                        <a class="like-buttons" on:click={countLikesDown}><img src="../static/arrow-down.svg"
+                                                                               width="30"></a>
                     {/if}
                 </div>
                 <div class="question-information">
@@ -268,7 +270,7 @@
         {:else}
             <div class="edit-question">
                 <form on:submit|preventDefault="{submitEditForm}" class="edit-question-form">
-                    <p>Update the question</p>
+                    <p>Update the information</p>
                     <label>Title</label>
                     {#if editTitleError}
                         <div class="error">
@@ -395,10 +397,26 @@
 
     .questions-content {
       .question-likes {
-        width: 50px;
-        margin-top: auto;
+        min-width: 60px;
+        margin-top: 100px;
         margin-bottom: auto;
-        display: flex;
+        text-align: center;
+
+        p {
+          font-size: 1rem;
+          margin-top: 0;
+          margin-bottom: 0;
+          font-weight: bold;
+        }
+
+        .like-buttons {
+          display: block;
+
+          img {
+            height: 30px;
+            width: 30px;
+          }
+        }
       }
 
       display: flex;
@@ -455,7 +473,6 @@
 
     .add-comment, .edit-question {
       .add-comment-form, .edit-question-form {
-
         label {
           margin-top: 10px;
         }
