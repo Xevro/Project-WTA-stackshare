@@ -314,9 +314,11 @@
                     <div class="comment-likes">
                         {#if isLoggedIn}
                             {#if comment.likes !== ''}
-                                <button on:click={countCommentLikesUp(comment)}>Up</button>
+                                <a class="like-buttons-comment" on:click={countCommentLikesUp(comment)}><img
+                                        src="../static/arrow-up.svg" width="30"></a>
                                 <p>{comment?.likes}</p>
-                                <button on:click={countCommentLikesDown(comment)}>Down</button>
+                                <a class="like-buttons-comment" on:click={countCommentLikesDown(comment)}><img
+                                        src="../static/arrow-down.svg" width="30"></a>
                             {:else}
                                 <p>Likes --</p>
                             {/if}
@@ -396,6 +398,8 @@
     }
 
     .questions-content {
+      display: flex;
+
       .question-likes {
         min-width: 60px;
         margin-top: 100px;
@@ -418,8 +422,6 @@
           }
         }
       }
-
-      display: flex;
 
       .question-information {
         width: auto;
@@ -454,6 +456,25 @@
 
         .comment-likes {
           width: 40px;
+          margin-right: 10px;
+          margin-bottom: auto;
+          text-align: center;
+
+          p {
+            font-size: 1rem;
+            margin-top: 0;
+            margin-bottom: 3px;
+            font-weight: bold;
+          }
+
+          .like-buttons-comment {
+            display: block;
+
+            img {
+              height: 30px;
+              width: 30px;
+            }
+          }
         }
 
         .message {
