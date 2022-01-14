@@ -10,13 +10,14 @@
 
     let question: Question;
     let comments: Comments;
-    let editQuestion: Question;
     let categories: Category[] = [];
     let newComment = {message: ''} as Comment;
     let loading, loadingComments = true;
     let editButtonText = 'Edit question';
+    let editCommentButtonText = 'Edit comment';
     let error, errorComments, messageError, errorAddComment = null;
-    let inProgress, isLoggedIn, didCountUp, didCountDown, editView, editTitleError, editDescriptionError = false;
+    let inProgress, isLoggedIn, didCountUp, didCountDown, editView, editCommentView, editTitleError,
+        editDescriptionError = false;
 
     const questionsProxy = new QuestionsProxyService();
     const categoriesProxy = new CategoriesProxyService();
@@ -195,6 +196,15 @@
         }
     }
 
+    function toggleEditCommentView() {
+        editCommentView = !editCommentView;
+        if (editCommentView) {
+            editCommentButtonText = 'Cancel edit';
+        } else {
+            editCommentButtonText = 'Edit comment';
+        }
+    }
+
     function submitEditForm() {
         editTitleError = question.title === '';
         editDescriptionError = question.description === '';
@@ -306,31 +316,48 @@
             <div class="comment-content">
                 <div class="buttons-group">
                     {#if isLoggedIn}
-                        <button>Edit</button>
-                        <button on:click={deleteComment(comment)}>Delete</button>
+                        <button on:click={toggleEditCommentView} class="button-edit-small">{editCommentButtonText}</button>
+                        <button on:click={deleteComment(comment)} class="button-delete">Delete</button>
                     {/if}
                 </div>
-                <div class="comment-info">
-                    <div class="comment-likes">
-                        {#if isLoggedIn}
-                            {#if comment.likes !== ''}
-                                <a class="like-buttons-comment" on:click={countCommentLikesUp(comment)}><img
-                                        src="../static/arrow-up.svg" width="30"></a>
-                                <p>{comment?.likes}</p>
-                                <a class="like-buttons-comment" on:click={countCommentLikesDown(comment)}><img
-                                        src="../static/arrow-down.svg" width="30"></a>
-                            {:else}
-                                <p>Likes --</p>
+                {#if !editCommentView}
+                    <div class="comment-info">
+                        <div class="comment-likes">
+                            {#if isLoggedIn}
+                                {#if comment.likes !== ''}
+                                    <a class="like-buttons-comment" on:click={countCommentLikesUp(comment)}><img
+                                            src="../static/arrow-up.svg" width="30"></a>
+                                    <p>{comment?.likes}</p>
+                                    <a class="like-buttons-comment" on:click={countCommentLikesDown(comment)}><img
+                                            src="../static/arrow-down.svg" width="30"></a>
+                                {:else}
+                                    <p>Likes --</p>
+                                {/if}
                             {/if}
-                        {/if}
-                    </div>
-                    <div class="message">
-                        <p>{comment?.message ?? '--'}</p>
-                        <div class="written-by">
-                            <p>Written by {comment?.user?.name ?? '--'} on {comment?.created_date ?? '--'}</p>
+                        </div>
+                        <div class="message">
+                            <p>{comment?.message ?? '--'}</p>
+                            <div class="written-by">
+                                <p>Written by {comment?.user?.name ?? '--'} on {comment?.created_date ?? '--'}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {:else}
+                    <div class="comment-info">
+                        <form on:submit|preventDefault="{submitEditForm}" class="edit-question-form">
+                        <div class="message">
+                            {#if editDescriptionError}
+                                <div class="error">
+                                    <span class="error-message">The description can't be empty</span>
+                                </div>
+                            {/if}
+                            <div class="textarea-field">
+                                <textarea rows="5" bind:value="{comment.description}" placeholder="Message"></textarea>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                {/if}
             </div>
         {/each}
 
@@ -367,7 +394,7 @@
     .buttons-group {
       float: right;
 
-      .button-edit, .button-delete {
+      .button-edit, .button-delete, .button-edit-small {
         border: none;
         outline: none;
         height: 30px;
@@ -376,6 +403,12 @@
         font-size: .9rem;
         margin: 10px 0;
         cursor: pointer;
+      }
+
+      .button-edit-small {
+        width: 110px;
+        vertical-align: center;
+        background-color: #6151ee;
       }
 
       .button-edit {
