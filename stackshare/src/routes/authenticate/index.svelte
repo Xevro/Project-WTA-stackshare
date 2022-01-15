@@ -207,7 +207,7 @@
                 <p>Create an account and start posting your own questions.</p>
                 <button class="button transparent" on:click={toggleView}>Sign up</button>
             </div>
-            <img src="static/logo.svg" class="image" alt="Login background"/>
+            <img src="./logo.svg" class="image" alt="Login background"/>
         </div>
         <div class="panel right-panel">
             <div class="content">
@@ -215,7 +215,7 @@
                 <p>Login and start with asking and answering questions.</p>
                 <button class="button transparent" on:click={toggleView}>Sign in</button>
             </div>
-            <img src="static/register.svg" class="image" alt="Registration background"/>
+            <img src="./register.svg" class="image" alt="Registration background"/>
         </div>
     </div>
 </div>

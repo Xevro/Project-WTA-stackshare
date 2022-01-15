@@ -1,0 +1,159 @@
+{
+  ".svelte-kit/runtime/client/start.js": {
+    "file": "start-86312098.js",
+    "src": ".svelte-kit/runtime/client/start.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js"
+    ],
+    "dynamicImports": [
+      "src/routes/__layout.svelte",
+      "src/routes/__error.svelte",
+      "src/routes/index.svelte",
+      "src/routes/authenticate/index.svelte",
+      "src/routes/questions/index.svelte",
+      "src/routes/questions/[question].svelte",
+      "src/routes/profile/index.svelte",
+      "src/routes/add/question/index.svelte"
+    ]
+  },
+  "src/routes/__layout.svelte": {
+    "file": "pages/__layout.svelte-bcf1a372.js",
+    "src": "src/routes/__layout.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js",
+      "_stores-f688b8f5.js",
+      "_routes.model-98ab3763.js",
+      "_user-proxy.service-4293fed9.js"
+    ],
+    "css": [
+      "assets/pages/__layout.svelte-35a34268.css"
+    ]
+  },
+  "src/routes/__error.svelte": {
+    "file": "pages/__error.svelte-5d7168a3.js",
+    "src": "src/routes/__error.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js"
+    ],
+    "css": [
+      "assets/pages/__error.svelte-b05e7ebf.css"
+    ]
+  },
+  "src/routes/index.svelte": {
+    "file": "pages/index.svelte-b718f603.js",
+    "src": "src/routes/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js",
+      "_routes.model-98ab3763.js",
+      "_questions-proxy.service-a2f80bfd.js"
+    ],
+    "css": [
+      "assets/pages/index.svelte-7bf37d9d.css"
+    ]
+  },
+  "src/routes/authenticate/index.svelte": {
+    "file": "pages/authenticate/index.svelte-442c139f.js",
+    "src": "src/routes/authenticate/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js",
+      "_routes.model-98ab3763.js",
+      "_user-proxy.service-4293fed9.js"
+    ],
+    "css": [
+      "assets/pages/authenticate/index.svelte-1b57fb2b.css"
+    ]
+  },
+  "src/routes/questions/index.svelte": {
+    "file": "pages/questions/index.svelte-2cdfaa21.js",
+    "src": "src/routes/questions/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js"
+    ],
+    "css": [
+      "assets/pages/questions/index.svelte-a540830f.css"
+    ]
+  },
+  "src/routes/questions/[question].svelte": {
+    "file": "pages/questions/_question_.svelte-1af4370e.js",
+    "src": "src/routes/questions/[question].svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js",
+      "_stores-f688b8f5.js",
+      "_routes.model-98ab3763.js",
+      "_questions-proxy.service-a2f80bfd.js",
+      "_user-proxy.service-4293fed9.js"
+    ],
+    "css": [
+      "assets/pages/questions/_question_.svelte-8b605e24.css"
+    ]
+  },
+  "src/routes/profile/index.svelte": {
+    "file": "pages/profile/index.svelte-87e0b9f7.js",
+    "src": "src/routes/profile/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js",
+      "_routes.model-98ab3763.js",
+      "_user-proxy.service-4293fed9.js"
+    ],
+    "css": [
+      "assets/pages/profile/index.svelte-81c41949.css"
+    ]
+  },
+  "src/routes/add/question/index.svelte": {
+    "file": "pages/add/question/index.svelte-d41f3dee.js",
+    "src": "src/routes/add/question/index.svelte",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-e79db4d0.js",
+      "_questions-proxy.service-a2f80bfd.js",
+      "_user-proxy.service-4293fed9.js",
+      "_routes.model-98ab3763.js"
+    ],
+    "css": [
+      "assets/pages/add/question/index.svelte-f9283e84.css"
+    ]
+  },
+  "_vendor-e79db4d0.js": {
+    "file": "chunks/vendor-e79db4d0.js",
+    "css": [
+      "assets/vendor-62c95adb.css"
+    ]
+  },
+  "_stores-f688b8f5.js": {
+    "file": "chunks/stores-f688b8f5.js",
+    "imports": [
+      "_vendor-e79db4d0.js"
+    ]
+  },
+  "_routes.model-98ab3763.js": {
+    "file": "chunks/routes.model-98ab3763.js"
+  },
+  "_user-proxy.service-4293fed9.js": {
+    "file": "chunks/user-proxy.service-4293fed9.js",
+    "imports": [
+      "_routes.model-98ab3763.js"
+    ]
+  },
+  "_questions-proxy.service-a2f80bfd.js": {
+    "file": "chunks/questions-proxy.service-a2f80bfd.js",
+    "imports": [
+      "_routes.model-98ab3763.js"
+    ]
+  }
+}

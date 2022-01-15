@@ -12,8 +12,8 @@
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "next",
-    "@sveltejs/kit": "next",
+    "@sveltejs/adapter-vercel": "^1.0.0-next.36",
+    "@sveltejs/kit": "^1.0.0-next.208",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "eslint": "^7.32.0",
@@ -22,6 +22,7 @@
     "node-sass": "^7.0.0",
     "prettier": "^2.4.1",
     "prettier-plugin-svelte": "^2.4.0",
+    "rimraf": "^3.0.2",
     "sass": "^1.44.0",
     "stylelint-scss": "^4.0.1",
     "svelte": "^3.44.0",
