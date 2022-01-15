@@ -1,26 +1,9 @@
 var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[Object.keys(fn)[0]])(fn = 0)), res;
@@ -40,24 +23,6 @@ var __reExport = (target, module2, desc) => {
 };
 var __toModule = (module2) => {
   return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", module2 && module2.__esModule && "default" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
-};
-var __accessCheck = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
-};
-var __privateGet = (obj, member, getter) => {
-  __accessCheck(obj, member, "read from private field");
-  return getter ? getter.call(obj) : member.get(obj);
-};
-var __privateAdd = (obj, member, value) => {
-  if (member.has(obj))
-    throw TypeError("Cannot add the same private member more than once");
-  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-};
-var __privateSet = (obj, member, value, setter) => {
-  __accessCheck(obj, member, "write to private field");
-  setter ? setter.call(obj, value) : member.set(obj, value);
-  return value;
 };
 
 // node_modules/@sveltejs/kit/dist/chunks/multipart-parser.js
@@ -155,16 +120,17 @@ async function toFormData(Body2, ct) {
 var import_node_fs, import_node_path, import_node_worker_threads, import_node_http, import_node_https, import_node_zlib, import_node_stream, import_node_util, import_node_url, import_net, s, S, f, F, LF, CR, SPACE, HYPHEN, COLON, A, Z, lower, noop, MultipartParser;
 var init_multipart_parser = __esm({
   "node_modules/@sveltejs/kit/dist/chunks/multipart-parser.js"() {
-    import_node_fs = __toModule(require("fs"));
-    import_node_path = __toModule(require("path"));
-    import_node_worker_threads = __toModule(require("worker_threads"));
+    init_shims();
+    import_node_fs = __toModule(require("node:fs"));
+    import_node_path = __toModule(require("node:path"));
+    import_node_worker_threads = __toModule(require("node:worker_threads"));
     init_install_fetch();
-    import_node_http = __toModule(require("http"));
-    import_node_https = __toModule(require("https"));
-    import_node_zlib = __toModule(require("zlib"));
-    import_node_stream = __toModule(require("stream"));
-    import_node_util = __toModule(require("util"));
-    import_node_url = __toModule(require("url"));
+    import_node_http = __toModule(require("node:http"));
+    import_node_https = __toModule(require("node:https"));
+    import_node_zlib = __toModule(require("node:zlib"));
+    import_node_stream = __toModule(require("node:stream"));
+    import_node_util = __toModule(require("node:util"));
+    import_node_url = __toModule(require("node:url"));
     import_net = __toModule(require("net"));
     globalThis.DOMException || (() => {
       const port = new import_node_worker_threads.MessageChannel().port1;
@@ -554,7 +520,7 @@ async function consumeBody(data) {
   }
 }
 function fromRawHeaders(headers = []) {
-  return new Headers2(headers.reduce((result, value, index, array) => {
+  return new Headers(headers.reduce((result, value, index, array) => {
     if (index % 2 === 0) {
       result.push(array.slice(index, index + 2));
     }
@@ -694,16 +660,16 @@ function parseReferrerPolicyFromHeader(headers) {
   }
   return policy;
 }
-async function fetch2(url, options_) {
+async function fetch(url, options_) {
   return new Promise((resolve2, reject) => {
-    const request = new Request2(url, options_);
-    const { parsedURL, options } = getNodeRequestOptions(request);
+    const request = new Request(url, options_);
+    const { parsedURL, options: options2 } = getNodeRequestOptions(request);
     if (!supportedSchemas.has(parsedURL.protocol)) {
       throw new TypeError(`node-fetch cannot load ${url}. URL scheme "${parsedURL.protocol.replace(/:$/, "")}" is not supported.`);
     }
     if (parsedURL.protocol === "data:") {
       const data = dataUriToBuffer(request.url);
-      const response2 = new Response2(data, { headers: { "Content-Type": data.typeFull } });
+      const response2 = new Response(data, { headers: { "Content-Type": data.typeFull } });
       resolve2(response2);
       return;
     }
@@ -729,7 +695,7 @@ async function fetch2(url, options_) {
       abort();
       finalize();
     };
-    const request_ = send(parsedURL, options);
+    const request_ = send(parsedURL, options2);
     if (signal) {
       signal.addEventListener("abort", abortAndFinalize);
     }
@@ -787,7 +753,7 @@ async function fetch2(url, options_) {
               return;
             }
             const requestOptions = {
-              headers: new Headers2(request.headers),
+              headers: new Headers(request.headers),
               follow: request.follow,
               counter: request.counter + 1,
               agent: request.agent,
@@ -813,7 +779,7 @@ async function fetch2(url, options_) {
             if (responseReferrerPolicy) {
               requestOptions.referrerPolicy = responseReferrerPolicy;
             }
-            resolve2(fetch2(new Request2(locationURL, requestOptions)));
+            resolve2(fetch(new Request(locationURL, requestOptions)));
             finalize();
             return;
           }
@@ -841,7 +807,7 @@ async function fetch2(url, options_) {
       };
       const codings = headers.get("Content-Encoding");
       if (!request.compress || request.method === "HEAD" || codings === null || response_.statusCode === 204 || response_.statusCode === 304) {
-        response = new Response2(body, responseOptions);
+        response = new Response(body, responseOptions);
         resolve2(response);
         return;
       }
@@ -851,7 +817,7 @@ async function fetch2(url, options_) {
       };
       if (codings === "gzip" || codings === "x-gzip") {
         body = (0, import_node_stream2.pipeline)(body, import_node_zlib2.default.createGunzip(zlibOptions), reject);
-        response = new Response2(body, responseOptions);
+        response = new Response(body, responseOptions);
         resolve2(response);
         return;
       }
@@ -859,18 +825,18 @@ async function fetch2(url, options_) {
         const raw = (0, import_node_stream2.pipeline)(response_, new import_node_stream2.PassThrough(), reject);
         raw.once("data", (chunk) => {
           body = (chunk[0] & 15) === 8 ? (0, import_node_stream2.pipeline)(body, import_node_zlib2.default.createInflate(), reject) : (0, import_node_stream2.pipeline)(body, import_node_zlib2.default.createInflateRaw(), reject);
-          response = new Response2(body, responseOptions);
+          response = new Response(body, responseOptions);
           resolve2(response);
         });
         return;
       }
       if (codings === "br") {
         body = (0, import_node_stream2.pipeline)(body, import_node_zlib2.default.createBrotliDecompress(), reject);
-        response = new Response2(body, responseOptions);
+        response = new Response(body, responseOptions);
         resolve2(response);
         return;
       }
-      response = new Response2(body, responseOptions);
+      response = new Response(body, responseOptions);
       resolve2(response);
     });
     writeToStream(request_, request);
@@ -906,35 +872,16 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
     });
   });
 }
-function __fetch_polyfill() {
-  Object.defineProperties(globalThis, {
-    fetch: {
-      enumerable: true,
-      value: fetch2
-    },
-    Response: {
-      enumerable: true,
-      value: Response2
-    },
-    Request: {
-      enumerable: true,
-      value: Request2
-    },
-    Headers: {
-      enumerable: true,
-      value: Headers2
-    }
-  });
-}
-var import_node_http2, import_node_https2, import_node_zlib2, import_node_stream2, import_node_util2, import_node_url2, import_net2, commonjsGlobal, ponyfill_es2018, POOL_SIZE$1, POOL_SIZE, _parts, _type, _size, _a, _Blob, Blob, Blob$1, _lastModified, _name, _a2, _File, File, t, i, h, r, m, f2, e, x, _d, _a3, FormData, FetchBaseError, FetchError, NAME, isURLSearchParameters, isBlob, isAbortSignal, INTERNALS$2, Body, clone, getNonSpecFormDataBoundary, extractContentType, getTotalBytes, writeToStream, validateHeaderName, validateHeaderValue, Headers2, redirectStatus, isRedirect, INTERNALS$1, Response2, getSearch, ReferrerPolicy, DEFAULT_REFERRER_POLICY, INTERNALS, isRequest, Request2, getNodeRequestOptions, AbortError, supportedSchemas;
+var import_node_http2, import_node_https2, import_node_zlib2, import_node_stream2, import_node_util2, import_node_url2, import_net2, commonjsGlobal, ponyfill_es2018, POOL_SIZE$1, POOL_SIZE, _Blob, Blob2, Blob$1, _File, File, t, i, h, r, m, f2, e, x, FormData, FetchBaseError, FetchError, NAME, isURLSearchParameters, isBlob, isAbortSignal, INTERNALS$2, Body, clone, getNonSpecFormDataBoundary, extractContentType, getTotalBytes, writeToStream, validateHeaderName, validateHeaderValue, Headers, redirectStatus, isRedirect, INTERNALS$1, Response, getSearch, ReferrerPolicy, DEFAULT_REFERRER_POLICY, INTERNALS, isRequest, Request, getNodeRequestOptions, AbortError, supportedSchemas;
 var init_install_fetch = __esm({
   "node_modules/@sveltejs/kit/dist/install-fetch.js"() {
-    import_node_http2 = __toModule(require("http"));
-    import_node_https2 = __toModule(require("https"));
-    import_node_zlib2 = __toModule(require("zlib"));
-    import_node_stream2 = __toModule(require("stream"));
-    import_node_util2 = __toModule(require("util"));
-    import_node_url2 = __toModule(require("url"));
+    init_shims();
+    import_node_http2 = __toModule(require("node:http"));
+    import_node_https2 = __toModule(require("node:https"));
+    import_node_zlib2 = __toModule(require("node:zlib"));
+    import_node_stream2 = __toModule(require("node:stream"));
+    import_node_util2 = __toModule(require("node:util"));
+    import_node_url2 = __toModule(require("node:url"));
     import_net2 = __toModule(require("net"));
     commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
     ponyfill_es2018 = { exports: {} };
@@ -1446,7 +1393,7 @@ var init_install_fetch = __esm({
           }
           try {
             return x2._asyncIteratorImpl instanceof ReadableStreamAsyncIteratorImpl;
-          } catch (_a4) {
+          } catch (_a) {
             return false;
           }
         }
@@ -1634,10 +1581,10 @@ var init_install_fetch = __esm({
           [PullSteps](readRequest) {
             const stream = this._controlledReadableByteStream;
             if (this._queueTotalSize > 0) {
-              const entry9 = this._queue.shift();
-              this._queueTotalSize -= entry9.byteLength;
+              const entry = this._queue.shift();
+              this._queueTotalSize -= entry.byteLength;
               ReadableByteStreamControllerHandleQueueDrain(this);
-              const view = new Uint8Array(entry9.buffer, entry9.byteOffset, entry9.byteLength);
+              const view = new Uint8Array(entry.buffer, entry.byteOffset, entry.byteLength);
               readRequest._chunkSteps(view);
               return;
             }
@@ -2248,10 +2195,10 @@ var init_install_fetch = __esm({
           }
           return size;
         }
-        function convertQueuingStrategy(init, context) {
-          assertDictionary(init, context);
-          const highWaterMark = init === null || init === void 0 ? void 0 : init.highWaterMark;
-          const size = init === null || init === void 0 ? void 0 : init.size;
+        function convertQueuingStrategy(init2, context) {
+          assertDictionary(init2, context);
+          const highWaterMark = init2 === null || init2 === void 0 ? void 0 : init2.highWaterMark;
+          const size = init2 === null || init2 === void 0 ? void 0 : init2.size;
           return {
             highWaterMark: highWaterMark === void 0 ? void 0 : convertUnrestrictedDouble(highWaterMark),
             size: size === void 0 ? void 0 : convertQueuingStrategySize(size, `${context} has member 'size' that`)
@@ -2303,7 +2250,7 @@ var init_install_fetch = __esm({
           }
           try {
             return typeof value.aborted === "boolean";
-          } catch (_a4) {
+          } catch (_a) {
             return false;
           }
         }
@@ -2416,12 +2363,12 @@ var init_install_fetch = __esm({
           return true;
         }
         function WritableStreamAbort(stream, reason) {
-          var _a4;
+          var _a;
           if (stream._state === "closed" || stream._state === "errored") {
             return promiseResolvedWith(void 0);
           }
           stream._writableStreamController._abortReason = reason;
-          (_a4 = stream._writableStreamController._abortController) === null || _a4 === void 0 ? void 0 : _a4.abort();
+          (_a = stream._writableStreamController._abortController) === null || _a === void 0 ? void 0 : _a.abort();
           const state = stream._state;
           if (state === "closed" || state === "errored") {
             return promiseResolvedWith(void 0);
@@ -3096,7 +3043,7 @@ var init_install_fetch = __esm({
           try {
             new ctor();
             return true;
-          } catch (_a4) {
+          } catch (_a) {
             return false;
           }
         }
@@ -3837,9 +3784,9 @@ var init_install_fetch = __esm({
           }
           return type;
         }
-        function convertReaderOptions(options, context) {
-          assertDictionary(options, context);
-          const mode = options === null || options === void 0 ? void 0 : options.mode;
+        function convertReaderOptions(options2, context) {
+          assertDictionary(options2, context);
+          const mode = options2 === null || options2 === void 0 ? void 0 : options2.mode;
           return {
             mode: mode === void 0 ? void 0 : convertReadableStreamReaderMode(mode, `${context} has member 'mode' that`)
           };
@@ -3851,17 +3798,17 @@ var init_install_fetch = __esm({
           }
           return mode;
         }
-        function convertIteratorOptions(options, context) {
-          assertDictionary(options, context);
-          const preventCancel = options === null || options === void 0 ? void 0 : options.preventCancel;
+        function convertIteratorOptions(options2, context) {
+          assertDictionary(options2, context);
+          const preventCancel = options2 === null || options2 === void 0 ? void 0 : options2.preventCancel;
           return { preventCancel: Boolean(preventCancel) };
         }
-        function convertPipeOptions(options, context) {
-          assertDictionary(options, context);
-          const preventAbort = options === null || options === void 0 ? void 0 : options.preventAbort;
-          const preventCancel = options === null || options === void 0 ? void 0 : options.preventCancel;
-          const preventClose = options === null || options === void 0 ? void 0 : options.preventClose;
-          const signal = options === null || options === void 0 ? void 0 : options.signal;
+        function convertPipeOptions(options2, context) {
+          assertDictionary(options2, context);
+          const preventAbort = options2 === null || options2 === void 0 ? void 0 : options2.preventAbort;
+          const preventCancel = options2 === null || options2 === void 0 ? void 0 : options2.preventCancel;
+          const preventClose = options2 === null || options2 === void 0 ? void 0 : options2.preventClose;
+          const signal = options2 === null || options2 === void 0 ? void 0 : options2.signal;
           if (signal !== void 0) {
             assertAbortSignal(signal, `${context} has member 'signal' that`);
           }
@@ -3928,8 +3875,8 @@ var init_install_fetch = __esm({
             if (!IsReadableStream(this)) {
               throw streamBrandCheckException$1("getReader");
             }
-            const options = convertReaderOptions(rawOptions, "First parameter");
-            if (options.mode === void 0) {
+            const options2 = convertReaderOptions(rawOptions, "First parameter");
+            if (options2.mode === void 0) {
               return AcquireReadableStreamDefaultReader(this);
             }
             return AcquireReadableStreamBYOBReader(this);
@@ -3940,14 +3887,14 @@ var init_install_fetch = __esm({
             }
             assertRequiredArgument(rawTransform, 1, "pipeThrough");
             const transform = convertReadableWritablePair(rawTransform, "First parameter");
-            const options = convertPipeOptions(rawOptions, "Second parameter");
+            const options2 = convertPipeOptions(rawOptions, "Second parameter");
             if (IsReadableStreamLocked(this)) {
               throw new TypeError("ReadableStream.prototype.pipeThrough cannot be used on a locked ReadableStream");
             }
             if (IsWritableStreamLocked(transform.writable)) {
               throw new TypeError("ReadableStream.prototype.pipeThrough cannot be used on a locked WritableStream");
             }
-            const promise = ReadableStreamPipeTo(this, transform.writable, options.preventClose, options.preventAbort, options.preventCancel, options.signal);
+            const promise = ReadableStreamPipeTo(this, transform.writable, options2.preventClose, options2.preventAbort, options2.preventCancel, options2.signal);
             setPromiseIsHandledToTrue(promise);
             return transform.readable;
           }
@@ -3961,9 +3908,9 @@ var init_install_fetch = __esm({
             if (!IsWritableStream(destination)) {
               return promiseRejectedWith(new TypeError(`ReadableStream.prototype.pipeTo's first argument must be a WritableStream`));
             }
-            let options;
+            let options2;
             try {
-              options = convertPipeOptions(rawOptions, "Second parameter");
+              options2 = convertPipeOptions(rawOptions, "Second parameter");
             } catch (e2) {
               return promiseRejectedWith(e2);
             }
@@ -3973,7 +3920,7 @@ var init_install_fetch = __esm({
             if (IsWritableStreamLocked(destination)) {
               return promiseRejectedWith(new TypeError("ReadableStream.prototype.pipeTo cannot be used on a locked WritableStream"));
             }
-            return ReadableStreamPipeTo(this, destination, options.preventClose, options.preventAbort, options.preventCancel, options.signal);
+            return ReadableStreamPipeTo(this, destination, options2.preventClose, options2.preventAbort, options2.preventCancel, options2.signal);
           }
           tee() {
             if (!IsReadableStream(this)) {
@@ -3986,8 +3933,8 @@ var init_install_fetch = __esm({
             if (!IsReadableStream(this)) {
               throw streamBrandCheckException$1("values");
             }
-            const options = convertIteratorOptions(rawOptions, "First parameter");
-            return AcquireReadableStreamAsyncIterator(this, options.preventCancel);
+            const options2 = convertIteratorOptions(rawOptions, "First parameter");
+            return AcquireReadableStreamAsyncIterator(this, options2.preventCancel);
           }
         }
         Object.defineProperties(ReadableStream2.prototype, {
@@ -4103,9 +4050,9 @@ var init_install_fetch = __esm({
         function streamBrandCheckException$1(name) {
           return new TypeError(`ReadableStream.prototype.${name} can only be used on a ReadableStream`);
         }
-        function convertQueuingStrategyInit(init, context) {
-          assertDictionary(init, context);
-          const highWaterMark = init === null || init === void 0 ? void 0 : init.highWaterMark;
+        function convertQueuingStrategyInit(init2, context) {
+          assertDictionary(init2, context);
+          const highWaterMark = init2 === null || init2 === void 0 ? void 0 : init2.highWaterMark;
           assertRequiredField(highWaterMark, "highWaterMark", "QueuingStrategyInit");
           return {
             highWaterMark: convertUnrestrictedDouble(highWaterMark)
@@ -4119,10 +4066,10 @@ var init_install_fetch = __esm({
           configurable: true
         });
         class ByteLengthQueuingStrategy {
-          constructor(options) {
-            assertRequiredArgument(options, 1, "ByteLengthQueuingStrategy");
-            options = convertQueuingStrategyInit(options, "First parameter");
-            this._byteLengthQueuingStrategyHighWaterMark = options.highWaterMark;
+          constructor(options2) {
+            assertRequiredArgument(options2, 1, "ByteLengthQueuingStrategy");
+            options2 = convertQueuingStrategyInit(options2, "First parameter");
+            this._byteLengthQueuingStrategyHighWaterMark = options2.highWaterMark;
           }
           get highWaterMark() {
             if (!IsByteLengthQueuingStrategy(this)) {
@@ -4167,10 +4114,10 @@ var init_install_fetch = __esm({
           configurable: true
         });
         class CountQueuingStrategy {
-          constructor(options) {
-            assertRequiredArgument(options, 1, "CountQueuingStrategy");
-            options = convertQueuingStrategyInit(options, "First parameter");
-            this._countQueuingStrategyHighWaterMark = options.highWaterMark;
+          constructor(options2) {
+            assertRequiredArgument(options2, 1, "CountQueuingStrategy");
+            options2 = convertQueuingStrategyInit(options2, "First parameter");
+            this._countQueuingStrategyHighWaterMark = options2.highWaterMark;
           }
           get highWaterMark() {
             if (!IsCountQueuingStrategy(this)) {
@@ -4521,12 +4468,12 @@ var init_install_fetch = __esm({
     POOL_SIZE$1 = 65536;
     if (!globalThis.ReadableStream) {
       try {
-        const process2 = require("process");
+        const process2 = require("node:process");
         const { emitWarning } = process2;
         try {
           process2.emitWarning = () => {
           };
-          Object.assign(globalThis, require("stream/web"));
+          Object.assign(globalThis, require("node:stream/web"));
           process2.emitWarning = emitWarning;
         } catch (error2) {
           process2.emitWarning = emitWarning;
@@ -4537,9 +4484,9 @@ var init_install_fetch = __esm({
       }
     }
     try {
-      const { Blob: Blob2 } = require("buffer");
-      if (Blob2 && !Blob2.prototype.stream) {
-        Blob2.prototype.stream = function name(params) {
+      const { Blob: Blob3 } = require("buffer");
+      if (Blob3 && !Blob3.prototype.stream) {
+        Blob3.prototype.stream = function name(params) {
           let position = 0;
           const blob = this;
           return new ReadableStream({
@@ -4559,22 +4506,22 @@ var init_install_fetch = __esm({
     } catch (error2) {
     }
     POOL_SIZE = 65536;
-    _Blob = (_a = class {
-      constructor(blobParts = [], options = {}) {
-        __privateAdd(this, _parts, []);
-        __privateAdd(this, _type, "");
-        __privateAdd(this, _size, 0);
+    _Blob = class Blob {
+      #parts = [];
+      #type = "";
+      #size = 0;
+      constructor(blobParts = [], options2 = {}) {
         if (typeof blobParts !== "object" || blobParts === null) {
           throw new TypeError("Failed to construct 'Blob': The provided value cannot be converted to a sequence.");
         }
         if (typeof blobParts[Symbol.iterator] !== "function") {
           throw new TypeError("Failed to construct 'Blob': The object must have a callable @@iterator property.");
         }
-        if (typeof options !== "object" && typeof options !== "function") {
+        if (typeof options2 !== "object" && typeof options2 !== "function") {
           throw new TypeError("Failed to construct 'Blob': parameter 2 cannot convert to dictionary.");
         }
-        if (options === null)
-          options = {};
+        if (options2 === null)
+          options2 = {};
         const encoder = new TextEncoder();
         for (const element of blobParts) {
           let part;
@@ -4582,27 +4529,27 @@ var init_install_fetch = __esm({
             part = new Uint8Array(element.buffer.slice(element.byteOffset, element.byteOffset + element.byteLength));
           } else if (element instanceof ArrayBuffer) {
             part = new Uint8Array(element.slice(0));
-          } else if (element instanceof _a) {
+          } else if (element instanceof Blob) {
             part = element;
           } else {
             part = encoder.encode(element);
           }
-          __privateSet(this, _size, __privateGet(this, _size) + (ArrayBuffer.isView(part) ? part.byteLength : part.size));
-          __privateGet(this, _parts).push(part);
+          this.#size += ArrayBuffer.isView(part) ? part.byteLength : part.size;
+          this.#parts.push(part);
         }
-        const type = options.type === void 0 ? "" : String(options.type);
-        __privateSet(this, _type, /^[\x20-\x7E]*$/.test(type) ? type : "");
+        const type = options2.type === void 0 ? "" : String(options2.type);
+        this.#type = /^[\x20-\x7E]*$/.test(type) ? type : "";
       }
       get size() {
-        return __privateGet(this, _size);
+        return this.#size;
       }
       get type() {
-        return __privateGet(this, _type);
+        return this.#type;
       }
       async text() {
         const decoder = new TextDecoder();
         let str = "";
-        for await (const part of toIterator(__privateGet(this, _parts), false)) {
+        for await (const part of toIterator(this.#parts, false)) {
           str += decoder.decode(part, { stream: true });
         }
         str += decoder.decode();
@@ -4611,14 +4558,14 @@ var init_install_fetch = __esm({
       async arrayBuffer() {
         const data = new Uint8Array(this.size);
         let offset = 0;
-        for await (const chunk of toIterator(__privateGet(this, _parts), false)) {
+        for await (const chunk of toIterator(this.#parts, false)) {
           data.set(chunk, offset);
           offset += chunk.length;
         }
         return data.buffer;
       }
       stream() {
-        const it = toIterator(__privateGet(this, _parts), true);
+        const it = toIterator(this.#parts, true);
         return new globalThis.ReadableStream({
           type: "bytes",
           async pull(ctrl) {
@@ -4635,7 +4582,7 @@ var init_install_fetch = __esm({
         let relativeStart = start < 0 ? Math.max(size + start, 0) : Math.min(start, size);
         let relativeEnd = end < 0 ? Math.max(size + end, 0) : Math.min(end, size);
         const span = Math.max(relativeEnd - relativeStart, 0);
-        const parts = __privateGet(this, _parts);
+        const parts = this.#parts;
         const blobParts = [];
         let added = 0;
         for (const part of parts) {
@@ -4660,9 +4607,9 @@ var init_install_fetch = __esm({
             relativeStart = 0;
           }
         }
-        const blob = new _a([], { type: String(type).toLowerCase() });
-        __privateSet(blob, _size, span);
-        __privateSet(blob, _parts, blobParts);
+        const blob = new Blob([], { type: String(type).toLowerCase() });
+        blob.#size = span;
+        blob.#parts = blobParts;
         return blob;
       }
       get [Symbol.toStringTag]() {
@@ -4671,40 +4618,40 @@ var init_install_fetch = __esm({
       static [Symbol.hasInstance](object) {
         return object && typeof object === "object" && typeof object.constructor === "function" && (typeof object.stream === "function" || typeof object.arrayBuffer === "function") && /^(Blob|File)$/.test(object[Symbol.toStringTag]);
       }
-    }, _parts = new WeakMap(), _type = new WeakMap(), _size = new WeakMap(), _a);
+    };
     Object.defineProperties(_Blob.prototype, {
       size: { enumerable: true },
       type: { enumerable: true },
       slice: { enumerable: true }
     });
-    Blob = _Blob;
-    Blob$1 = Blob;
-    _File = (_a2 = class extends Blob$1 {
-      constructor(fileBits, fileName, options = {}) {
+    Blob2 = _Blob;
+    Blob$1 = Blob2;
+    _File = class File2 extends Blob$1 {
+      #lastModified = 0;
+      #name = "";
+      constructor(fileBits, fileName, options2 = {}) {
         if (arguments.length < 2) {
           throw new TypeError(`Failed to construct 'File': 2 arguments required, but only ${arguments.length} present.`);
         }
-        super(fileBits, options);
-        __privateAdd(this, _lastModified, 0);
-        __privateAdd(this, _name, "");
-        if (options === null)
-          options = {};
-        const lastModified = options.lastModified === void 0 ? Date.now() : Number(options.lastModified);
+        super(fileBits, options2);
+        if (options2 === null)
+          options2 = {};
+        const lastModified = options2.lastModified === void 0 ? Date.now() : Number(options2.lastModified);
         if (!Number.isNaN(lastModified)) {
-          __privateSet(this, _lastModified, lastModified);
+          this.#lastModified = lastModified;
         }
-        __privateSet(this, _name, String(fileName));
+        this.#name = String(fileName);
       }
       get name() {
-        return __privateGet(this, _name);
+        return this.#name;
       }
       get lastModified() {
-        return __privateGet(this, _lastModified);
+        return this.#lastModified;
       }
       get [Symbol.toStringTag]() {
         return "File";
       }
-    }, _lastModified = new WeakMap(), _name = new WeakMap(), _a2);
+    };
     File = _File;
     ({ toStringTag: t, iterator: i, hasInstance: h } = Symbol);
     r = Math.random;
@@ -4716,9 +4663,9 @@ var init_install_fetch = __esm({
         throw new TypeError(`Failed to execute '${n}' on 'FormData': ${e2} arguments required, but only ${a.length} present.`);
       }
     };
-    FormData = (_a3 = class {
+    FormData = class FormData2 {
+      #d = [];
       constructor(...a) {
-        __privateAdd(this, _d, []);
         if (a.length)
           throw new TypeError(`Failed to construct 'FormData': parameter 1 is not of type 'HTMLFormElement'.`);
       }
@@ -4733,17 +4680,17 @@ var init_install_fetch = __esm({
       }
       append(...a) {
         x("append", arguments, 2);
-        __privateGet(this, _d).push(f2(...a));
+        this.#d.push(f2(...a));
       }
       delete(a) {
         x("delete", arguments, 1);
         a += "";
-        __privateSet(this, _d, __privateGet(this, _d).filter(([b]) => b !== a));
+        this.#d = this.#d.filter(([b]) => b !== a);
       }
       get(a) {
         x("get", arguments, 1);
         a += "";
-        for (var b = __privateGet(this, _d), l = b.length, c = 0; c < l; c++)
+        for (var b = this.#d, l = b.length, c = 0; c < l; c++)
           if (b[c][0] === a)
             return b[c][1];
         return null;
@@ -4752,31 +4699,31 @@ var init_install_fetch = __esm({
         x("getAll", arguments, 1);
         b = [];
         a += "";
-        __privateGet(this, _d).forEach((c) => c[0] === a && b.push(c[1]));
+        this.#d.forEach((c) => c[0] === a && b.push(c[1]));
         return b;
       }
       has(a) {
         x("has", arguments, 1);
         a += "";
-        return __privateGet(this, _d).some((b) => b[0] === a);
+        return this.#d.some((b) => b[0] === a);
       }
       forEach(a, b) {
         x("forEach", arguments, 1);
-        for (var [c, d] of this)
-          a.call(b, d, c, this);
+        for (var [c, d2] of this)
+          a.call(b, d2, c, this);
       }
       set(...a) {
         x("set", arguments, 2);
         var b = [], c = true;
         a = f2(...a);
-        __privateGet(this, _d).forEach((d) => {
-          d[0] === a[0] ? c && (c = !b.push(a)) : b.push(d);
+        this.#d.forEach((d2) => {
+          d2[0] === a[0] ? c && (c = !b.push(a)) : b.push(d2);
         });
         c && b.push(a);
-        __privateSet(this, _d, b);
+        this.#d = b;
       }
       *entries() {
-        yield* __privateGet(this, _d);
+        yield* this.#d;
       }
       *keys() {
         for (var [a] of this)
@@ -4786,7 +4733,7 @@ var init_install_fetch = __esm({
         for (var [, a] of this)
           yield a;
       }
-    }, _d = new WeakMap(), _a3);
+    };
     FetchBaseError = class extends Error {
       constructor(message, type) {
         super(message);
@@ -4999,25 +4946,25 @@ var init_install_fetch = __esm({
         throw error2;
       }
     };
-    Headers2 = class extends URLSearchParams {
-      constructor(init) {
+    Headers = class extends URLSearchParams {
+      constructor(init2) {
         let result = [];
-        if (init instanceof Headers2) {
-          const raw = init.raw();
+        if (init2 instanceof Headers) {
+          const raw = init2.raw();
           for (const [name, values] of Object.entries(raw)) {
             result.push(...values.map((value) => [name, value]));
           }
-        } else if (init == null)
+        } else if (init2 == null)
           ;
-        else if (typeof init === "object" && !import_node_util2.types.isBoxedPrimitive(init)) {
-          const method = init[Symbol.iterator];
+        else if (typeof init2 === "object" && !import_node_util2.types.isBoxedPrimitive(init2)) {
+          const method = init2[Symbol.iterator];
           if (method == null) {
-            result.push(...Object.entries(init));
+            result.push(...Object.entries(init2));
           } else {
             if (typeof method !== "function") {
               throw new TypeError("Header pairs must be iterable");
             }
-            result = [...init].map((pair) => {
+            result = [...init2].map((pair) => {
               if (typeof pair !== "object" || import_node_util2.types.isBoxedPrimitive(pair)) {
                 throw new TypeError("Each header pair must be an iterable object");
               }
@@ -5119,7 +5066,7 @@ var init_install_fetch = __esm({
         }, {});
       }
     };
-    Object.defineProperties(Headers2.prototype, ["get", "entries", "forEach", "values"].reduce((result, property) => {
+    Object.defineProperties(Headers.prototype, ["get", "entries", "forEach", "values"].reduce((result, property) => {
       result[property] = { enumerable: true };
       return result;
     }, {}));
@@ -5128,11 +5075,11 @@ var init_install_fetch = __esm({
       return redirectStatus.has(code);
     };
     INTERNALS$1 = Symbol("Response internals");
-    Response2 = class extends Body {
-      constructor(body = null, options = {}) {
-        super(body, options);
-        const status = options.status != null ? options.status : 200;
-        const headers = new Headers2(options.headers);
+    Response = class extends Body {
+      constructor(body = null, options2 = {}) {
+        super(body, options2);
+        const status = options2.status != null ? options2.status : 200;
+        const headers = new Headers(options2.headers);
         if (body !== null && !headers.has("Content-Type")) {
           const contentType = extractContentType(body, this);
           if (contentType) {
@@ -5141,12 +5088,12 @@ var init_install_fetch = __esm({
         }
         this[INTERNALS$1] = {
           type: "default",
-          url: options.url,
+          url: options2.url,
           status,
-          statusText: options.statusText || "",
+          statusText: options2.statusText || "",
           headers,
-          counter: options.counter,
-          highWaterMark: options.highWaterMark
+          counter: options2.counter,
+          highWaterMark: options2.highWaterMark
         };
       }
       get type() {
@@ -5174,7 +5121,7 @@ var init_install_fetch = __esm({
         return this[INTERNALS$1].highWaterMark;
       }
       clone() {
-        return new Response2(clone(this, this.highWaterMark), {
+        return new Response(clone(this, this.highWaterMark), {
           type: this.type,
           url: this.url,
           status: this.status,
@@ -5190,7 +5137,7 @@ var init_install_fetch = __esm({
         if (!isRedirect(status)) {
           throw new RangeError('Failed to execute "redirect" on "response": Invalid status code');
         }
-        return new Response2(null, {
+        return new Response(null, {
           headers: {
             location: new URL(url).toString()
           },
@@ -5198,7 +5145,7 @@ var init_install_fetch = __esm({
         });
       }
       static error() {
-        const response = new Response2(null, { status: 0, statusText: "" });
+        const response = new Response(null, { status: 0, statusText: "" });
         response[INTERNALS$1].type = "error";
         return response;
       }
@@ -5206,7 +5153,7 @@ var init_install_fetch = __esm({
         return "Response";
       }
     };
-    Object.defineProperties(Response2.prototype, {
+    Object.defineProperties(Response.prototype, {
       type: { enumerable: true },
       url: { enumerable: true },
       status: { enumerable: true },
@@ -5240,8 +5187,8 @@ var init_install_fetch = __esm({
     isRequest = (object) => {
       return typeof object === "object" && typeof object[INTERNALS] === "object";
     };
-    Request2 = class extends Body {
-      constructor(input, init = {}) {
+    Request = class extends Body {
+      constructor(input, init2 = {}) {
         let parsedURL;
         if (isRequest(input)) {
           parsedURL = new URL(input.url);
@@ -5252,16 +5199,16 @@ var init_install_fetch = __esm({
         if (parsedURL.username !== "" || parsedURL.password !== "") {
           throw new TypeError(`${parsedURL} is an url with embedded credentails.`);
         }
-        let method = init.method || input.method || "GET";
+        let method = init2.method || input.method || "GET";
         method = method.toUpperCase();
-        if ((init.body != null || isRequest(input)) && input.body !== null && (method === "GET" || method === "HEAD")) {
+        if ((init2.body != null || isRequest(input)) && input.body !== null && (method === "GET" || method === "HEAD")) {
           throw new TypeError("Request with GET/HEAD method cannot have body");
         }
-        const inputBody = init.body ? init.body : isRequest(input) && input.body !== null ? clone(input) : null;
+        const inputBody = init2.body ? init2.body : isRequest(input) && input.body !== null ? clone(input) : null;
         super(inputBody, {
-          size: init.size || input.size || 0
+          size: init2.size || input.size || 0
         });
-        const headers = new Headers2(init.headers || input.headers || {});
+        const headers = new Headers(init2.headers || input.headers || {});
         if (inputBody !== null && !headers.has("Content-Type")) {
           const contentType = extractContentType(inputBody, this);
           if (contentType) {
@@ -5269,13 +5216,13 @@ var init_install_fetch = __esm({
           }
         }
         let signal = isRequest(input) ? input.signal : null;
-        if ("signal" in init) {
-          signal = init.signal;
+        if ("signal" in init2) {
+          signal = init2.signal;
         }
         if (signal != null && !isAbortSignal(signal)) {
           throw new TypeError("Expected signal to be an instanceof AbortSignal or EventTarget");
         }
-        let referrer = init.referrer == null ? input.referrer : init.referrer;
+        let referrer = init2.referrer == null ? input.referrer : init2.referrer;
         if (referrer === "") {
           referrer = "no-referrer";
         } else if (referrer) {
@@ -5286,19 +5233,19 @@ var init_install_fetch = __esm({
         }
         this[INTERNALS] = {
           method,
-          redirect: init.redirect || input.redirect || "follow",
+          redirect: init2.redirect || input.redirect || "follow",
           headers,
           parsedURL,
           signal,
           referrer
         };
-        this.follow = init.follow === void 0 ? input.follow === void 0 ? 20 : input.follow : init.follow;
-        this.compress = init.compress === void 0 ? input.compress === void 0 ? true : input.compress : init.compress;
-        this.counter = init.counter || input.counter || 0;
-        this.agent = init.agent || input.agent;
-        this.highWaterMark = init.highWaterMark || input.highWaterMark || 16384;
-        this.insecureHTTPParser = init.insecureHTTPParser || input.insecureHTTPParser || false;
-        this.referrerPolicy = init.referrerPolicy || input.referrerPolicy || "";
+        this.follow = init2.follow === void 0 ? input.follow === void 0 ? 20 : input.follow : init2.follow;
+        this.compress = init2.compress === void 0 ? input.compress === void 0 ? true : input.compress : init2.compress;
+        this.counter = init2.counter || input.counter || 0;
+        this.agent = init2.agent || input.agent;
+        this.highWaterMark = init2.highWaterMark || input.highWaterMark || 16384;
+        this.insecureHTTPParser = init2.insecureHTTPParser || input.insecureHTTPParser || false;
+        this.referrerPolicy = init2.referrerPolicy || input.referrerPolicy || "";
       }
       get method() {
         return this[INTERNALS].method;
@@ -5334,13 +5281,13 @@ var init_install_fetch = __esm({
         this[INTERNALS].referrerPolicy = validateReferrerPolicy(referrerPolicy);
       }
       clone() {
-        return new Request2(this);
+        return new Request(this);
       }
       get [Symbol.toStringTag]() {
         return "Request";
       }
     };
-    Object.defineProperties(Request2.prototype, {
+    Object.defineProperties(Request.prototype, {
       method: { enumerable: true },
       url: { enumerable: true },
       headers: { enumerable: true },
@@ -5352,7 +5299,7 @@ var init_install_fetch = __esm({
     });
     getNodeRequestOptions = (request) => {
       const { parsedURL } = request[INTERNALS];
-      const headers = new Headers2(request[INTERNALS].headers);
+      const headers = new Headers(request[INTERNALS].headers);
       if (!headers.has("Accept")) {
         headers.set("Accept", "*/*");
       }
@@ -5394,7 +5341,7 @@ var init_install_fetch = __esm({
         headers.set("Connection", "close");
       }
       const search = getSearch(parsedURL);
-      const options = {
+      const options2 = {
         path: parsedURL.pathname + search,
         method: request.method,
         headers: headers[Symbol.for("nodejs.util.inspect.custom")](),
@@ -5403,7 +5350,7 @@ var init_install_fetch = __esm({
       };
       return {
         parsedURL,
-        options
+        options: options2
       };
     };
     AbortError = class extends FetchBaseError {
@@ -5415,169 +5362,1323 @@ var init_install_fetch = __esm({
   }
 });
 
-// .svelte-kit/output/server/chunks/index-9e0393c9.js
-function noop2() {
-}
-function run(fn) {
-  return fn();
-}
-function blank_object() {
-  return Object.create(null);
-}
-function run_all(fns) {
-  fns.forEach(run);
-}
-function validate_store(store, name) {
-  if (store != null && typeof store.subscribe !== "function") {
-    throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+// node_modules/@sveltejs/adapter-vercel/files/shims.js
+var init_shims = __esm({
+  "node_modules/@sveltejs/adapter-vercel/files/shims.js"() {
+    init_install_fetch();
   }
-}
-function subscribe(store, ...callbacks) {
-  if (store == null) {
-    return noop2;
-  }
-  const unsub = store.subscribe(...callbacks);
-  return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
-}
-function null_to_empty(value) {
-  return value == null ? "" : value;
-}
-function custom_event(type, detail, bubbles = false) {
-  const e2 = document.createEvent("CustomEvent");
-  e2.initCustomEvent(type, bubbles, false, detail);
-  return e2;
-}
-function set_current_component(component) {
-  current_component = component;
-}
-function get_current_component() {
-  if (!current_component)
-    throw new Error("Function called outside component initialization");
-  return current_component;
-}
-function createEventDispatcher() {
-  const component = get_current_component();
-  return (type, detail) => {
-    const callbacks = component.$$.callbacks[type];
-    if (callbacks) {
-      const event = custom_event(type, detail);
-      callbacks.slice().forEach((fn) => {
-        fn.call(component, event);
-      });
+});
+
+// node_modules/@sveltejs/kit/dist/chunks/url.js
+function get_single_valued_header(headers, key) {
+  const value = headers[key];
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return void 0;
     }
+    if (value.length > 1) {
+      throw new Error(`Multiple headers provided for ${key}. Multiple may be provided only for set-cookie`);
+    }
+    return value[0];
+  }
+  return value;
+}
+function resolve(base2, path) {
+  if (scheme.test(path))
+    return path;
+  const base_match = absolute.exec(base2);
+  const path_match = absolute.exec(path);
+  if (!base_match) {
+    throw new Error(`bad base path: "${base2}"`);
+  }
+  const baseparts = path_match ? [] : base2.slice(base_match[0].length).split("/");
+  const pathparts = path_match ? path.slice(path_match[0].length).split("/") : path.split("/");
+  baseparts.pop();
+  for (let i2 = 0; i2 < pathparts.length; i2 += 1) {
+    const part = pathparts[i2];
+    if (part === ".")
+      continue;
+    else if (part === "..")
+      baseparts.pop();
+    else
+      baseparts.push(part);
+  }
+  const prefix = path_match && path_match[0] || base_match && base_match[0] || "";
+  return `${prefix}${baseparts.join("/")}`;
+}
+function is_root_relative(path) {
+  return path[0] === "/" && path[1] !== "/";
+}
+var absolute, scheme;
+var init_url = __esm({
+  "node_modules/@sveltejs/kit/dist/chunks/url.js"() {
+    init_shims();
+    absolute = /^([a-z]+:)?\/?\//;
+    scheme = /^[a-z]+:/;
+  }
+});
+
+// node_modules/@sveltejs/kit/dist/chunks/error.js
+function coalesce_to_error(err) {
+  return err instanceof Error || err && err.name && err.message ? err : new Error(JSON.stringify(err));
+}
+var init_error = __esm({
+  "node_modules/@sveltejs/kit/dist/chunks/error.js"() {
+    init_shims();
+  }
+});
+
+// node_modules/@sveltejs/kit/dist/ssr.js
+function lowercase_keys(obj) {
+  const clone2 = {};
+  for (const key in obj) {
+    clone2[key.toLowerCase()] = obj[key];
+  }
+  return clone2;
+}
+function error(body) {
+  return {
+    status: 500,
+    body,
+    headers: {}
   };
 }
-function setContext(key, context) {
-  get_current_component().$$.context.set(key, context);
+function is_string(s3) {
+  return typeof s3 === "string" || s3 instanceof String;
 }
-function getContext(key) {
-  return get_current_component().$$.context.get(key);
+function is_content_type_textual(content_type) {
+  if (!content_type)
+    return true;
+  const [type] = content_type.split(";");
+  return type === "text/plain" || type === "application/json" || type === "application/x-www-form-urlencoded" || type === "multipart/form-data";
 }
-function escape(html) {
-  return String(html).replace(/["'&<>]/g, (match) => escaped[match]);
-}
-function each(items, fn) {
-  let str = "";
-  for (let i2 = 0; i2 < items.length; i2 += 1) {
-    str += fn(items[i2], i2);
+async function render_endpoint(request, route, match) {
+  const mod = await route.load();
+  const handler = mod[request.method.toLowerCase().replace("delete", "del")];
+  if (!handler) {
+    return;
   }
+  const params = route.params(match);
+  const response = await handler({ ...request, params });
+  const preface = `Invalid response from route ${request.path}`;
+  if (!response) {
+    return;
+  }
+  if (typeof response !== "object") {
+    return error(`${preface}: expected an object, got ${typeof response}`);
+  }
+  let { status = 200, body, headers = {} } = response;
+  headers = lowercase_keys(headers);
+  const type = get_single_valued_header(headers, "content-type");
+  const is_type_textual = is_content_type_textual(type);
+  if (!is_type_textual && !(body instanceof Uint8Array || is_string(body))) {
+    return error(`${preface}: body must be an instance of string or Uint8Array if content-type is not a supported textual content-type`);
+  }
+  let normalized_body;
+  if ((typeof body === "object" || typeof body === "undefined") && !(body instanceof Uint8Array) && (!type || type.startsWith("application/json"))) {
+    headers = { ...headers, "content-type": "application/json; charset=utf-8" };
+    normalized_body = JSON.stringify(typeof body === "undefined" ? {} : body);
+  } else {
+    normalized_body = body;
+  }
+  return { status, body: normalized_body, headers };
+}
+function devalue(value) {
+  var counts = new Map();
+  function walk(thing) {
+    if (typeof thing === "function") {
+      throw new Error("Cannot stringify a function");
+    }
+    if (counts.has(thing)) {
+      counts.set(thing, counts.get(thing) + 1);
+      return;
+    }
+    counts.set(thing, 1);
+    if (!isPrimitive(thing)) {
+      var type = getType(thing);
+      switch (type) {
+        case "Number":
+        case "String":
+        case "Boolean":
+        case "Date":
+        case "RegExp":
+          return;
+        case "Array":
+          thing.forEach(walk);
+          break;
+        case "Set":
+        case "Map":
+          Array.from(thing).forEach(walk);
+          break;
+        default:
+          var proto = Object.getPrototypeOf(thing);
+          if (proto !== Object.prototype && proto !== null && Object.getOwnPropertyNames(proto).sort().join("\0") !== objectProtoOwnPropertyNames) {
+            throw new Error("Cannot stringify arbitrary non-POJOs");
+          }
+          if (Object.getOwnPropertySymbols(thing).length > 0) {
+            throw new Error("Cannot stringify POJOs with symbolic keys");
+          }
+          Object.keys(thing).forEach(function(key) {
+            return walk(thing[key]);
+          });
+      }
+    }
+  }
+  walk(value);
+  var names = new Map();
+  Array.from(counts).filter(function(entry) {
+    return entry[1] > 1;
+  }).sort(function(a, b) {
+    return b[1] - a[1];
+  }).forEach(function(entry, i2) {
+    names.set(entry[0], getName(i2));
+  });
+  function stringify(thing) {
+    if (names.has(thing)) {
+      return names.get(thing);
+    }
+    if (isPrimitive(thing)) {
+      return stringifyPrimitive(thing);
+    }
+    var type = getType(thing);
+    switch (type) {
+      case "Number":
+      case "String":
+      case "Boolean":
+        return "Object(" + stringify(thing.valueOf()) + ")";
+      case "RegExp":
+        return "new RegExp(" + stringifyString(thing.source) + ', "' + thing.flags + '")';
+      case "Date":
+        return "new Date(" + thing.getTime() + ")";
+      case "Array":
+        var members = thing.map(function(v, i2) {
+          return i2 in thing ? stringify(v) : "";
+        });
+        var tail = thing.length === 0 || thing.length - 1 in thing ? "" : ",";
+        return "[" + members.join(",") + tail + "]";
+      case "Set":
+      case "Map":
+        return "new " + type + "([" + Array.from(thing).map(stringify).join(",") + "])";
+      default:
+        var obj = "{" + Object.keys(thing).map(function(key) {
+          return safeKey(key) + ":" + stringify(thing[key]);
+        }).join(",") + "}";
+        var proto = Object.getPrototypeOf(thing);
+        if (proto === null) {
+          return Object.keys(thing).length > 0 ? "Object.assign(Object.create(null)," + obj + ")" : "Object.create(null)";
+        }
+        return obj;
+    }
+  }
+  var str = stringify(value);
+  if (names.size) {
+    var params_1 = [];
+    var statements_1 = [];
+    var values_1 = [];
+    names.forEach(function(name, thing) {
+      params_1.push(name);
+      if (isPrimitive(thing)) {
+        values_1.push(stringifyPrimitive(thing));
+        return;
+      }
+      var type = getType(thing);
+      switch (type) {
+        case "Number":
+        case "String":
+        case "Boolean":
+          values_1.push("Object(" + stringify(thing.valueOf()) + ")");
+          break;
+        case "RegExp":
+          values_1.push(thing.toString());
+          break;
+        case "Date":
+          values_1.push("new Date(" + thing.getTime() + ")");
+          break;
+        case "Array":
+          values_1.push("Array(" + thing.length + ")");
+          thing.forEach(function(v, i2) {
+            statements_1.push(name + "[" + i2 + "]=" + stringify(v));
+          });
+          break;
+        case "Set":
+          values_1.push("new Set");
+          statements_1.push(name + "." + Array.from(thing).map(function(v) {
+            return "add(" + stringify(v) + ")";
+          }).join("."));
+          break;
+        case "Map":
+          values_1.push("new Map");
+          statements_1.push(name + "." + Array.from(thing).map(function(_a) {
+            var k = _a[0], v = _a[1];
+            return "set(" + stringify(k) + ", " + stringify(v) + ")";
+          }).join("."));
+          break;
+        default:
+          values_1.push(Object.getPrototypeOf(thing) === null ? "Object.create(null)" : "{}");
+          Object.keys(thing).forEach(function(key) {
+            statements_1.push("" + name + safeProp(key) + "=" + stringify(thing[key]));
+          });
+      }
+    });
+    statements_1.push("return " + str);
+    return "(function(" + params_1.join(",") + "){" + statements_1.join(";") + "}(" + values_1.join(",") + "))";
+  } else {
+    return str;
+  }
+}
+function getName(num) {
+  var name = "";
+  do {
+    name = chars[num % chars.length] + name;
+    num = ~~(num / chars.length) - 1;
+  } while (num >= 0);
+  return reserved.test(name) ? name + "_" : name;
+}
+function isPrimitive(thing) {
+  return Object(thing) !== thing;
+}
+function stringifyPrimitive(thing) {
+  if (typeof thing === "string")
+    return stringifyString(thing);
+  if (thing === void 0)
+    return "void 0";
+  if (thing === 0 && 1 / thing < 0)
+    return "-0";
+  var str = String(thing);
+  if (typeof thing === "number")
+    return str.replace(/^(-)?0\./, "$1.");
   return str;
 }
-function validate_component(component, name) {
-  if (!component || !component.$$render) {
-    if (name === "svelte:component")
-      name += " this={...}";
-    throw new Error(`<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules`);
-  }
-  return component;
+function getType(thing) {
+  return Object.prototype.toString.call(thing).slice(8, -1);
 }
-function create_ssr_component(fn) {
-  function $$render(result, props, bindings, slots, context) {
-    const parent_component = current_component;
-    const $$ = {
-      on_destroy,
-      context: new Map(context || (parent_component ? parent_component.$$.context : [])),
-      on_mount: [],
-      before_update: [],
-      after_update: [],
-      callbacks: blank_object()
+function escapeUnsafeChar(c) {
+  return escaped[c] || c;
+}
+function escapeUnsafeChars(str) {
+  return str.replace(unsafeChars, escapeUnsafeChar);
+}
+function safeKey(key) {
+  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? key : escapeUnsafeChars(JSON.stringify(key));
+}
+function safeProp(key) {
+  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? "." + key : "[" + escapeUnsafeChars(JSON.stringify(key)) + "]";
+}
+function stringifyString(str) {
+  var result = '"';
+  for (var i2 = 0; i2 < str.length; i2 += 1) {
+    var char = str.charAt(i2);
+    var code = char.charCodeAt(0);
+    if (char === '"') {
+      result += '\\"';
+    } else if (char in escaped) {
+      result += escaped[char];
+    } else if (code >= 55296 && code <= 57343) {
+      var next = str.charCodeAt(i2 + 1);
+      if (code <= 56319 && (next >= 56320 && next <= 57343)) {
+        result += char + str[++i2];
+      } else {
+        result += "\\u" + code.toString(16).toUpperCase();
+      }
+    } else {
+      result += char;
+    }
+  }
+  result += '"';
+  return result;
+}
+function noop2() {
+}
+function safe_not_equal(a, b) {
+  return a != a ? b == b : a !== b || (a && typeof a === "object" || typeof a === "function");
+}
+function writable(value, start = noop2) {
+  let stop;
+  const subscribers = new Set();
+  function set(new_value) {
+    if (safe_not_equal(value, new_value)) {
+      value = new_value;
+      if (stop) {
+        const run_queue = !subscriber_queue.length;
+        for (const subscriber of subscribers) {
+          subscriber[1]();
+          subscriber_queue.push(subscriber, value);
+        }
+        if (run_queue) {
+          for (let i2 = 0; i2 < subscriber_queue.length; i2 += 2) {
+            subscriber_queue[i2][0](subscriber_queue[i2 + 1]);
+          }
+          subscriber_queue.length = 0;
+        }
+      }
+    }
+  }
+  function update(fn) {
+    set(fn(value));
+  }
+  function subscribe2(run2, invalidate = noop2) {
+    const subscriber = [run2, invalidate];
+    subscribers.add(subscriber);
+    if (subscribers.size === 1) {
+      stop = start(set) || noop2;
+    }
+    run2(value);
+    return () => {
+      subscribers.delete(subscriber);
+      if (subscribers.size === 0) {
+        stop();
+        stop = null;
+      }
     };
-    set_current_component({ $$ });
-    const html = fn(result, props, bindings, slots);
-    set_current_component(parent_component);
-    return html;
+  }
+  return { set, update, subscribe: subscribe2 };
+}
+function hash(value) {
+  let hash2 = 5381;
+  let i2 = value.length;
+  if (typeof value === "string") {
+    while (i2)
+      hash2 = hash2 * 33 ^ value.charCodeAt(--i2);
+  } else {
+    while (i2)
+      hash2 = hash2 * 33 ^ value[--i2];
+  }
+  return (hash2 >>> 0).toString(36);
+}
+function escape_json_string_in_html(str) {
+  return escape(str, escape_json_string_in_html_dict, (code) => `\\u${code.toString(16).toUpperCase()}`);
+}
+function escape_html_attr(str) {
+  return '"' + escape(str, escape_html_attr_dict, (code) => `&#${code};`) + '"';
+}
+function escape(str, dict, unicode_encoder) {
+  let result = "";
+  for (let i2 = 0; i2 < str.length; i2 += 1) {
+    const char = str.charAt(i2);
+    const code = char.charCodeAt(0);
+    if (char in dict) {
+      result += dict[char];
+    } else if (code >= 55296 && code <= 57343) {
+      const next = str.charCodeAt(i2 + 1);
+      if (code <= 56319 && next >= 56320 && next <= 57343) {
+        result += char + str[++i2];
+      } else {
+        result += unicode_encoder(code);
+      }
+    } else {
+      result += char;
+    }
+  }
+  return result;
+}
+async function render_response({
+  branch,
+  options: options2,
+  $session,
+  page_config,
+  status,
+  error: error2,
+  page: page2
+}) {
+  const css10 = new Set(options2.entry.css);
+  const js = new Set(options2.entry.js);
+  const styles = new Set();
+  const serialized_data = [];
+  let rendered;
+  let is_private = false;
+  let maxage;
+  if (error2) {
+    error2.stack = options2.get_stack(error2);
+  }
+  if (page_config.ssr) {
+    branch.forEach(({ node, loaded, fetched, uses_credentials }) => {
+      if (node.css)
+        node.css.forEach((url) => css10.add(url));
+      if (node.js)
+        node.js.forEach((url) => js.add(url));
+      if (node.styles)
+        node.styles.forEach((content) => styles.add(content));
+      if (fetched && page_config.hydrate)
+        serialized_data.push(...fetched);
+      if (uses_credentials)
+        is_private = true;
+      maxage = loaded.maxage;
+    });
+    const session = writable($session);
+    const props = {
+      stores: {
+        page: writable(null),
+        navigating: writable(null),
+        session
+      },
+      page: page2,
+      components: branch.map(({ node }) => node.module.default)
+    };
+    for (let i2 = 0; i2 < branch.length; i2 += 1) {
+      props[`props_${i2}`] = await branch[i2].loaded.props;
+    }
+    let session_tracking_active = false;
+    const unsubscribe = session.subscribe(() => {
+      if (session_tracking_active)
+        is_private = true;
+    });
+    session_tracking_active = true;
+    try {
+      rendered = options2.root.render(props);
+    } finally {
+      unsubscribe();
+    }
+  } else {
+    rendered = { head: "", html: "", css: { code: "", map: null } };
+  }
+  const include_js = page_config.router || page_config.hydrate;
+  if (!include_js)
+    js.clear();
+  const links = options2.amp ? styles.size > 0 || rendered.css.code.length > 0 ? `<style amp-custom>${Array.from(styles).concat(rendered.css.code).join("\n")}</style>` : "" : [
+    ...Array.from(js).map((dep) => `<link rel="modulepreload" href="${dep}">`),
+    ...Array.from(css10).map((dep) => `<link rel="stylesheet" href="${dep}">`)
+  ].join("\n		");
+  let init2 = "";
+  if (options2.amp) {
+    init2 = `
+		<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
+		<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+		<script async src="https://cdn.ampproject.org/v0.js"><\/script>`;
+    init2 += options2.service_worker ? '<script async custom-element="amp-install-serviceworker" src="https://cdn.ampproject.org/v0/amp-install-serviceworker-0.1.js"><\/script>' : "";
+  } else if (include_js) {
+    init2 = `<script type="module">
+			import { start } from ${s$1(options2.entry.file)};
+			start({
+				target: ${options2.target ? `document.querySelector(${s$1(options2.target)})` : "document.body"},
+				paths: ${s$1(options2.paths)},
+				session: ${try_serialize($session, (error3) => {
+      throw new Error(`Failed to serialize session data: ${error3.message}`);
+    })},
+				host: ${page2 && page2.host ? s$1(page2.host) : "location.host"},
+				route: ${!!page_config.router},
+				spa: ${!page_config.ssr},
+				trailing_slash: ${s$1(options2.trailing_slash)},
+				hydrate: ${page_config.ssr && page_config.hydrate ? `{
+					status: ${status},
+					error: ${serialize_error(error2)},
+					nodes: [
+						${(branch || []).map(({ node }) => `import(${s$1(node.entry)})`).join(",\n						")}
+					],
+					page: {
+						host: ${page2 && page2.host ? s$1(page2.host) : "location.host"}, // TODO this is redundant
+						path: ${page2 && page2.path ? try_serialize(page2.path, (error3) => {
+      throw new Error(`Failed to serialize page.path: ${error3.message}`);
+    }) : null},
+						query: new URLSearchParams(${page2 && page2.query ? s$1(page2.query.toString()) : ""}),
+						params: ${page2 && page2.params ? try_serialize(page2.params, (error3) => {
+      throw new Error(`Failed to serialize page.params: ${error3.message}`);
+    }) : null}
+					}
+				}` : "null"}
+			});
+		<\/script>`;
+  }
+  if (options2.service_worker) {
+    init2 += options2.amp ? `<amp-install-serviceworker src="${options2.service_worker}" layout="nodisplay"></amp-install-serviceworker>` : `<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('${options2.service_worker}');
+			}
+		<\/script>`;
+  }
+  const head = [
+    rendered.head,
+    styles.size && !options2.amp ? `<style data-svelte>${Array.from(styles).join("\n")}</style>` : "",
+    links,
+    init2
+  ].join("\n\n		");
+  const body = options2.amp ? rendered.html : `${rendered.html}
+
+			${serialized_data.map(({ url, body: body2, json }) => {
+    let attributes = `type="application/json" data-type="svelte-data" data-url=${escape_html_attr(url)}`;
+    if (body2)
+      attributes += ` data-body="${hash(body2)}"`;
+    return `<script ${attributes}>${json}<\/script>`;
+  }).join("\n\n	")}
+		`;
+  const headers = {
+    "content-type": "text/html"
+  };
+  if (maxage) {
+    headers["cache-control"] = `${is_private ? "private" : "public"}, max-age=${maxage}`;
+  }
+  if (!options2.floc) {
+    headers["permissions-policy"] = "interest-cohort=()";
   }
   return {
-    render: (props = {}, { $$slots = {}, context = new Map() } = {}) => {
-      on_destroy = [];
-      const result = { title: "", head: "", css: new Set() };
-      const html = $$render(result, props, {}, $$slots, context);
-      run_all(on_destroy);
-      return {
-        html,
-        css: {
-          code: Array.from(result.css).map((css17) => css17.code).join("\n"),
-          map: null
-        },
-        head: result.title + result.head
-      };
-    },
-    $$render
+    status,
+    headers,
+    body: options2.template({ head, body })
   };
 }
-function add_attribute(name, value, boolean) {
-  if (value == null || boolean && !value)
-    return "";
-  return ` ${name}${value === true && boolean_attributes.has(name) ? "" : `=${typeof value === "string" ? JSON.stringify(escape(value)) : `"${value}"`}`}`;
+function try_serialize(data, fail) {
+  try {
+    return devalue(data);
+  } catch (err) {
+    if (fail)
+      fail(coalesce_to_error(err));
+    return null;
+  }
 }
-var current_component, boolean_attributes, escaped, missing_component, on_destroy;
-var init_index_9e0393c9 = __esm({
-  ".svelte-kit/output/server/chunks/index-9e0393c9.js"() {
-    Promise.resolve();
-    boolean_attributes = new Set([
-      "allowfullscreen",
-      "allowpaymentrequest",
-      "async",
-      "autofocus",
-      "autoplay",
-      "checked",
-      "controls",
-      "default",
-      "defer",
-      "disabled",
-      "formnovalidate",
-      "hidden",
-      "ismap",
-      "loop",
-      "multiple",
-      "muted",
-      "nomodule",
-      "novalidate",
-      "open",
-      "playsinline",
-      "readonly",
-      "required",
-      "reversed",
-      "selected"
-    ]);
-    escaped = {
-      '"': "&quot;",
-      "'": "&#39;",
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;"
+function serialize_error(error2) {
+  if (!error2)
+    return null;
+  let serialized = try_serialize(error2);
+  if (!serialized) {
+    const { name, message, stack } = error2;
+    serialized = try_serialize({ ...error2, name, message, stack });
+  }
+  if (!serialized) {
+    serialized = "{}";
+  }
+  return serialized;
+}
+function normalize(loaded) {
+  const has_error_status = loaded.status && loaded.status >= 400 && loaded.status <= 599 && !loaded.redirect;
+  if (loaded.error || has_error_status) {
+    const status = loaded.status;
+    if (!loaded.error && has_error_status) {
+      return {
+        status: status || 500,
+        error: new Error()
+      };
+    }
+    const error2 = typeof loaded.error === "string" ? new Error(loaded.error) : loaded.error;
+    if (!(error2 instanceof Error)) {
+      return {
+        status: 500,
+        error: new Error(`"error" property returned from load() must be a string or instance of Error, received type "${typeof error2}"`)
+      };
+    }
+    if (!status || status < 400 || status > 599) {
+      console.warn('"error" returned from load() without a valid status code \u2014 defaulting to 500');
+      return { status: 500, error: error2 };
+    }
+    return { status, error: error2 };
+  }
+  if (loaded.redirect) {
+    if (!loaded.status || Math.floor(loaded.status / 100) !== 3) {
+      return {
+        status: 500,
+        error: new Error('"redirect" property returned from load() must be accompanied by a 3xx status code')
+      };
+    }
+    if (typeof loaded.redirect !== "string") {
+      return {
+        status: 500,
+        error: new Error('"redirect" property returned from load() must be a string')
+      };
+    }
+  }
+  if (loaded.context) {
+    throw new Error('You are returning "context" from a load function. "context" was renamed to "stuff", please adjust your code accordingly.');
+  }
+  return loaded;
+}
+async function load_node({
+  request,
+  options: options2,
+  state,
+  route,
+  page: page2,
+  node,
+  $session,
+  stuff,
+  prerender_enabled,
+  is_leaf,
+  is_error,
+  status,
+  error: error2
+}) {
+  const { module: module2 } = node;
+  let uses_credentials = false;
+  const fetched = [];
+  let set_cookie_headers = [];
+  let loaded;
+  const page_proxy = new Proxy(page2, {
+    get: (target, prop, receiver) => {
+      if (prop === "query" && prerender_enabled) {
+        throw new Error("Cannot access query on a page with prerendering enabled");
+      }
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+  if (module2.load) {
+    const load_input = {
+      page: page_proxy,
+      get session() {
+        uses_credentials = true;
+        return $session;
+      },
+      fetch: async (resource, opts = {}) => {
+        let url;
+        if (typeof resource === "string") {
+          url = resource;
+        } else {
+          url = resource.url;
+          opts = {
+            method: resource.method,
+            headers: resource.headers,
+            body: resource.body,
+            mode: resource.mode,
+            credentials: resource.credentials,
+            cache: resource.cache,
+            redirect: resource.redirect,
+            referrer: resource.referrer,
+            integrity: resource.integrity,
+            ...opts
+          };
+        }
+        const resolved = resolve(request.path, url.split("?")[0]);
+        let response;
+        const prefix = options2.paths.assets || options2.paths.base;
+        const filename = (resolved.startsWith(prefix) ? resolved.slice(prefix.length) : resolved).slice(1);
+        const filename_html = `${filename}/index.html`;
+        const asset = options2.manifest.assets.find((d2) => d2.file === filename || d2.file === filename_html);
+        if (asset) {
+          response = options2.read ? new Response(options2.read(asset.file), {
+            headers: asset.type ? { "content-type": asset.type } : {}
+          }) : await fetch(`http://${page2.host}/${asset.file}`, opts);
+        } else if (is_root_relative(resolved)) {
+          const relative = resolved;
+          const headers = {
+            ...opts.headers
+          };
+          if (opts.credentials !== "omit") {
+            uses_credentials = true;
+            headers.cookie = request.headers.cookie;
+            if (!headers.authorization) {
+              headers.authorization = request.headers.authorization;
+            }
+          }
+          if (opts.body && typeof opts.body !== "string") {
+            throw new Error("Request body must be a string");
+          }
+          const search = url.includes("?") ? url.slice(url.indexOf("?") + 1) : "";
+          const rendered = await respond({
+            host: request.host,
+            method: opts.method || "GET",
+            headers,
+            path: relative,
+            rawBody: opts.body == null ? null : new TextEncoder().encode(opts.body),
+            query: new URLSearchParams(search)
+          }, options2, {
+            fetched: url,
+            initiator: route
+          });
+          if (rendered) {
+            if (state.prerender) {
+              state.prerender.dependencies.set(relative, rendered);
+            }
+            response = new Response(rendered.body, {
+              status: rendered.status,
+              headers: rendered.headers
+            });
+          }
+        } else {
+          if (resolved.startsWith("//")) {
+            throw new Error(`Cannot request protocol-relative URL (${url}) in server-side fetch`);
+          }
+          if (typeof request.host !== "undefined") {
+            const { hostname: fetch_hostname } = new URL(url);
+            const [server_hostname] = request.host.split(":");
+            if (`.${fetch_hostname}`.endsWith(`.${server_hostname}`) && opts.credentials !== "omit") {
+              uses_credentials = true;
+              opts.headers = {
+                ...opts.headers,
+                cookie: request.headers.cookie
+              };
+            }
+          }
+          const external_request = new Request(url, opts);
+          response = await options2.hooks.externalFetch.call(null, external_request);
+        }
+        if (response) {
+          const proxy = new Proxy(response, {
+            get(response2, key, _receiver) {
+              async function text() {
+                const body = await response2.text();
+                const headers = {};
+                for (const [key2, value] of response2.headers) {
+                  if (key2 === "set-cookie") {
+                    set_cookie_headers = set_cookie_headers.concat(value);
+                  } else if (key2 !== "etag") {
+                    headers[key2] = value;
+                  }
+                }
+                if (!opts.body || typeof opts.body === "string") {
+                  fetched.push({
+                    url,
+                    body: opts.body,
+                    json: `{"status":${response2.status},"statusText":${s2(response2.statusText)},"headers":${s2(headers)},"body":"${escape_json_string_in_html(body)}"}`
+                  });
+                }
+                return body;
+              }
+              if (key === "text") {
+                return text;
+              }
+              if (key === "json") {
+                return async () => {
+                  return JSON.parse(await text());
+                };
+              }
+              return Reflect.get(response2, key, response2);
+            }
+          });
+          return proxy;
+        }
+        return response || new Response("Not found", {
+          status: 404
+        });
+      },
+      stuff: { ...stuff }
     };
-    missing_component = {
-      $$render: () => ""
+    if (is_error) {
+      load_input.status = status;
+      load_input.error = error2;
+    }
+    loaded = await module2.load.call(null, load_input);
+  } else {
+    loaded = {};
+  }
+  if (!loaded && is_leaf && !is_error)
+    return;
+  if (!loaded) {
+    throw new Error(`${node.entry} - load must return a value except for page fall through`);
+  }
+  return {
+    node,
+    loaded: normalize(loaded),
+    stuff: loaded.stuff || stuff,
+    fetched,
+    set_cookie_headers,
+    uses_credentials
+  };
+}
+async function respond_with_error({ request, options: options2, state, $session, status, error: error2 }) {
+  const default_layout = await options2.load_component(options2.manifest.layout);
+  const default_error = await options2.load_component(options2.manifest.error);
+  const page2 = {
+    host: request.host,
+    path: request.path,
+    query: request.query,
+    params: {}
+  };
+  const loaded = await load_node({
+    request,
+    options: options2,
+    state,
+    route: null,
+    page: page2,
+    node: default_layout,
+    $session,
+    stuff: {},
+    prerender_enabled: is_prerender_enabled(options2, default_error, state),
+    is_leaf: false,
+    is_error: false
+  });
+  const branch = [
+    loaded,
+    await load_node({
+      request,
+      options: options2,
+      state,
+      route: null,
+      page: page2,
+      node: default_error,
+      $session,
+      stuff: loaded ? loaded.stuff : {},
+      prerender_enabled: is_prerender_enabled(options2, default_error, state),
+      is_leaf: false,
+      is_error: true,
+      status,
+      error: error2
+    })
+  ];
+  try {
+    return await render_response({
+      options: options2,
+      $session,
+      page_config: {
+        hydrate: options2.hydrate,
+        router: options2.router,
+        ssr: options2.ssr
+      },
+      status,
+      error: error2,
+      branch,
+      page: page2
+    });
+  } catch (err) {
+    const error3 = coalesce_to_error(err);
+    options2.handle_error(error3, request);
+    return {
+      status: 500,
+      headers: {},
+      body: error3.stack
+    };
+  }
+}
+function is_prerender_enabled(options2, node, state) {
+  return options2.prerender && (!!node.module.prerender || !!state.prerender && state.prerender.all);
+}
+async function respond$1(opts) {
+  const { request, options: options2, state, $session, route } = opts;
+  let nodes;
+  try {
+    nodes = await Promise.all(route.a.map((id) => id ? options2.load_component(id) : void 0));
+  } catch (err) {
+    const error3 = coalesce_to_error(err);
+    options2.handle_error(error3, request);
+    return await respond_with_error({
+      request,
+      options: options2,
+      state,
+      $session,
+      status: 500,
+      error: error3
+    });
+  }
+  const leaf = nodes[nodes.length - 1].module;
+  let page_config = get_page_config(leaf, options2);
+  if (!leaf.prerender && state.prerender && !state.prerender.all) {
+    return {
+      status: 204,
+      headers: {}
+    };
+  }
+  let branch = [];
+  let status = 200;
+  let error2;
+  let set_cookie_headers = [];
+  ssr:
+    if (page_config.ssr) {
+      let stuff = {};
+      for (let i2 = 0; i2 < nodes.length; i2 += 1) {
+        const node = nodes[i2];
+        let loaded;
+        if (node) {
+          try {
+            loaded = await load_node({
+              ...opts,
+              node,
+              stuff,
+              prerender_enabled: is_prerender_enabled(options2, node, state),
+              is_leaf: i2 === nodes.length - 1,
+              is_error: false
+            });
+            if (!loaded)
+              return;
+            set_cookie_headers = set_cookie_headers.concat(loaded.set_cookie_headers);
+            if (loaded.loaded.redirect) {
+              return with_cookies({
+                status: loaded.loaded.status,
+                headers: {
+                  location: encodeURI(loaded.loaded.redirect)
+                }
+              }, set_cookie_headers);
+            }
+            if (loaded.loaded.error) {
+              ({ status, error: error2 } = loaded.loaded);
+            }
+          } catch (err) {
+            const e2 = coalesce_to_error(err);
+            options2.handle_error(e2, request);
+            status = 500;
+            error2 = e2;
+          }
+          if (loaded && !error2) {
+            branch.push(loaded);
+          }
+          if (error2) {
+            while (i2--) {
+              if (route.b[i2]) {
+                const error_node = await options2.load_component(route.b[i2]);
+                let node_loaded;
+                let j = i2;
+                while (!(node_loaded = branch[j])) {
+                  j -= 1;
+                }
+                try {
+                  const error_loaded = await load_node({
+                    ...opts,
+                    node: error_node,
+                    stuff: node_loaded.stuff,
+                    prerender_enabled: is_prerender_enabled(options2, error_node, state),
+                    is_leaf: false,
+                    is_error: true,
+                    status,
+                    error: error2
+                  });
+                  if (error_loaded.loaded.error) {
+                    continue;
+                  }
+                  page_config = get_page_config(error_node.module, options2);
+                  branch = branch.slice(0, j + 1).concat(error_loaded);
+                  break ssr;
+                } catch (err) {
+                  const e2 = coalesce_to_error(err);
+                  options2.handle_error(e2, request);
+                  continue;
+                }
+              }
+            }
+            return with_cookies(await respond_with_error({
+              request,
+              options: options2,
+              state,
+              $session,
+              status,
+              error: error2
+            }), set_cookie_headers);
+          }
+        }
+        if (loaded && loaded.loaded.stuff) {
+          stuff = {
+            ...stuff,
+            ...loaded.loaded.stuff
+          };
+        }
+      }
+    }
+  try {
+    return with_cookies(await render_response({
+      ...opts,
+      page_config,
+      status,
+      error: error2,
+      branch: branch.filter(Boolean)
+    }), set_cookie_headers);
+  } catch (err) {
+    const error3 = coalesce_to_error(err);
+    options2.handle_error(error3, request);
+    return with_cookies(await respond_with_error({
+      ...opts,
+      status: 500,
+      error: error3
+    }), set_cookie_headers);
+  }
+}
+function get_page_config(leaf, options2) {
+  return {
+    ssr: "ssr" in leaf ? !!leaf.ssr : options2.ssr,
+    router: "router" in leaf ? !!leaf.router : options2.router,
+    hydrate: "hydrate" in leaf ? !!leaf.hydrate : options2.hydrate
+  };
+}
+function with_cookies(response, set_cookie_headers) {
+  if (set_cookie_headers.length) {
+    response.headers["set-cookie"] = set_cookie_headers;
+  }
+  return response;
+}
+async function render_page(request, route, match, options2, state) {
+  if (state.initiator === route) {
+    return {
+      status: 404,
+      headers: {},
+      body: `Not found: ${request.path}`
+    };
+  }
+  const params = route.params(match);
+  const page2 = {
+    host: request.host,
+    path: request.path,
+    query: request.query,
+    params
+  };
+  const $session = await options2.hooks.getSession(request);
+  const response = await respond$1({
+    request,
+    options: options2,
+    state,
+    $session,
+    route,
+    page: page2
+  });
+  if (response) {
+    return response;
+  }
+  if (state.fetched) {
+    return {
+      status: 500,
+      headers: {},
+      body: `Bad request in load function: failed to fetch ${state.fetched}`
+    };
+  }
+}
+function read_only_form_data() {
+  const map = new Map();
+  return {
+    append(key, value) {
+      if (map.has(key)) {
+        (map.get(key) || []).push(value);
+      } else {
+        map.set(key, [value]);
+      }
+    },
+    data: new ReadOnlyFormData(map)
+  };
+}
+function parse_body(raw, headers) {
+  if (!raw)
+    return raw;
+  const content_type = headers["content-type"];
+  const [type, ...directives] = content_type ? content_type.split(/;\s*/) : [];
+  const text = () => new TextDecoder(headers["content-encoding"] || "utf-8").decode(raw);
+  switch (type) {
+    case "text/plain":
+      return text();
+    case "application/json":
+      return JSON.parse(text());
+    case "application/x-www-form-urlencoded":
+      return get_urlencoded(text());
+    case "multipart/form-data": {
+      const boundary = directives.find((directive) => directive.startsWith("boundary="));
+      if (!boundary)
+        throw new Error("Missing boundary");
+      return get_multipart(text(), boundary.slice("boundary=".length));
+    }
+    default:
+      return raw;
+  }
+}
+function get_urlencoded(text) {
+  const { data, append } = read_only_form_data();
+  text.replace(/\+/g, " ").split("&").forEach((str) => {
+    const [key, value] = str.split("=");
+    append(decodeURIComponent(key), decodeURIComponent(value));
+  });
+  return data;
+}
+function get_multipart(text, boundary) {
+  const parts = text.split(`--${boundary}`);
+  if (parts[0] !== "" || parts[parts.length - 1].trim() !== "--") {
+    throw new Error("Malformed form data");
+  }
+  const { data, append } = read_only_form_data();
+  parts.slice(1, -1).forEach((part) => {
+    const match = /\s*([\s\S]+?)\r\n\r\n([\s\S]*)\s*/.exec(part);
+    if (!match) {
+      throw new Error("Malformed form data");
+    }
+    const raw_headers = match[1];
+    const body = match[2].trim();
+    let key;
+    const headers = {};
+    raw_headers.split("\r\n").forEach((str) => {
+      const [raw_header, ...raw_directives] = str.split("; ");
+      let [name, value] = raw_header.split(": ");
+      name = name.toLowerCase();
+      headers[name] = value;
+      const directives = {};
+      raw_directives.forEach((raw_directive) => {
+        const [name2, value2] = raw_directive.split("=");
+        directives[name2] = JSON.parse(value2);
+      });
+      if (name === "content-disposition") {
+        if (value !== "form-data")
+          throw new Error("Malformed form data");
+        if (directives.filename) {
+          throw new Error("File upload is not yet implemented");
+        }
+        if (directives.name) {
+          key = directives.name;
+        }
+      }
+    });
+    if (!key)
+      throw new Error("Malformed form data");
+    append(key, body);
+  });
+  return data;
+}
+async function respond(incoming, options2, state = {}) {
+  if (incoming.path !== "/" && options2.trailing_slash !== "ignore") {
+    const has_trailing_slash = incoming.path.endsWith("/");
+    if (has_trailing_slash && options2.trailing_slash === "never" || !has_trailing_slash && options2.trailing_slash === "always" && !(incoming.path.split("/").pop() || "").includes(".")) {
+      const path = has_trailing_slash ? incoming.path.slice(0, -1) : incoming.path + "/";
+      const q = incoming.query.toString();
+      return {
+        status: 301,
+        headers: {
+          location: options2.paths.base + path + (q ? `?${q}` : "")
+        }
+      };
+    }
+  }
+  const headers = lowercase_keys(incoming.headers);
+  const request = {
+    ...incoming,
+    headers,
+    body: parse_body(incoming.rawBody, headers),
+    params: {},
+    locals: {}
+  };
+  try {
+    return await options2.hooks.handle({
+      request,
+      resolve: async (request2) => {
+        if (state.prerender && state.prerender.fallback) {
+          return await render_response({
+            options: options2,
+            $session: await options2.hooks.getSession(request2),
+            page_config: { ssr: false, router: true, hydrate: true },
+            status: 200,
+            branch: []
+          });
+        }
+        const decoded = decodeURI(request2.path);
+        for (const route of options2.manifest.routes) {
+          const match = route.pattern.exec(decoded);
+          if (!match)
+            continue;
+          const response = route.type === "endpoint" ? await render_endpoint(request2, route, match) : await render_page(request2, route, match, options2, state);
+          if (response) {
+            if (response.status === 200) {
+              const cache_control = get_single_valued_header(response.headers, "cache-control");
+              if (!cache_control || !/(no-store|immutable)/.test(cache_control)) {
+                let if_none_match_value = request2.headers["if-none-match"];
+                if (if_none_match_value?.startsWith('W/"')) {
+                  if_none_match_value = if_none_match_value.substring(2);
+                }
+                const etag = `"${hash(response.body || "")}"`;
+                if (if_none_match_value === etag) {
+                  return {
+                    status: 304,
+                    headers: {}
+                  };
+                }
+                response.headers["etag"] = etag;
+              }
+            }
+            return response;
+          }
+        }
+        const $session = await options2.hooks.getSession(request2);
+        return await respond_with_error({
+          request: request2,
+          options: options2,
+          state,
+          $session,
+          status: 404,
+          error: new Error(`Not found: ${request2.path}`)
+        });
+      }
+    });
+  } catch (err) {
+    const e2 = coalesce_to_error(err);
+    options2.handle_error(e2, request);
+    return {
+      status: 500,
+      headers: {},
+      body: options2.dev ? e2.stack : e2.message
+    };
+  }
+}
+var chars, unsafeChars, reserved, escaped, objectProtoOwnPropertyNames, subscriber_queue, escape_json_string_in_html_dict, escape_html_attr_dict, s$1, s2, ReadOnlyFormData;
+var init_ssr = __esm({
+  "node_modules/@sveltejs/kit/dist/ssr.js"() {
+    init_shims();
+    init_url();
+    init_error();
+    chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$";
+    unsafeChars = /[<>\b\f\n\r\t\0\u2028\u2029]/g;
+    reserved = /^(?:do|if|in|for|int|let|new|try|var|byte|case|char|else|enum|goto|long|this|void|with|await|break|catch|class|const|final|float|short|super|throw|while|yield|delete|double|export|import|native|return|switch|throws|typeof|boolean|default|extends|finally|package|private|abstract|continue|debugger|function|volatile|interface|protected|transient|implements|instanceof|synchronized)$/;
+    escaped = {
+      "<": "\\u003C",
+      ">": "\\u003E",
+      "/": "\\u002F",
+      "\\": "\\\\",
+      "\b": "\\b",
+      "\f": "\\f",
+      "\n": "\\n",
+      "\r": "\\r",
+      "	": "\\t",
+      "\0": "\\0",
+      "\u2028": "\\u2028",
+      "\u2029": "\\u2029"
+    };
+    objectProtoOwnPropertyNames = Object.getOwnPropertyNames(Object.prototype).sort().join("\0");
+    Promise.resolve();
+    subscriber_queue = [];
+    escape_json_string_in_html_dict = {
+      '"': '\\"',
+      "<": "\\u003C",
+      ">": "\\u003E",
+      "/": "\\u002F",
+      "\\": "\\\\",
+      "\b": "\\b",
+      "\f": "\\f",
+      "\n": "\\n",
+      "\r": "\\r",
+      "	": "\\t",
+      "\0": "\\0",
+      "\u2028": "\\u2028",
+      "\u2029": "\\u2029"
+    };
+    escape_html_attr_dict = {
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;"
+    };
+    s$1 = JSON.stringify;
+    s2 = JSON.stringify;
+    ReadOnlyFormData = class {
+      #map;
+      constructor(map) {
+        this.#map = map;
+      }
+      get(key) {
+        const value = this.#map.get(key);
+        return value && value[0];
+      }
+      getAll(key) {
+        return this.#map.get(key);
+      }
+      has(key) {
+        return this.#map.has(key);
+      }
+      *[Symbol.iterator]() {
+        for (const [key, value] of this.#map) {
+          for (let i2 = 0; i2 < value.length; i2 += 1) {
+            yield [key, value[i2]];
+          }
+        }
+      }
+      *entries() {
+        for (const [key, value] of this.#map) {
+          for (let i2 = 0; i2 < value.length; i2 += 1) {
+            yield [key, value[i2]];
+          }
+        }
+      }
+      *keys() {
+        for (const [key] of this.#map)
+          yield key;
+      }
+      *values() {
+        for (const [, value] of this.#map) {
+          for (let i2 = 0; i2 < value.length; i2 += 1) {
+            yield value[i2];
+          }
+        }
+      }
     };
   }
 });
 
-// .svelte-kit/output/server/chunks/stores-5bfa6c56.js
+// .svelte-kit/output/server/chunks/stores-116435d6.js
 var getStores, page;
-var init_stores_5bfa6c56 = __esm({
-  ".svelte-kit/output/server/chunks/stores-5bfa6c56.js"() {
-    init_index_9e0393c9();
+var init_stores_116435d6 = __esm({
+  ".svelte-kit/output/server/chunks/stores-116435d6.js"() {
+    init_shims();
+    init_app_1cbe83fd();
     getStores = () => {
       const stores = getContext("__svelte__");
       return {
@@ -5609,6 +6710,7 @@ var init_stores_5bfa6c56 = __esm({
 var CrudDatabase, StoreCookie, RouteLiterals, RoutesModel;
 var init_routes_model_d5045fd3 = __esm({
   ".svelte-kit/output/server/chunks/routes.model-d5045fd3.js"() {
+    init_shims();
     CrudDatabase = class {
       async getRequest(url, headers = {}) {
         return await fetch(url, {
@@ -5674,6 +6776,7 @@ var init_routes_model_d5045fd3 = __esm({
 var UserProxyService;
 var init_user_proxy_service_57d98092 = __esm({
   ".svelte-kit/output/server/chunks/user-proxy.service-57d98092.js"() {
+    init_shims();
     init_routes_model_d5045fd3();
     UserProxyService = class extends CrudDatabase {
       async loginMethod(userData) {
@@ -5703,18 +6806,20 @@ var init_user_proxy_service_57d98092 = __esm({
   }
 });
 
-// .svelte-kit/output/server/entries/pages/__layout.svelte.js
-var layout_svelte_exports = {};
-__export(layout_svelte_exports, {
+// .svelte-kit/output/server/chunks/__layout-4255c7c7.js
+var layout_4255c7c7_exports = {};
+__export(layout_4255c7c7_exports, {
   default: () => _layout
 });
 var css$2, Nav, css$1, Footer, css, _layout;
-var init_layout_svelte = __esm({
-  ".svelte-kit/output/server/entries/pages/__layout.svelte.js"() {
-    init_index_9e0393c9();
-    init_stores_5bfa6c56();
+var init_layout_4255c7c7 = __esm({
+  ".svelte-kit/output/server/chunks/__layout-4255c7c7.js"() {
+    init_shims();
+    init_app_1cbe83fd();
+    init_stores_116435d6();
     init_routes_model_d5045fd3();
     init_user_proxy_service_57d98092();
+    init_ssr();
     css$2 = {
       code: "li.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{list-style:none}.navbar.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{z-index:999;display:flex;align-items:center;justify-content:space-between;padding:10px;margin-right:10%;margin-left:10%}.navbar.s-ncigrX2slk3y .nav-links a.s-ncigrX2slk3y.s-ncigrX2slk3y{font-size:1.1rem;color:#222;text-decoration:none}.logo.s-ncigrX2slk3y .logo-stackshare.s-ncigrX2slk3y.s-ncigrX2slk3y{max-height:58px}.menu.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{display:flex;gap:1em;font-size:18px}.menu.s-ncigrX2slk3y li.s-ncigrX2slk3y.s-ncigrX2slk3y{padding:5px 14px}.menu.s-ncigrX2slk3y li.s-ncigrX2slk3y.s-ncigrX2slk3y:hover{background-color:#EEE;border-radius:5px;transition:0.3s ease}.menu.s-ncigrX2slk3y .active.s-ncigrX2slk3y.s-ncigrX2slk3y{color:#5344D4 !important}input[type=checkbox].s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{display:none}.hamburger.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{display:none;font-size:24px;user-select:none;margin-right:16px}@media(max-width: 768px){.navbar.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{margin:0}.menu.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{z-index:999;margin-top:23px;display:none;position:absolute;background-color:#EEE;right:0;left:0;text-align:center;padding:16px 0}.menu.s-ncigrX2slk3y li.s-ncigrX2slk3y+li.s-ncigrX2slk3y{margin-top:12px}.menu.s-ncigrX2slk3y li.s-ncigrX2slk3y.s-ncigrX2slk3y:hover{display:inline-block;background-color:#989898;transition:0.4s ease}input[type=checkbox].s-ncigrX2slk3y:checked~.menu.s-ncigrX2slk3y.s-ncigrX2slk3y{display:block}.hamburger.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{display:block}}.s-ncigrX2slk3y.s-ncigrX2slk3y.s-ncigrX2slk3y{}",
       map: null
@@ -5776,38 +6881,22 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
   }
 });
 
-// .svelte-kit/output/server/nodes/0.js
-var __exports = {};
-__export(__exports, {
-  css: () => css2,
-  entry: () => entry,
-  js: () => js,
-  module: () => layout_svelte_exports
-});
-var entry, js, css2;
-var init__ = __esm({
-  ".svelte-kit/output/server/nodes/0.js"() {
-    init_layout_svelte();
-    entry = "pages/__layout.svelte-bcf1a372.js";
-    js = ["pages/__layout.svelte-bcf1a372.js", "chunks/vendor-e79db4d0.js", "chunks/stores-f688b8f5.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"];
-    css2 = ["assets/pages/__layout.svelte-35a34268.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
-// .svelte-kit/output/server/entries/pages/__error.svelte.js
-var error_svelte_exports = {};
-__export(error_svelte_exports, {
+// .svelte-kit/output/server/chunks/__error-2761b111.js
+var error_2761b111_exports = {};
+__export(error_2761b111_exports, {
   default: () => _error,
   load: () => load
 });
 function load({ error: error2, status }) {
   return { props: { error: error2, status } };
 }
-var css3, _error;
-var init_error_svelte = __esm({
-  ".svelte-kit/output/server/entries/pages/__error.svelte.js"() {
-    init_index_9e0393c9();
-    css3 = {
+var css2, _error;
+var init_error_2761b111 = __esm({
+  ".svelte-kit/output/server/chunks/__error-2761b111.js"() {
+    init_shims();
+    init_app_1cbe83fd();
+    init_ssr();
+    css2 = {
       code: "p.s-W4Czs5i-rwY9{margin:0 auto}p.s-W4Czs5i-rwY9{margin:1em auto}@media(min-width: 480px){}.s-W4Czs5i-rwY9{}",
       map: null
     };
@@ -5817,12 +6906,12 @@ var init_error_svelte = __esm({
         $$bindings.error(error2);
       if ($$props.status === void 0 && $$bindings.status && status !== void 0)
         $$bindings.status(status);
-      $$result.css.add(css3);
-      return `${$$result.head += `${$$result.title = `<title>${escape(status)}</title>`, ""}`, ""}
+      $$result.css.add(css2);
+      return `${$$result.head += `${$$result.title = `<title>${escape2(status)}</title>`, ""}`, ""}
 
-<div class="${"col-md-9 s-W4Czs5i-rwY9"}"><h2 class="${"s-W4Czs5i-rwY9"}">${escape(status)}</h2>
+<div class="${"col-md-9 s-W4Czs5i-rwY9"}"><h2 class="${"s-W4Czs5i-rwY9"}">${escape2(status)}</h2>
 
-    <p class="${"s-W4Czs5i-rwY9"}">${escape(error2.message)}</p>
+    <p class="${"s-W4Czs5i-rwY9"}">${escape2(error2.message)}</p>
 
     ${error2.stack ? `
         <p class="${"s-W4Czs5i-rwY9"}">Something went wrong.</p>` : ``}
@@ -5831,28 +6920,11 @@ var init_error_svelte = __esm({
   }
 });
 
-// .svelte-kit/output/server/nodes/1.js
-var __exports2 = {};
-__export(__exports2, {
-  css: () => css4,
-  entry: () => entry2,
-  js: () => js2,
-  module: () => error_svelte_exports
-});
-var entry2, js2, css4;
-var init__2 = __esm({
-  ".svelte-kit/output/server/nodes/1.js"() {
-    init_error_svelte();
-    entry2 = "pages/__error.svelte-5d7168a3.js";
-    js2 = ["pages/__error.svelte-5d7168a3.js", "chunks/vendor-e79db4d0.js"];
-    css4 = ["assets/pages/__error.svelte-b05e7ebf.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
 // .svelte-kit/output/server/chunks/questions-proxy.service-6635d82d.js
 var CategoriesProxyService, QuestionsProxyService;
 var init_questions_proxy_service_6635d82d = __esm({
   ".svelte-kit/output/server/chunks/questions-proxy.service-6635d82d.js"() {
+    init_shims();
     init_routes_model_d5045fd3();
     CategoriesProxyService = class extends CrudDatabase {
       async getAllCategories() {
@@ -5956,17 +7028,19 @@ var init_questions_proxy_service_6635d82d = __esm({
   }
 });
 
-// .svelte-kit/output/server/entries/pages/index.svelte.js
-var index_svelte_exports = {};
-__export(index_svelte_exports, {
+// .svelte-kit/output/server/chunks/index-71cd0240.js
+var index_71cd0240_exports = {};
+__export(index_71cd0240_exports, {
   default: () => Routes
 });
-var css$12, Categories, css5, Questions, Routes;
-var init_index_svelte = __esm({
-  ".svelte-kit/output/server/entries/pages/index.svelte.js"() {
-    init_index_9e0393c9();
+var css$12, Categories, css3, Questions, Routes;
+var init_index_71cd0240 = __esm({
+  ".svelte-kit/output/server/chunks/index-71cd0240.js"() {
+    init_shims();
+    init_app_1cbe83fd();
     init_routes_model_d5045fd3();
     init_questions_proxy_service_6635d82d();
+    init_ssr();
     css$12 = {
       code: ".categories-overview.s-ln69157WFHDr.s-ln69157WFHDr{margin-left:15%;margin-right:15%}.categories-overview.s-ln69157WFHDr .categories-list.s-ln69157WFHDr{display:flex;flex-wrap:wrap}.categories-overview.s-ln69157WFHDr .categories-list .item.s-ln69157WFHDr{margin-top:10px;margin-left:5px;margin-right:5px;background-color:#5148D5;border-radius:10px;padding:5px 8px;color:#FFF}.categories-overview.s-ln69157WFHDr .categories-list .item p.s-ln69157WFHDr{margin:0;padding:0}@media(max-width: 768px){.categories-overview.s-ln69157WFHDr.s-ln69157WFHDr{margin-left:20px;margin-right:20px}}.s-ln69157WFHDr.s-ln69157WFHDr{}",
       map: null
@@ -5988,13 +7062,13 @@ var init_index_svelte = __esm({
 
 ${categories && !error2 && !loading ? `<div class="${"categories-overview s-ln69157WFHDr"}"><h3 class="${"s-ln69157WFHDr"}">Populair categories</h3>
         <div class="${"categories-list s-ln69157WFHDr"}">${each(categories.data, (category, i2) => {
-        return `${i2 < 15 ? `<div class="${"item s-ln69157WFHDr"}"><p class="${"s-ln69157WFHDr"}">${escape(category.name)}</p>
+        return `${i2 < 15 ? `<div class="${"item s-ln69157WFHDr"}"><p class="${"s-ln69157WFHDr"}">${escape2(category.name)}</p>
                     </div>` : ``}`;
       })}</div></div>` : ``}
 
 ${error2 ? `<div class="${"categories-overview s-ln69157WFHDr"}"><p style="${"color:red;"}" class="${"s-ln69157WFHDr"}">Lege lijst tonen of verbergen!!!.</p></div>` : ``}`;
     });
-    css5 = {
+    css3 = {
       code: ".questions.s-uqkUklFAQurW.s-uqkUklFAQurW{margin-left:15%;margin-right:15%}.questions.s-uqkUklFAQurW .search-bar .input-field.s-uqkUklFAQurW{background-color:#f0f0f0;margin:10px 0;height:40px;border-radius:55px;display:grid;padding:0 1rem;position:relative}.questions.s-uqkUklFAQurW .search-bar .input-field input.s-uqkUklFAQurW{background:none;outline:none;border:none;line-height:1;font-weight:500;font-size:1rem;color:#333}.questions.s-uqkUklFAQurW .search-bar .input-field input.s-uqkUklFAQurW::placeholder{color:#aaa;font-weight:500}.questions.s-uqkUklFAQurW a.s-uqkUklFAQurW{color:inherit;text-decoration:none}.questions.s-uqkUklFAQurW .question-content.s-uqkUklFAQurW{margin-top:20px;border-radius:10px;background-color:#f3f3f3;padding:4px 20px}.questions.s-uqkUklFAQurW .question-content .title-section p.s-uqkUklFAQurW:first-of-type{font-size:1.3rem;margin:2px 0 4px}.questions.s-uqkUklFAQurW .question-content .title-section .written-by p.s-uqkUklFAQurW{font-size:0.9rem}.questions.s-uqkUklFAQurW .question-content #description.s-uqkUklFAQurW{color:#989898}.questions.s-uqkUklFAQurW .question-content .categories.s-uqkUklFAQurW{display:flex}.questions.s-uqkUklFAQurW .question-content .categories p.s-uqkUklFAQurW{color:#FFF;padding:4px 10px;margin:4px;background-color:#5148D5;border-radius:20px}@media(max-width: 768px){.questions.s-uqkUklFAQurW.s-uqkUklFAQurW{margin-left:20px;margin-right:20px}}.s-uqkUklFAQurW.s-uqkUklFAQurW{}",
       map: null
     };
@@ -6019,21 +7093,20 @@ ${error2 ? `<div class="${"categories-overview s-ln69157WFHDr"}"><p style="${"co
         });
       };
       getQuestions();
-      $$result.css.add(css5);
-      return `${error2 ? `<div class="${"questions s-uqkUklFAQurW"}"><span class="${"error-message s-uqkUklFAQurW"}">${escape(error2)}</span></div>` : ``}
+      $$result.css.add(css3);
+      return `${error2 ? `<div class="${"questions s-uqkUklFAQurW"}"><span class="${"error-message s-uqkUklFAQurW"}">${escape2(error2)}</span></div>` : ``}
 
 ${loading ? `<div class="${"questions s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">Loading questions data...</p></div>` : ``}
 
 ${questions && !error2 && !loading ? `<div class="${"questions s-uqkUklFAQurW"}"><h3 class="${"s-uqkUklFAQurW"}">Most recent questions</h3>
         <div class="${"search-bar s-uqkUklFAQurW"}"><div class="${"input-field s-uqkUklFAQurW"}"><input type="${"text"}" placeholder="${"Search for a question..."}" class="${"s-uqkUklFAQurW"}"${add_attribute("value", searchValue, 0)}></div></div>
-        ${filteredQuestions.data.length === 0 ? `<div class="${"question-content s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">Could not find something for ${escape(searchValue)}</p></div>` : `${each(filteredQuestions.data.sort((q1, q2) => q1.created_at < q2.created_at), (question) => {
-        var _a4, _b;
-        return `<a href="${"/questions/" + escape(question.uuid)}" class="${"s-uqkUklFAQurW"}"><div class="${"question-content s-uqkUklFAQurW"}"><div class="${"title-section s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">${escape(question.title)}</p>
-                            <div class="${"written-by s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">Written by ${escape(((_a4 = question == null ? void 0 : question.user) == null ? void 0 : _a4.name) ?? "--")} on ${escape(question == null ? void 0 : question.created_date)}</p>
+        ${filteredQuestions.data.length === 0 ? `<div class="${"question-content s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">Could not find something for ${escape2(searchValue)}</p></div>` : `${each(filteredQuestions.data.sort((q1, q2) => q1.created_at < q2.created_at), (question) => {
+        return `<a href="${"/questions/" + escape2(question.uuid)}" class="${"s-uqkUklFAQurW"}"><div class="${"question-content s-uqkUklFAQurW"}"><div class="${"title-section s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">${escape2(question.title)}</p>
+                            <div class="${"written-by s-uqkUklFAQurW"}"><p class="${"s-uqkUklFAQurW"}">Written by ${escape2(question?.user?.name ?? "--")} on ${escape2(question?.created_date)}</p>
                             </div></div>
-                        <p id="${"description"}" class="${"s-uqkUklFAQurW"}">${escape(((_b = question == null ? void 0 : question.description) == null ? void 0 : _b.length) > 250 ? (question == null ? void 0 : question.description.substring(0, 250 - 3)) + "..." : question == null ? void 0 : question.description)}</p>
-                        ${question.categories ? `<div class="${"categories s-uqkUklFAQurW"}">${each(question == null ? void 0 : question.categories, (category) => {
-          return `<p class="${"s-uqkUklFAQurW"}">${escape(category.name)}</p>`;
+                        <p id="${"description"}" class="${"s-uqkUklFAQurW"}">${escape2(question?.description?.length > 250 ? question?.description.substring(0, 250 - 3) + "..." : question?.description)}</p>
+                        ${question.categories ? `<div class="${"categories s-uqkUklFAQurW"}">${each(question?.categories, (category) => {
+          return `<p class="${"s-uqkUklFAQurW"}">${escape2(category.name)}</p>`;
         })}
                             </div>` : ``}</div>
                 </a>`;
@@ -6048,36 +7121,20 @@ ${validate_component(Questions, "QuestionsList").$$render($$result, {}, {}, {})}
   }
 });
 
-// .svelte-kit/output/server/nodes/2.js
-var __exports3 = {};
-__export(__exports3, {
-  css: () => css6,
-  entry: () => entry3,
-  js: () => js3,
-  module: () => index_svelte_exports
-});
-var entry3, js3, css6;
-var init__3 = __esm({
-  ".svelte-kit/output/server/nodes/2.js"() {
-    init_index_svelte();
-    entry3 = "pages/index.svelte-b718f603.js";
-    js3 = ["pages/index.svelte-b718f603.js", "chunks/vendor-e79db4d0.js", "chunks/routes.model-98ab3763.js", "chunks/questions-proxy.service-a2f80bfd.js"];
-    css6 = ["assets/pages/index.svelte-7bf37d9d.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
-// .svelte-kit/output/server/entries/pages/authenticate/index.svelte.js
-var index_svelte_exports2 = {};
-__export(index_svelte_exports2, {
+// .svelte-kit/output/server/chunks/index-06904b8e.js
+var index_06904b8e_exports = {};
+__export(index_06904b8e_exports, {
   default: () => Authenticate
 });
-var css7, Authenticate;
-var init_index_svelte2 = __esm({
-  ".svelte-kit/output/server/entries/pages/authenticate/index.svelte.js"() {
-    init_index_9e0393c9();
+var css4, Authenticate;
+var init_index_06904b8e = __esm({
+  ".svelte-kit/output/server/chunks/index-06904b8e.js"() {
+    init_shims();
+    init_app_1cbe83fd();
     init_routes_model_d5045fd3();
     init_user_proxy_service_57d98092();
-    css7 = {
+    init_ssr();
+    css4 = {
       code: '.container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{position:relative;width:auto;min-height:105vh;overflow:hidden}.forms-container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{position:absolute;width:100%;height:100%;top:0;left:0}.sign-in-signup.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{position:absolute;top:50%;transform:translate(-50%, -50%);left:75%;width:50%;transition:1s 0.7s ease-in-out;display:grid;grid-template-columns:1fr;z-index:5}form.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:0 5rem;transition:all 0.2s 0.7s;overflow:hidden;grid-column:1/2;grid-row:1/2}form.sign-up-form.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{opacity:0;z-index:1}form.sign-in-form.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{z-index:2}form.s-UZfgNfVZkmxE .error.s-UZfgNfVZkmxE{width:390px;font-size:1rem}form.s-UZfgNfVZkmxE .error .error-message.s-UZfgNfVZkmxE{color:#de3232}form.s-UZfgNfVZkmxE .error .password-requirements p.s-UZfgNfVZkmxE{font-size:0.85rem;margin:0;padding:0}.title.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{font-size:2.2rem;color:#444;margin-bottom:10px}.field-label.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{max-width:380px;width:100%}.input-field.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{max-width:380px;width:100%;background-color:#f0f0f0;margin:10px 0;height:55px;border-radius:55px;display:grid;grid-template-columns:100%;padding:0 1rem;position:relative}.input-field.s-UZfgNfVZkmxE input.s-UZfgNfVZkmxE{background:none;outline:none;border:none;line-height:1;font-weight:500;font-size:1rem;color:#333}.input-field.s-UZfgNfVZkmxE input.s-UZfgNfVZkmxE::placeholder{color:#aaa;font-weight:500}.button.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{width:150px;background-color:#6151ee;border:none;outline:none;height:49px;border-radius:49px;color:#fff;font-weight:500;font-size:1rem;margin:10px 0;cursor:pointer;transition:0.5s}.button.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:hover{background-color:#4539c4}.panels-container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{position:absolute;height:100%;width:100%;top:0;left:0;display:grid;grid-template-columns:repeat(2, 1fr)}.container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:before{content:"";position:absolute;height:2000px;width:2000px;top:-10%;right:48%;transform:translateY(-50%);background-image:linear-gradient(-40deg, #5542D3 0%, #4676f6 100%);transition:1.8s ease-in-out;border-radius:50%;z-index:6}.image.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{width:100%;transition:transform 1.1s ease-in-out;transition-delay:0.4s}.panel.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-around;text-align:center;z-index:6}.left-panel.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{pointer-events:all;padding:3rem 17% 2rem 12%}.right-panel.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{pointer-events:none;padding:3rem 12% 2rem 17%}.panel.s-UZfgNfVZkmxE .content.s-UZfgNfVZkmxE{color:#fff;transition:transform 0.9s ease-in-out;transition-delay:0.6s}.panel.s-UZfgNfVZkmxE h3.s-UZfgNfVZkmxE{font-weight:600;line-height:1;font-size:1.5rem}.panel.s-UZfgNfVZkmxE p.s-UZfgNfVZkmxE{font-size:0.95rem;padding:0.7rem 0}.button.transparent.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{margin:0;background:none;border:2px solid #fff;width:130px;height:41px;font-weight:500;font-size:0.9rem}.right-panel.s-UZfgNfVZkmxE .image.s-UZfgNfVZkmxE,.right-panel.s-UZfgNfVZkmxE .content.s-UZfgNfVZkmxE{transform:translateX(800px)}.container.sign-up-mode.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:before{transform:translate(100%, -50%);right:52%}.container.sign-up-mode.s-UZfgNfVZkmxE .left-panel .image.s-UZfgNfVZkmxE,.container.sign-up-mode.s-UZfgNfVZkmxE .left-panel .content.s-UZfgNfVZkmxE{transform:translateX(-800px)}.container.sign-up-mode.s-UZfgNfVZkmxE .sign-in-signup.s-UZfgNfVZkmxE{left:25%}.container.sign-up-mode.s-UZfgNfVZkmxE form.sign-up-form.s-UZfgNfVZkmxE{opacity:1;z-index:2}.container.sign-up-mode.s-UZfgNfVZkmxE form.sign-in-form.s-UZfgNfVZkmxE{opacity:0;z-index:1}.container.sign-up-mode.s-UZfgNfVZkmxE .right-panel .image.s-UZfgNfVZkmxE,.container.sign-up-mode.s-UZfgNfVZkmxE .right-panel .content.s-UZfgNfVZkmxE{transform:translateX(0%)}.container.sign-up-mode.s-UZfgNfVZkmxE .left-panel.s-UZfgNfVZkmxE{pointer-events:none}.container.sign-up-mode.s-UZfgNfVZkmxE .right-panel.s-UZfgNfVZkmxE{pointer-events:all}@media(max-width: 870px){.container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{min-height:1130px;height:100%}.sign-in-signup.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{width:100%;top:85%;transform:translate(-50%, -100%);transition:1s 0.8s ease-in-out;left:50%}.container.sign-up-mode.s-UZfgNfVZkmxE .sign-in-signup.s-UZfgNfVZkmxE{left:50%}.panels-container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{margin-top:30px;grid-template-columns:1fr;grid-template-rows:1fr 2fr 1fr}.panel.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{flex-direction:row;justify-content:space-around;align-items:center;padding:2.5rem 8%;grid-column:1/2}.right-panel.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{grid-row:3/4}.left-panel.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{grid-row:1/2}.image.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{width:200px;transition:transform 0.9s ease-in-out;transition-delay:0.6s}.panel.s-UZfgNfVZkmxE .content.s-UZfgNfVZkmxE{padding-right:15%;transition:transform 0.9s ease-in-out;transition-delay:0.8s}.panel.s-UZfgNfVZkmxE h3.s-UZfgNfVZkmxE{font-size:1.2rem}.panel.s-UZfgNfVZkmxE p.s-UZfgNfVZkmxE{font-size:0.7rem;padding:0.5rem 0}.button.transparent.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{width:110px;height:35px;font-size:0.7rem}.container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:before{width:1500px;height:1500px;transform:translateX(-50%);left:30%;bottom:68%;right:initial;top:initial;transition:2s ease-in-out}.container.sign-up-mode.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:before{transform:translate(-50%, 100%);bottom:32%;right:initial}.container.sign-up-mode.s-UZfgNfVZkmxE .left-panel .image.s-UZfgNfVZkmxE,.container.sign-up-mode.s-UZfgNfVZkmxE .left-panel .content.s-UZfgNfVZkmxE{transform:translateY(-300px)}.container.sign-up-mode.s-UZfgNfVZkmxE .right-panel .image.s-UZfgNfVZkmxE,.container.sign-up-mode.s-UZfgNfVZkmxE .right-panel .content.s-UZfgNfVZkmxE{transform:translateY(0px)}.right-panel.s-UZfgNfVZkmxE .image.s-UZfgNfVZkmxE,.right-panel.s-UZfgNfVZkmxE .content.s-UZfgNfVZkmxE{transform:translateY(300px)}.container.sign-up-mode.s-UZfgNfVZkmxE .sign-in-signup.s-UZfgNfVZkmxE{top:5%;transform:translate(-50%, 0)}}@media(max-width: 570px){form.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{padding:0 1.5rem}.image.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{display:none}.panel.s-UZfgNfVZkmxE .content.s-UZfgNfVZkmxE{padding:0.5rem 1rem}.container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{padding:1.5rem}.container.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:before{bottom:72%;left:50%}.container.sign-up-mode.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE:before{bottom:28%;left:50%}}.s-UZfgNfVZkmxE.s-UZfgNfVZkmxE{}',
       map: null
     };
@@ -6088,7 +7145,7 @@ var init_index_svelte2 = __esm({
       userProxy.checkUserStatus().then((response) => response.json()).then((result) => {
         location.href = "/";
       });
-      $$result.css.add(css7);
+      $$result.css.add(css4);
       return `${$$result.head += `${$$result.title = `<title>StackShare - Authentication</title>`, ""}`, ""}
 
 <div class="${["container s-UZfgNfVZkmxE", ""].join(" ").trim()}"><div class="${"forms-container s-UZfgNfVZkmxE"}"><div class="${"sign-in-signup s-UZfgNfVZkmxE"}"><form class="${"sign-in-form s-UZfgNfVZkmxE"}"><h2 class="${"title s-UZfgNfVZkmxE"}">Sign in</h2>
@@ -6131,82 +7188,49 @@ var init_index_svelte2 = __esm({
   }
 });
 
-// .svelte-kit/output/server/nodes/3.js
-var __exports4 = {};
-__export(__exports4, {
-  css: () => css8,
-  entry: () => entry4,
-  js: () => js4,
-  module: () => index_svelte_exports2
-});
-var entry4, js4, css8;
-var init__4 = __esm({
-  ".svelte-kit/output/server/nodes/3.js"() {
-    init_index_svelte2();
-    entry4 = "pages/authenticate/index.svelte-442c139f.js";
-    js4 = ["pages/authenticate/index.svelte-442c139f.js", "chunks/vendor-e79db4d0.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"];
-    css8 = ["assets/pages/authenticate/index.svelte-1b57fb2b.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
-// .svelte-kit/output/server/entries/pages/questions/index.svelte.js
-var index_svelte_exports3 = {};
-__export(index_svelte_exports3, {
+// .svelte-kit/output/server/chunks/index-9ba2f26e.js
+var index_9ba2f26e_exports = {};
+__export(index_9ba2f26e_exports, {
   default: () => Questions2
 });
-var css9, Questions2;
-var init_index_svelte3 = __esm({
-  ".svelte-kit/output/server/entries/pages/questions/index.svelte.js"() {
-    init_index_9e0393c9();
-    css9 = {
+var css5, Questions2;
+var init_index_9ba2f26e = __esm({
+  ".svelte-kit/output/server/chunks/index-9ba2f26e.js"() {
+    init_shims();
+    init_app_1cbe83fd();
+    init_ssr();
+    css5 = {
       code: ".details-content.s--ZK-UdBPW1Px{margin-top:25px;margin-left:15%;margin-right:15%}.s--ZK-UdBPW1Px{}",
       map: null
     };
     Questions2 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-      $$result.css.add(css9);
+      $$result.css.add(css5);
       return `<div class="${"details-content s--ZK-UdBPW1Px"}"><p class="${"s--ZK-UdBPW1Px"}">Could not find a question, please search for another question</p>
 </div>`;
     });
   }
 });
 
-// .svelte-kit/output/server/nodes/4.js
-var __exports5 = {};
-__export(__exports5, {
-  css: () => css10,
-  entry: () => entry5,
-  js: () => js5,
-  module: () => index_svelte_exports3
-});
-var entry5, js5, css10;
-var init__5 = __esm({
-  ".svelte-kit/output/server/nodes/4.js"() {
-    init_index_svelte3();
-    entry5 = "pages/questions/index.svelte-2cdfaa21.js";
-    js5 = ["pages/questions/index.svelte-2cdfaa21.js", "chunks/vendor-e79db4d0.js"];
-    css10 = ["assets/pages/questions/index.svelte-a540830f.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
-// .svelte-kit/output/server/entries/pages/questions/_question_.svelte.js
-var question_svelte_exports = {};
-__export(question_svelte_exports, {
+// .svelte-kit/output/server/chunks/_question_-e54e687d.js
+var question_e54e687d_exports = {};
+__export(question_e54e687d_exports, {
   default: () => U5Bquestionu5D
 });
-var css11, U5Bquestionu5D;
-var init_question_svelte = __esm({
-  ".svelte-kit/output/server/entries/pages/questions/_question_.svelte.js"() {
-    init_index_9e0393c9();
-    init_stores_5bfa6c56();
+var css6, U5Bquestionu5D;
+var init_question_e54e687d = __esm({
+  ".svelte-kit/output/server/chunks/_question_-e54e687d.js"() {
+    init_shims();
+    init_app_1cbe83fd();
+    init_stores_116435d6();
     init_routes_model_d5045fd3();
     init_questions_proxy_service_6635d82d();
     init_user_proxy_service_57d98092();
-    css11 = {
+    init_ssr();
+    css6 = {
       code: ".details-content.s-Jz36a9_IMCYs.s-Jz36a9_IMCYs{margin-top:25px;margin-left:15%;margin-right:15%}.details-content.s-Jz36a9_IMCYs .buttons-group.s-Jz36a9_IMCYs{float:right}.details-content.s-Jz36a9_IMCYs .buttons-group .button-edit.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .buttons-group .button-delete.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .buttons-group .button-edit-small.s-Jz36a9_IMCYs{border:none;outline:none;height:30px;border-radius:49px;color:#fff;font-size:0.9rem;margin:10px 0;cursor:pointer}.details-content.s-Jz36a9_IMCYs .buttons-group .button-edit-small.s-Jz36a9_IMCYs{width:110px;vertical-align:center;background-color:#6151ee}.details-content.s-Jz36a9_IMCYs .buttons-group .button-edit.s-Jz36a9_IMCYs{width:110px;background-color:#6151ee}.details-content.s-Jz36a9_IMCYs .buttons-group .button-edit.s-Jz36a9_IMCYs:hover{background-color:#4539c4}.details-content.s-Jz36a9_IMCYs .buttons-group .button-delete.s-Jz36a9_IMCYs{width:85px;background-color:#ce2d2d}.details-content.s-Jz36a9_IMCYs .buttons-group .button-delete.s-Jz36a9_IMCYs:hover{background-color:#4539c4}.details-content.s-Jz36a9_IMCYs .questions-content.s-Jz36a9_IMCYs{display:flex}.details-content.s-Jz36a9_IMCYs .questions-content .question-likes.s-Jz36a9_IMCYs{min-width:60px;margin-top:100px;margin-bottom:auto;text-align:center}.details-content.s-Jz36a9_IMCYs .questions-content .question-likes p.s-Jz36a9_IMCYs{font-size:1rem;margin-top:0;margin-bottom:0;font-weight:bold}.details-content.s-Jz36a9_IMCYs .questions-content .question-likes .like-buttons.s-Jz36a9_IMCYs{display:block}.details-content.s-Jz36a9_IMCYs .questions-content .question-likes .like-buttons img.s-Jz36a9_IMCYs{height:30px;width:30px}.details-content.s-Jz36a9_IMCYs .questions-content .question-information.s-Jz36a9_IMCYs{width:auto;margin-top:35px}.details-content.s-Jz36a9_IMCYs .questions-content .question-information .title.s-Jz36a9_IMCYs{font-size:1.3rem}.details-content.s-Jz36a9_IMCYs .questions-content .question-information .categories-list.s-Jz36a9_IMCYs{display:flex}.details-content.s-Jz36a9_IMCYs .questions-content .question-information .categories-list p.s-Jz36a9_IMCYs{color:#FFF;padding:4px 10px;margin:4px;background-color:#5148D5;border-radius:20px}.details-content.s-Jz36a9_IMCYs .comment-content.s-Jz36a9_IMCYs{margin-top:20px;border-radius:10px;background-color:#f3f3f3;padding:4px 20px}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info.s-Jz36a9_IMCYs{display:flex}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info .comment-likes.s-Jz36a9_IMCYs{width:40px;margin-right:10px;margin-bottom:auto;text-align:center}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info .comment-likes p.s-Jz36a9_IMCYs{font-size:1rem;margin-top:0;margin-bottom:3px;font-weight:bold}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info .comment-likes .like-buttons-comment.s-Jz36a9_IMCYs{display:block}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info .comment-likes .like-buttons-comment img.s-Jz36a9_IMCYs{height:30px;width:30px}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info .message p.s-Jz36a9_IMCYs:first-of-type{font-size:1.05rem;margin:2px 0 4px}.details-content.s-Jz36a9_IMCYs .comment-content .comment-info .message .written-by p.s-Jz36a9_IMCYs{font-size:0.9rem}.details-content.s-Jz36a9_IMCYs .add-comment .add-comment-form label.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .add-comment .edit-question-form label.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .add-comment-form label.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .edit-question-form label.s-Jz36a9_IMCYs{margin-top:10px}.details-content.s-Jz36a9_IMCYs .add-comment .add-comment-form p.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .add-comment .edit-question-form p.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .add-comment-form p.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .edit-question-form p.s-Jz36a9_IMCYs{font-size:1.1rem;margin-bottom:0}.details-content.s-Jz36a9_IMCYs .add-comment .add-comment-form .error.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .add-comment .edit-question-form .error.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .add-comment-form .error.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .edit-question-form .error.s-Jz36a9_IMCYs{width:390px;margin-left:10px;margin-top:8px;font-size:1rem}.details-content.s-Jz36a9_IMCYs .add-comment .add-comment-form .error .error-message.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .add-comment .edit-question-form .error .error-message.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .add-comment-form .error .error-message.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .edit-question-form .error .error-message.s-Jz36a9_IMCYs{color:#de3232}.details-content.s-Jz36a9_IMCYs .add-comment .add-comment-form .button.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .add-comment .edit-question-form .button.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .add-comment-form .button.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .edit-question-form .button.s-Jz36a9_IMCYs{width:100px;background-color:#6151ee;border:none;outline:none;height:40px;border-radius:49px;color:#fff;font-weight:500;font-size:1rem;margin:10px 0;cursor:pointer}.details-content.s-Jz36a9_IMCYs .add-comment .add-comment-form .button.s-Jz36a9_IMCYs:hover,.details-content.s-Jz36a9_IMCYs .add-comment .edit-question-form .button.s-Jz36a9_IMCYs:hover,.details-content.s-Jz36a9_IMCYs .edit-question .add-comment-form .button.s-Jz36a9_IMCYs:hover,.details-content.s-Jz36a9_IMCYs .edit-question .edit-question-form .button.s-Jz36a9_IMCYs:hover{background-color:#4539c4}.details-content.s-Jz36a9_IMCYs .add-comment .input-field.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .input-field.s-Jz36a9_IMCYs{background-color:#f0f0f0;margin:10px 0;height:40px;border-radius:55px;display:grid;padding:0 1rem;position:relative}.details-content.s-Jz36a9_IMCYs .add-comment .input-field input.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .input-field input.s-Jz36a9_IMCYs{background:none;outline:none;border:none;line-height:1;font-weight:500;font-size:1rem;color:#333}.details-content.s-Jz36a9_IMCYs .add-comment .input-field input.s-Jz36a9_IMCYs::placeholder,.details-content.s-Jz36a9_IMCYs .edit-question .input-field input.s-Jz36a9_IMCYs::placeholder{color:#aaa;font-weight:500}.details-content.s-Jz36a9_IMCYs .add-comment .textarea-field.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .textarea-field.s-Jz36a9_IMCYs{background-color:#f0f0f0;margin:10px 0;height:110px;border-radius:15px;display:grid;grid-template-columns:100%;padding:10px 0.7rem;position:relative}.details-content.s-Jz36a9_IMCYs .add-comment .textarea-field textarea.s-Jz36a9_IMCYs,.details-content.s-Jz36a9_IMCYs .edit-question .textarea-field textarea.s-Jz36a9_IMCYs{background:none;outline:none;border:none;line-height:1;font-weight:500;font-size:1rem;color:#333}.details-content.s-Jz36a9_IMCYs .add-comment .textarea-field textarea.s-Jz36a9_IMCYs::placeholder,.details-content.s-Jz36a9_IMCYs .edit-question .textarea-field textarea.s-Jz36a9_IMCYs::placeholder{color:#aaa;font-weight:500}.s-Jz36a9_IMCYs.s-Jz36a9_IMCYs{}",
       map: null
     };
     U5Bquestionu5D = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-      var _a4;
       let $page, $$unsubscribe_page;
       validate_store(page, "page");
       $$unsubscribe_page = subscribe(page, (value) => $page = value);
@@ -6267,38 +7291,37 @@ var init_question_svelte = __esm({
       });
       getQuestionData();
       getAllComments();
-      $$result.css.add(css11);
+      $$result.css.add(css6);
       $$unsubscribe_page();
       return `${$$result.head += `${$$result.title = `<title>StackShare - Question</title>`, ""}`, ""}
 
-<div class="${"details-content s-Jz36a9_IMCYs"}">${error2 ? `<span class="${"error-message s-Jz36a9_IMCYs"}">${escape(error2)}</span>` : ``}
+<div class="${"details-content s-Jz36a9_IMCYs"}">${error2 ? `<span class="${"error-message s-Jz36a9_IMCYs"}">${escape2(error2)}</span>` : ``}
 
     ${loading ? `<div class="${"question-information s-Jz36a9_IMCYs"}"><p class="${"s-Jz36a9_IMCYs"}">Loading StackShare data...</p></div>` : ``}
 
-    ${!loading && !error2 && question ? `<div class="${"buttons-group s-Jz36a9_IMCYs"}">${isLoggedIn ? `<button class="${"button-edit s-Jz36a9_IMCYs"}">${escape(editButtonText)}</button>
+    ${!loading && !error2 && question ? `<div class="${"buttons-group s-Jz36a9_IMCYs"}">${isLoggedIn ? `<button class="${"button-edit s-Jz36a9_IMCYs"}">${escape2(editButtonText)}</button>
                 <button class="${"button-delete s-Jz36a9_IMCYs"}">Delete</button>` : ``}</div>
 
         ${`<div class="${"questions-content s-Jz36a9_IMCYs"}"><div class="${"question-likes s-Jz36a9_IMCYs"}">${isLoggedIn ? `<a class="${"like-buttons s-Jz36a9_IMCYs"}"><img src="${"../static/arrow-up.svg"}" width="${"30"}" class="${"s-Jz36a9_IMCYs"}"></a>
-                        <p class="${"s-Jz36a9_IMCYs"}">${escape(question == null ? void 0 : question.likes)}</p>
+                        <p class="${"s-Jz36a9_IMCYs"}">${escape2(question?.likes)}</p>
                         <a class="${"like-buttons s-Jz36a9_IMCYs"}"><img src="${"../static/arrow-down.svg"}" width="${"30"}" class="${"s-Jz36a9_IMCYs"}"></a>` : ``}</div>
-                <div class="${"question-information s-Jz36a9_IMCYs"}"><p class="${"title s-Jz36a9_IMCYs"}">${escape((question == null ? void 0 : question.title) ?? "")}</p>
-                    <p class="${"s-Jz36a9_IMCYs"}">${escape((question == null ? void 0 : question.description) ?? "")}</p>
+                <div class="${"question-information s-Jz36a9_IMCYs"}"><p class="${"title s-Jz36a9_IMCYs"}">${escape2(question?.title ?? "")}</p>
+                    <p class="${"s-Jz36a9_IMCYs"}">${escape2(question?.description ?? "")}</p>
                     <div class="${"categories-list s-Jz36a9_IMCYs"}">${each(categories, (category) => {
-        return `${category.name ? `<p class="${"s-Jz36a9_IMCYs"}">${escape(category.name)}</p>` : ``}`;
+        return `${category.name ? `<p class="${"s-Jz36a9_IMCYs"}">${escape2(category.name)}</p>` : ``}`;
       })}</div>
-                    <p class="${"s-Jz36a9_IMCYs"}">Written by ${escape(((_a4 = question == null ? void 0 : question.user) == null ? void 0 : _a4.name) ?? "--")} on ${escape((question == null ? void 0 : question.created_date) ?? "--")}</p></div></div>`}` : ``}
+                    <p class="${"s-Jz36a9_IMCYs"}">Written by ${escape2(question?.user?.name ?? "--")} on ${escape2(question?.created_date ?? "--")}</p></div></div>`}` : ``}
 
-    ${errorComments ? `<div class="${"error-comments s-Jz36a9_IMCYs"}"><span class="${"error-message s-Jz36a9_IMCYs"}">${escape(errorComments)}</span></div>` : ``}
+    ${errorComments ? `<div class="${"error-comments s-Jz36a9_IMCYs"}"><span class="${"error-message s-Jz36a9_IMCYs"}">${escape2(errorComments)}</span></div>` : ``}
 
     ${!loadingComments && comments.data && question ? `${each(comments.data, (comment) => {
-        var _a5;
-        return `<div class="${"comment-content s-Jz36a9_IMCYs"}"><div class="${"buttons-group s-Jz36a9_IMCYs"}">${isLoggedIn ? `<button class="${"button-edit-small s-Jz36a9_IMCYs"}">${escape(editCommentButtonText)}</button>
+        return `<div class="${"comment-content s-Jz36a9_IMCYs"}"><div class="${"buttons-group s-Jz36a9_IMCYs"}">${isLoggedIn ? `<button class="${"button-edit-small s-Jz36a9_IMCYs"}">${escape2(editCommentButtonText)}</button>
                         <button class="${"button-delete s-Jz36a9_IMCYs"}">Delete</button>` : ``}</div>
                 ${`<div class="${"comment-info s-Jz36a9_IMCYs"}"><div class="${"comment-likes s-Jz36a9_IMCYs"}">${isLoggedIn ? `${comment.likes !== "" ? `<a class="${"like-buttons-comment s-Jz36a9_IMCYs"}"><img src="${"../static/arrow-up.svg"}" width="${"30"}" class="${"s-Jz36a9_IMCYs"}"></a>
-                                    <p class="${"s-Jz36a9_IMCYs"}">${escape(comment == null ? void 0 : comment.likes)}</p>
+                                    <p class="${"s-Jz36a9_IMCYs"}">${escape2(comment?.likes)}</p>
                                     <a class="${"like-buttons-comment s-Jz36a9_IMCYs"}"><img src="${"../static/arrow-down.svg"}" width="${"30"}" class="${"s-Jz36a9_IMCYs"}"></a>` : `<p class="${"s-Jz36a9_IMCYs"}">Likes --</p>`}` : ``}</div>
-                        <div class="${"message s-Jz36a9_IMCYs"}"><p class="${"s-Jz36a9_IMCYs"}">${escape((comment == null ? void 0 : comment.message) ?? "--")}</p>
-                            <div class="${"written-by s-Jz36a9_IMCYs"}"><p class="${"s-Jz36a9_IMCYs"}">Written by ${escape(((_a5 = comment == null ? void 0 : comment.user) == null ? void 0 : _a5.name) ?? "--")} on ${escape((comment == null ? void 0 : comment.created_date) ?? "--")}</p>
+                        <div class="${"message s-Jz36a9_IMCYs"}"><p class="${"s-Jz36a9_IMCYs"}">${escape2(comment?.message ?? "--")}</p>
+                            <div class="${"written-by s-Jz36a9_IMCYs"}"><p class="${"s-Jz36a9_IMCYs"}">Written by ${escape2(comment?.user?.name ?? "--")} on ${escape2(comment?.created_date ?? "--")}</p>
                             </div></div>
                     </div>`}
             </div>`;
@@ -6314,36 +7337,20 @@ var init_question_svelte = __esm({
   }
 });
 
-// .svelte-kit/output/server/nodes/5.js
-var __exports6 = {};
-__export(__exports6, {
-  css: () => css12,
-  entry: () => entry6,
-  js: () => js6,
-  module: () => question_svelte_exports
-});
-var entry6, js6, css12;
-var init__6 = __esm({
-  ".svelte-kit/output/server/nodes/5.js"() {
-    init_question_svelte();
-    entry6 = "pages/questions/_question_.svelte-1af4370e.js";
-    js6 = ["pages/questions/_question_.svelte-1af4370e.js", "chunks/vendor-e79db4d0.js", "chunks/stores-f688b8f5.js", "chunks/routes.model-98ab3763.js", "chunks/questions-proxy.service-a2f80bfd.js", "chunks/user-proxy.service-4293fed9.js"];
-    css12 = ["assets/pages/questions/_question_.svelte-8b605e24.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
-// .svelte-kit/output/server/entries/pages/profile/index.svelte.js
-var index_svelte_exports4 = {};
-__export(index_svelte_exports4, {
+// .svelte-kit/output/server/chunks/index-7a333a8f.js
+var index_7a333a8f_exports = {};
+__export(index_7a333a8f_exports, {
   default: () => Profile
 });
-var css13, Profile;
-var init_index_svelte4 = __esm({
-  ".svelte-kit/output/server/entries/pages/profile/index.svelte.js"() {
-    init_index_9e0393c9();
+var css7, Profile;
+var init_index_7a333a8f = __esm({
+  ".svelte-kit/output/server/chunks/index-7a333a8f.js"() {
+    init_shims();
+    init_app_1cbe83fd();
     init_routes_model_d5045fd3();
     init_user_proxy_service_57d98092();
-    css13 = {
+    init_ssr();
+    css7 = {
       code: ".not-logged-in.s-eXrr1TsEXtWh.s-eXrr1TsEXtWh{font-size:1.1rem;text-align:center}.not-logged-in.s-eXrr1TsEXtWh a.s-eXrr1TsEXtWh{color:#5148D5;text-decoration:none}.s-eXrr1TsEXtWh.s-eXrr1TsEXtWh{}",
       map: null
     };
@@ -6356,7 +7363,7 @@ var init_index_svelte4 = __esm({
       }).catch(() => {
         loggedIn = false;
       });
-      $$result.css.add(css13);
+      $$result.css.add(css7);
       return `${$$result.head += `${$$result.title = `<title>StackShare - Your profile</title>`, ""}`, ""}
 
 ${loggedIn ? `<button class="${"s-eXrr1TsEXtWh"}">Log out</button>
@@ -6366,35 +7373,19 @@ ${loggedIn ? `<button class="${"s-eXrr1TsEXtWh"}">Log out</button>
   }
 });
 
-// .svelte-kit/output/server/nodes/6.js
-var __exports7 = {};
-__export(__exports7, {
-  css: () => css14,
-  entry: () => entry7,
-  js: () => js7,
-  module: () => index_svelte_exports4
-});
-var entry7, js7, css14;
-var init__7 = __esm({
-  ".svelte-kit/output/server/nodes/6.js"() {
-    init_index_svelte4();
-    entry7 = "pages/profile/index.svelte-87e0b9f7.js";
-    js7 = ["pages/profile/index.svelte-87e0b9f7.js", "chunks/vendor-e79db4d0.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"];
-    css14 = ["assets/pages/profile/index.svelte-81c41949.css", "assets/vendor-62c95adb.css"];
-  }
-});
-
-// .svelte-kit/output/server/entries/pages/add/question/index.svelte.js
-var index_svelte_exports5 = {};
-__export(index_svelte_exports5, {
+// .svelte-kit/output/server/chunks/index-78d49b6f.js
+var index_78d49b6f_exports = {};
+__export(index_78d49b6f_exports, {
   default: () => Question
 });
-var Cross, ChevronExpand, ReadOnly, css$13, MultiSelect, css15, Question;
-var init_index_svelte5 = __esm({
-  ".svelte-kit/output/server/entries/pages/add/question/index.svelte.js"() {
-    init_index_9e0393c9();
+var Cross, ChevronExpand, ReadOnly, css$13, MultiSelect, css8, Question;
+var init_index_78d49b6f = __esm({
+  ".svelte-kit/output/server/chunks/index-78d49b6f.js"() {
+    init_shims();
+    init_app_1cbe83fd();
     init_questions_proxy_service_6635d82d();
     init_routes_model_d5045fd3();
+    init_ssr();
     Cross = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       let { width = `1em` } = $$props;
       let { height = width } = $$props;
@@ -6444,7 +7435,7 @@ var init_index_svelte5 = __esm({
       let { maxSelect = null } = $$props;
       let { readonly = false } = $$props;
       let { placeholder = `` } = $$props;
-      let { options } = $$props;
+      let { options: options2 } = $$props;
       let { disabledOptions = [] } = $$props;
       let { input = null } = $$props;
       let { name = `` } = $$props;
@@ -6461,7 +7452,7 @@ var init_index_svelte5 = __esm({
       }
       if (!selected)
         selected = single ? `` : [];
-      if (!((options == null ? void 0 : options.length) > 0))
+      if (!(options2?.length > 0))
         console.error(`MultiSelect missing options`);
       createEventDispatcher();
       let activeOption, searchText;
@@ -6474,8 +7465,8 @@ var init_index_svelte5 = __esm({
         $$bindings.readonly(readonly);
       if ($$props.placeholder === void 0 && $$bindings.placeholder && placeholder !== void 0)
         $$bindings.placeholder(placeholder);
-      if ($$props.options === void 0 && $$bindings.options && options !== void 0)
-        $$bindings.options(options);
+      if ($$props.options === void 0 && $$bindings.options && options2 !== void 0)
+        $$bindings.options(options2);
       if ($$props.disabledOptions === void 0 && $$bindings.disabledOptions && disabledOptions !== void 0)
         $$bindings.disabledOptions(disabledOptions);
       if ($$props.input === void 0 && $$bindings.input && input !== void 0)
@@ -6500,15 +7491,15 @@ var init_index_svelte5 = __esm({
         $$bindings.removeAllTitle(removeAllTitle);
       $$result.css.add(css$13);
       single = maxSelect === 1;
-      invalidDisabledOptions = disabledOptions.filter((opt) => !options.includes(opt));
+      invalidDisabledOptions = disabledOptions.filter((opt) => !options2.includes(opt));
       {
         if (invalidDisabledOptions.length > 0) {
           console.error(`Some disabledOptions are invalid as they do not appear in the options list: ${invalidDisabledOptions}`);
         }
       }
-      filteredOptions = options;
+      filteredOptions = options2;
       isSelected = (option) => {
-        if (!((selected == null ? void 0 : selected.length) > 0))
+        if (!(selected?.length > 0))
           return false;
         if (single)
           return selected === option;
@@ -6517,15 +7508,15 @@ var init_index_svelte5 = __esm({
       };
       return `
 <div class="${[
-        "multiselect " + escape(outerDivClass) + " s-RGNuTLKtz0kD",
+        "multiselect " + escape2(outerDivClass) + " s-RGNuTLKtz0kD",
         (readonly ? "readonly" : "") + " " + (single ? "single" : "")
       ].join(" ").trim()}"${add_attribute("style", ``, 0)}>${validate_component(ChevronExpand, "ExpandIcon").$$render($$result, {
         height: "14pt",
         style: "padding-left: 1pt;"
       }, {}, {})}
-  <ul class="${"tokens " + escape(ulTokensClass) + " s-RGNuTLKtz0kD"}">${single ? `<span class="${"s-RGNuTLKtz0kD"}">${escape(selected)}</span>` : `${(selected == null ? void 0 : selected.length) > 0 ? `${each(selected, (tag) => {
-        return `<li class="${escape(null_to_empty(liTokenClass)) + " s-RGNuTLKtz0kD"}">${escape(tag)}
-          ${!readonly ? `<button type="${"button"}" title="${escape(removeBtnTitle) + " " + escape(tag)}" class="${"s-RGNuTLKtz0kD"}">${validate_component(Cross, "CrossIcon").$$render($$result, { height: "12pt" }, {}, {})}
+  <ul class="${"tokens " + escape2(ulTokensClass) + " s-RGNuTLKtz0kD"}">${single ? `<span class="${"s-RGNuTLKtz0kD"}">${escape2(selected)}</span>` : `${selected?.length > 0 ? `${each(selected, (tag) => {
+        return `<li class="${escape2(null_to_empty(liTokenClass)) + " s-RGNuTLKtz0kD"}">${escape2(tag)}
+          ${!readonly ? `<button type="${"button"}" title="${escape2(removeBtnTitle) + " " + escape2(tag)}" class="${"s-RGNuTLKtz0kD"}">${validate_component(Cross, "CrossIcon").$$render($$result, { height: "12pt" }, {}, {})}
             </button>` : ``}
         </li>`;
       })}` : ``}`}
@@ -6533,18 +7524,18 @@ var init_index_svelte5 = __esm({
   ${readonly ? `${validate_component(ReadOnly, "ReadOnlyIcon").$$render($$result, { height: "14pt" }, {}, {})}` : `<button type="${"button"}" class="${"remove-all s-RGNuTLKtz0kD"}"${add_attribute("title", removeAllTitle, 0)}${add_attribute("style", selected.length === 0 ? `display: none;` : ``, 0)}>${validate_component(Cross, "CrossIcon").$$render($$result, { height: "14pt" }, {}, {})}</button>`}
 
   <ul class="${[
-        "options " + escape(ulOptionsClass) + " s-RGNuTLKtz0kD",
+        "options " + escape2(ulOptionsClass) + " s-RGNuTLKtz0kD",
         "hidden"
       ].join(" ").trim()}">${filteredOptions.length ? each(filteredOptions, (option) => {
         return `<li class="${[
-          escape(null_to_empty(liOptionClass)) + " s-RGNuTLKtz0kD",
+          escape2(null_to_empty(liOptionClass)) + " s-RGNuTLKtz0kD",
           (isSelected(option) ? "selected" : "") + " " + (activeOption === option ? "active" : "") + " " + (isDisabled(option) ? "disabled" : "")
-        ].join(" ").trim()}">${escape(option)}
+        ].join(" ").trim()}">${escape2(option)}
         </li>`;
-      }) : `${escape(noOptionsMsg)}`}</ul>
+      }) : `${escape2(noOptionsMsg)}`}</ul>
 </div>`;
     });
-    css15 = {
+    css8 = {
       code: ".add-question.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{width:100%;z-index:5}.add-question-form.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{display:flex;flex-direction:column;padding:0 5rem}.add-question-form.add-question-form.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{z-index:2;align-items:center}.add-question-form.add-question-form.s-7fuz2z0j95VQ p.s-7fuz2z0j95VQ{max-width:550px}.add-question-form.s-7fuz2z0j95VQ .error.s-7fuz2z0j95VQ{width:390px;font-size:1rem}.add-question-form.s-7fuz2z0j95VQ .error .error-message.s-7fuz2z0j95VQ{color:#de3232}.title.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{font-size:2.2rem;color:#444;margin-bottom:10px}.input-field.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{max-width:550px;width:100%;background-color:#f0f0f0;margin:10px 0;height:46px;border-radius:55px;display:grid;grid-template-columns:100%;padding:0 11px;position:relative}.input-field.s-7fuz2z0j95VQ input.s-7fuz2z0j95VQ{background:none;outline:none;border:none;line-height:1;font-weight:500;font-size:1rem;color:#333}.input-field.s-7fuz2z0j95VQ input.s-7fuz2z0j95VQ::placeholder{color:#aaa;font-weight:500}.textarea-field.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{max-width:550px;width:100%;background-color:#f0f0f0;margin:10px 0;height:230px;border-radius:15px;display:grid;grid-template-columns:100%;padding:10px 0.7rem;position:relative}.textarea-field.s-7fuz2z0j95VQ textarea.s-7fuz2z0j95VQ{background:none;outline:none;border:none;line-height:1;font-weight:500;font-size:1rem;color:#333}.textarea-field.s-7fuz2z0j95VQ textarea.s-7fuz2z0j95VQ::placeholder{color:#aaa;font-weight:500}.category-box.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{max-width:550px;width:100%}.category-box.s-7fuz2z0j95VQ p.s-7fuz2z0j95VQ:first-of-type{font-size:1.1rem}.button.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{width:150px;background-color:#6151ee;border:none;outline:none;height:49px;border-radius:49px;color:#fff;font-weight:500;font-size:1rem;margin:10px 0;cursor:pointer}.button.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ:hover{background-color:#4539c4}@media(max-width: 870px){.add-question.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{width:100%}}@media(max-width: 570px){form.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{padding:0 1.5rem}}.s-7fuz2z0j95VQ.s-7fuz2z0j95VQ{}",
       map: null
     };
@@ -6571,7 +7562,7 @@ var init_index_svelte5 = __esm({
         error2 = "Could not send the question";
         inProgress = false;
       });
-      $$result.css.add(css15);
+      $$result.css.add(css8);
       let $$settled;
       let $$rendered;
       do {
@@ -6581,7 +7572,7 @@ var init_index_svelte5 = __esm({
 <div class="${"add-question s-7fuz2z0j95VQ"}"><form class="${"add-question-form s-7fuz2z0j95VQ"}"><h2 class="${"title s-7fuz2z0j95VQ"}">Add a question</h2>
         <p class="${"s-7fuz2z0j95VQ"}">The community is here to help you with specific coding, algorithm, or language problems.
             Avoid asking opinion-based questions.</p>
-        ${error2 ? `<div class="${"error s-7fuz2z0j95VQ"}"><span class="${"error-message s-7fuz2z0j95VQ"}">${escape(error2)}</span></div>` : ``}
+        ${error2 ? `<div class="${"error s-7fuz2z0j95VQ"}"><span class="${"error-message s-7fuz2z0j95VQ"}">${escape2(error2)}</span></div>` : ``}
         ${``}
         <div class="${"input-field s-7fuz2z0j95VQ"}"><input type="${"text"}" placeholder="${"Title"}" class="${"s-7fuz2z0j95VQ"}"${add_attribute("value", question.title, 0)}></div>
         ${``}
@@ -6608,31 +7599,356 @@ var init_index_svelte5 = __esm({
   }
 });
 
-// .svelte-kit/output/server/nodes/7.js
-var __exports8 = {};
-__export(__exports8, {
-  css: () => css16,
-  entry: () => entry8,
-  js: () => js8,
-  module: () => index_svelte_exports5
-});
-var entry8, js8, css16;
-var init__8 = __esm({
-  ".svelte-kit/output/server/nodes/7.js"() {
-    init_index_svelte5();
-    entry8 = "pages/add/question/index.svelte-d41f3dee.js";
-    js8 = ["pages/add/question/index.svelte-d41f3dee.js", "chunks/vendor-e79db4d0.js", "chunks/questions-proxy.service-a2f80bfd.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"];
-    css16 = ["assets/pages/add/question/index.svelte-f9283e84.css", "assets/vendor-62c95adb.css"];
+// .svelte-kit/output/server/chunks/app-1cbe83fd.js
+function noop3() {
+}
+function run(fn) {
+  return fn();
+}
+function blank_object() {
+  return Object.create(null);
+}
+function run_all(fns) {
+  fns.forEach(run);
+}
+function validate_store(store, name) {
+  if (store != null && typeof store.subscribe !== "function") {
+    throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+  }
+}
+function subscribe(store, ...callbacks) {
+  if (store == null) {
+    return noop3;
+  }
+  const unsub = store.subscribe(...callbacks);
+  return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+}
+function null_to_empty(value) {
+  return value == null ? "" : value;
+}
+function custom_event(type, detail, bubbles = false) {
+  const e2 = document.createEvent("CustomEvent");
+  e2.initCustomEvent(type, bubbles, false, detail);
+  return e2;
+}
+function set_current_component(component) {
+  current_component = component;
+}
+function get_current_component() {
+  if (!current_component)
+    throw new Error("Function called outside component initialization");
+  return current_component;
+}
+function createEventDispatcher() {
+  const component = get_current_component();
+  return (type, detail) => {
+    const callbacks = component.$$.callbacks[type];
+    if (callbacks) {
+      const event = custom_event(type, detail);
+      callbacks.slice().forEach((fn) => {
+        fn.call(component, event);
+      });
+    }
+  };
+}
+function setContext(key, context) {
+  get_current_component().$$.context.set(key, context);
+}
+function getContext(key) {
+  return get_current_component().$$.context.get(key);
+}
+function escape2(html) {
+  return String(html).replace(/["'&<>]/g, (match) => escaped2[match]);
+}
+function each(items, fn) {
+  let str = "";
+  for (let i2 = 0; i2 < items.length; i2 += 1) {
+    str += fn(items[i2], i2);
+  }
+  return str;
+}
+function validate_component(component, name) {
+  if (!component || !component.$$render) {
+    if (name === "svelte:component")
+      name += " this={...}";
+    throw new Error(`<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules`);
+  }
+  return component;
+}
+function create_ssr_component(fn) {
+  function $$render(result, props, bindings, slots, context) {
+    const parent_component = current_component;
+    const $$ = {
+      on_destroy,
+      context: new Map(context || (parent_component ? parent_component.$$.context : [])),
+      on_mount: [],
+      before_update: [],
+      after_update: [],
+      callbacks: blank_object()
+    };
+    set_current_component({ $$ });
+    const html = fn(result, props, bindings, slots);
+    set_current_component(parent_component);
+    return html;
+  }
+  return {
+    render: (props = {}, { $$slots = {}, context = new Map() } = {}) => {
+      on_destroy = [];
+      const result = { title: "", head: "", css: new Set() };
+      const html = $$render(result, props, {}, $$slots, context);
+      run_all(on_destroy);
+      return {
+        html,
+        css: {
+          code: Array.from(result.css).map((css22) => css22.code).join("\n"),
+          map: null
+        },
+        head: result.title + result.head
+      };
+    },
+    $$render
+  };
+}
+function add_attribute(name, value, boolean) {
+  if (value == null || boolean && !value)
+    return "";
+  return ` ${name}${value === true && boolean_attributes.has(name) ? "" : `=${typeof value === "string" ? JSON.stringify(escape2(value)) : `"${value}"`}`}`;
+}
+function afterUpdate() {
+}
+function set_paths(paths) {
+  base = paths.base;
+  assets = paths.assets || base;
+}
+function set_prerendering(value) {
+}
+function init(settings = default_settings) {
+  set_paths(settings.paths);
+  set_prerendering(settings.prerendering || false);
+  const hooks = get_hooks(user_hooks);
+  options = {
+    amp: false,
+    dev: false,
+    entry: {
+      file: assets + "/_app/start-9db37c07.js",
+      css: [assets + "/_app/assets/start-1397a1de.css", assets + "/_app/assets/vendor-62c95adb.css"],
+      js: [assets + "/_app/start-9db37c07.js", assets + "/_app/chunks/vendor-5575ec6d.js"]
+    },
+    fetched: void 0,
+    floc: false,
+    get_component_path: (id) => assets + "/_app/" + entry_lookup[id],
+    get_stack: (error2) => String(error2),
+    handle_error: (error2, request) => {
+      hooks.handleError({ error: error2, request });
+      error2.stack = options.get_stack(error2);
+    },
+    hooks,
+    hydrate: true,
+    initiator: void 0,
+    load_component,
+    manifest,
+    paths: settings.paths,
+    prerender: true,
+    read: settings.read,
+    root: Root,
+    service_worker: null,
+    router: true,
+    ssr: true,
+    target: "#svelte",
+    template,
+    trailing_slash: "never"
+  };
+}
+async function load_component(file) {
+  const { entry, css: css22, js, styles } = metadata_lookup[file];
+  return {
+    module: await module_lookup[file](),
+    entry: assets + "/_app/" + entry,
+    css: css22.map((dep) => assets + "/_app/" + dep),
+    js: js.map((dep) => assets + "/_app/" + dep),
+    styles
+  };
+}
+function render(request, {
+  prerender
+} = {}) {
+  const host = request.headers["host"];
+  return respond({ ...request, host }, options, { prerender });
+}
+var current_component, boolean_attributes, escaped2, missing_component, on_destroy, css9, Root, base, assets, user_hooks, template, options, default_settings, d, empty, manifest, get_hooks, module_lookup, metadata_lookup;
+var init_app_1cbe83fd = __esm({
+  ".svelte-kit/output/server/chunks/app-1cbe83fd.js"() {
+    init_shims();
+    init_ssr();
+    Promise.resolve();
+    boolean_attributes = new Set([
+      "allowfullscreen",
+      "allowpaymentrequest",
+      "async",
+      "autofocus",
+      "autoplay",
+      "checked",
+      "controls",
+      "default",
+      "defer",
+      "disabled",
+      "formnovalidate",
+      "hidden",
+      "ismap",
+      "loop",
+      "multiple",
+      "muted",
+      "nomodule",
+      "novalidate",
+      "open",
+      "playsinline",
+      "readonly",
+      "required",
+      "reversed",
+      "selected"
+    ]);
+    escaped2 = {
+      '"': "&quot;",
+      "'": "&#39;",
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;"
+    };
+    missing_component = {
+      $$render: () => ""
+    };
+    css9 = {
+      code: "#svelte-announcer.s-8hLAvO_PPOEE{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}.s-8hLAvO_PPOEE{}",
+      map: null
+    };
+    Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+      let { stores } = $$props;
+      let { page: page2 } = $$props;
+      let { components } = $$props;
+      let { props_0 = null } = $$props;
+      let { props_1 = null } = $$props;
+      let { props_2 = null } = $$props;
+      setContext("__svelte__", stores);
+      afterUpdate(stores.page.notify);
+      if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0)
+        $$bindings.stores(stores);
+      if ($$props.page === void 0 && $$bindings.page && page2 !== void 0)
+        $$bindings.page(page2);
+      if ($$props.components === void 0 && $$bindings.components && components !== void 0)
+        $$bindings.components(components);
+      if ($$props.props_0 === void 0 && $$bindings.props_0 && props_0 !== void 0)
+        $$bindings.props_0(props_0);
+      if ($$props.props_1 === void 0 && $$bindings.props_1 && props_1 !== void 0)
+        $$bindings.props_1(props_1);
+      if ($$props.props_2 === void 0 && $$bindings.props_2 && props_2 !== void 0)
+        $$bindings.props_2(props_2);
+      $$result.css.add(css9);
+      {
+        stores.page.set(page2);
+      }
+      return `
+
+
+${validate_component(components[0] || missing_component, "svelte:component").$$render($$result, Object.assign(props_0 || {}), {}, {
+        default: () => {
+          return `${components[1] ? `${validate_component(components[1] || missing_component, "svelte:component").$$render($$result, Object.assign(props_1 || {}), {}, {
+            default: () => {
+              return `${components[2] ? `${validate_component(components[2] || missing_component, "svelte:component").$$render($$result, Object.assign(props_2 || {}), {}, {})}` : ``}`;
+            }
+          })}` : ``}`;
+        }
+      })}
+
+${``}`;
+    });
+    base = "";
+    assets = "";
+    user_hooks = /* @__PURE__ */ Object.freeze({
+      __proto__: null,
+      [Symbol.toStringTag]: "Module"
+    });
+    template = ({ head, body }) => '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="utf-8">\n    <link rel="icon" href="favicon.png">\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n\n    <!-- Import Ionicon icons & Google Fonts relies on -->\n    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">\n    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic"\n          rel="stylesheet" type="text/css">\n\n    ' + head + '\n</head>\n<body>\n<div id="svelte">' + body + "</div>\n</body>\n\n<style>\n    * {\n        font-family: 'Titillium Web', system-ui, sans-serif;\n    }\n\n    html, body {\n        margin: 0;\n        padding: 0;\n        overflow-x: hidden;\n    }\n</style>\n</html>\n";
+    options = null;
+    default_settings = { paths: { "base": "", "assets": "" } };
+    d = (s3) => s3.replace(/%23/g, "#").replace(/%3[Bb]/g, ";").replace(/%2[Cc]/g, ",").replace(/%2[Ff]/g, "/").replace(/%3[Ff]/g, "?").replace(/%3[Aa]/g, ":").replace(/%40/g, "@").replace(/%26/g, "&").replace(/%3[Dd]/g, "=").replace(/%2[Bb]/g, "+").replace(/%24/g, "$");
+    empty = () => ({});
+    manifest = {
+      assets: [{ "file": "arrow-down.svg", "size": 1386, "type": "image/svg+xml" }, { "file": "arrow-up.svg", "size": 1515, "type": "image/svg+xml" }, { "file": "favicon.png", "size": 14130, "type": "image/png" }, { "file": "logo-stackshare.png", "size": 26649, "type": "image/png" }, { "file": "logo.svg", "size": 34525, "type": "image/svg+xml" }, { "file": "register.svg", "size": 26911, "type": "image/svg+xml" }],
+      layout: "src/routes/__layout.svelte",
+      error: "src/routes/__error.svelte",
+      routes: [
+        {
+          type: "page",
+          pattern: /^\/$/,
+          params: empty,
+          a: ["src/routes/__layout.svelte", "src/routes/index.svelte"],
+          b: ["src/routes/__error.svelte"]
+        },
+        {
+          type: "page",
+          pattern: /^\/authenticate\/?$/,
+          params: empty,
+          a: ["src/routes/__layout.svelte", "src/routes/authenticate/index.svelte"],
+          b: ["src/routes/__error.svelte"]
+        },
+        {
+          type: "page",
+          pattern: /^\/questions\/?$/,
+          params: empty,
+          a: ["src/routes/__layout.svelte", "src/routes/questions/index.svelte"],
+          b: ["src/routes/__error.svelte"]
+        },
+        {
+          type: "page",
+          pattern: /^\/questions\/([^/]+?)\/?$/,
+          params: (m2) => ({ question: d(m2[1]) }),
+          a: ["src/routes/__layout.svelte", "src/routes/questions/[question].svelte"],
+          b: ["src/routes/__error.svelte"]
+        },
+        {
+          type: "page",
+          pattern: /^\/profile\/?$/,
+          params: empty,
+          a: ["src/routes/__layout.svelte", "src/routes/profile/index.svelte"],
+          b: ["src/routes/__error.svelte"]
+        },
+        {
+          type: "page",
+          pattern: /^\/add\/question\/?$/,
+          params: empty,
+          a: ["src/routes/__layout.svelte", "src/routes/add/question/index.svelte"],
+          b: ["src/routes/__error.svelte"]
+        }
+      ]
+    };
+    get_hooks = (hooks) => ({
+      getSession: hooks.getSession || (() => ({})),
+      handle: hooks.handle || (({ request, resolve: resolve2 }) => resolve2(request)),
+      handleError: hooks.handleError || (({ error: error2 }) => console.error(error2.stack)),
+      externalFetch: hooks.externalFetch || fetch
+    });
+    module_lookup = {
+      "src/routes/__layout.svelte": () => Promise.resolve().then(() => (init_layout_4255c7c7(), layout_4255c7c7_exports)),
+      "src/routes/__error.svelte": () => Promise.resolve().then(() => (init_error_2761b111(), error_2761b111_exports)),
+      "src/routes/index.svelte": () => Promise.resolve().then(() => (init_index_71cd0240(), index_71cd0240_exports)),
+      "src/routes/authenticate/index.svelte": () => Promise.resolve().then(() => (init_index_06904b8e(), index_06904b8e_exports)),
+      "src/routes/questions/index.svelte": () => Promise.resolve().then(() => (init_index_9ba2f26e(), index_9ba2f26e_exports)),
+      "src/routes/questions/[question].svelte": () => Promise.resolve().then(() => (init_question_e54e687d(), question_e54e687d_exports)),
+      "src/routes/profile/index.svelte": () => Promise.resolve().then(() => (init_index_7a333a8f(), index_7a333a8f_exports)),
+      "src/routes/add/question/index.svelte": () => Promise.resolve().then(() => (init_index_78d49b6f(), index_78d49b6f_exports))
+    };
+    metadata_lookup = { "src/routes/__layout.svelte": { "entry": "pages/__layout.svelte-d3d09950.js", "css": ["assets/pages/__layout.svelte-35a34268.css", "assets/vendor-62c95adb.css"], "js": ["pages/__layout.svelte-d3d09950.js", "chunks/vendor-5575ec6d.js", "chunks/stores-a7a2e49d.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"], "styles": [] }, "src/routes/__error.svelte": { "entry": "pages/__error.svelte-bd66f210.js", "css": ["assets/pages/__error.svelte-b05e7ebf.css", "assets/vendor-62c95adb.css"], "js": ["pages/__error.svelte-bd66f210.js", "chunks/vendor-5575ec6d.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-909164a1.js", "css": ["assets/pages/index.svelte-7bf37d9d.css", "assets/vendor-62c95adb.css"], "js": ["pages/index.svelte-909164a1.js", "chunks/vendor-5575ec6d.js", "chunks/routes.model-98ab3763.js", "chunks/questions-proxy.service-a2f80bfd.js"], "styles": [] }, "src/routes/authenticate/index.svelte": { "entry": "pages/authenticate/index.svelte-c11b396e.js", "css": ["assets/pages/authenticate/index.svelte-1b57fb2b.css", "assets/vendor-62c95adb.css"], "js": ["pages/authenticate/index.svelte-c11b396e.js", "chunks/vendor-5575ec6d.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"], "styles": [] }, "src/routes/questions/index.svelte": { "entry": "pages/questions/index.svelte-f62642c8.js", "css": ["assets/pages/questions/index.svelte-a540830f.css", "assets/vendor-62c95adb.css"], "js": ["pages/questions/index.svelte-f62642c8.js", "chunks/vendor-5575ec6d.js"], "styles": [] }, "src/routes/questions/[question].svelte": { "entry": "pages/questions/_question_.svelte-68999ddb.js", "css": ["assets/pages/questions/_question_.svelte-8b605e24.css", "assets/vendor-62c95adb.css"], "js": ["pages/questions/_question_.svelte-68999ddb.js", "chunks/vendor-5575ec6d.js", "chunks/stores-a7a2e49d.js", "chunks/routes.model-98ab3763.js", "chunks/questions-proxy.service-a2f80bfd.js", "chunks/user-proxy.service-4293fed9.js"], "styles": [] }, "src/routes/profile/index.svelte": { "entry": "pages/profile/index.svelte-9b9ca9a6.js", "css": ["assets/pages/profile/index.svelte-81c41949.css", "assets/vendor-62c95adb.css"], "js": ["pages/profile/index.svelte-9b9ca9a6.js", "chunks/vendor-5575ec6d.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"], "styles": [] }, "src/routes/add/question/index.svelte": { "entry": "pages/add/question/index.svelte-6e723b85.js", "css": ["assets/pages/add/question/index.svelte-f9283e84.css", "assets/vendor-62c95adb.css"], "js": ["pages/add/question/index.svelte-6e723b85.js", "chunks/vendor-5575ec6d.js", "chunks/questions-proxy.service-a2f80bfd.js", "chunks/routes.model-98ab3763.js", "chunks/user-proxy.service-4293fed9.js"], "styles": [] } };
   }
 });
 
-// .svelte-kit/vercel-tmp/entry.js
+// .svelte-kit/vercel/entry.js
 __export(exports, {
   default: () => entry_default
 });
-init_install_fetch();
+init_shims();
 
 // node_modules/@sveltejs/kit/dist/node.js
+init_shims();
 function getRawBody(req) {
   return new Promise((fulfil, reject) => {
     const h2 = req.headers;
@@ -6673,1593 +7989,14 @@ function getRawBody(req) {
 }
 
 // .svelte-kit/output/server/app.js
-init_index_9e0393c9();
-var __accessCheck2 = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
-};
-var __privateGet2 = (obj, member, getter) => {
-  __accessCheck2(obj, member, "read from private field");
-  return getter ? getter.call(obj) : member.get(obj);
-};
-var __privateAdd2 = (obj, member, value) => {
-  if (member.has(obj))
-    throw TypeError("Cannot add the same private member more than once");
-  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-};
-var __privateSet2 = (obj, member, value, setter) => {
-  __accessCheck2(obj, member, "write to private field");
-  setter ? setter.call(obj, value) : member.set(obj, value);
-  return value;
-};
-var _map;
-function afterUpdate() {
-}
-var Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { stores } = $$props;
-  let { page: page2 } = $$props;
-  let { components } = $$props;
-  let { props_0 = null } = $$props;
-  let { props_1 = null } = $$props;
-  let { props_2 = null } = $$props;
-  setContext("__svelte__", stores);
-  afterUpdate(stores.page.notify);
-  if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0)
-    $$bindings.stores(stores);
-  if ($$props.page === void 0 && $$bindings.page && page2 !== void 0)
-    $$bindings.page(page2);
-  if ($$props.components === void 0 && $$bindings.components && components !== void 0)
-    $$bindings.components(components);
-  if ($$props.props_0 === void 0 && $$bindings.props_0 && props_0 !== void 0)
-    $$bindings.props_0(props_0);
-  if ($$props.props_1 === void 0 && $$bindings.props_1 && props_1 !== void 0)
-    $$bindings.props_1(props_1);
-  if ($$props.props_2 === void 0 && $$bindings.props_2 && props_2 !== void 0)
-    $$bindings.props_2(props_2);
-  {
-    stores.page.set(page2);
-  }
-  return `
+init_shims();
+init_ssr();
+init_app_1cbe83fd();
 
-
-${components[1] ? `${validate_component(components[0] || missing_component, "svelte:component").$$render($$result, Object.assign(props_0 || {}), {}, {
-    default: () => {
-      return `${components[2] ? `${validate_component(components[1] || missing_component, "svelte:component").$$render($$result, Object.assign(props_1 || {}), {}, {
-        default: () => {
-          return `${validate_component(components[2] || missing_component, "svelte:component").$$render($$result, Object.assign(props_2 || {}), {}, {})}`;
-        }
-      })}` : `${validate_component(components[1] || missing_component, "svelte:component").$$render($$result, Object.assign(props_1 || {}), {}, {})}`}`;
-    }
-  })}` : `${validate_component(components[0] || missing_component, "svelte:component").$$render($$result, Object.assign(props_0 || {}), {}, {})}`}
-
-${``}`;
-});
-function get_single_valued_header(headers, key) {
-  const value = headers[key];
-  if (Array.isArray(value)) {
-    if (value.length === 0) {
-      return void 0;
-    }
-    if (value.length > 1) {
-      throw new Error(`Multiple headers provided for ${key}. Multiple may be provided only for set-cookie`);
-    }
-    return value[0];
-  }
-  return value;
-}
-function lowercase_keys(obj) {
-  const clone2 = {};
-  for (const key in obj) {
-    clone2[key.toLowerCase()] = obj[key];
-  }
-  return clone2;
-}
-function decode_params(params) {
-  for (const key in params) {
-    params[key] = params[key].replace(/%23/g, "#").replace(/%3[Bb]/g, ";").replace(/%2[Cc]/g, ",").replace(/%2[Ff]/g, "/").replace(/%3[Ff]/g, "?").replace(/%3[Aa]/g, ":").replace(/%40/g, "@").replace(/%26/g, "&").replace(/%3[Dd]/g, "=").replace(/%2[Bb]/g, "+").replace(/%24/g, "$");
-  }
-  return params;
-}
-function error(body) {
-  return {
-    status: 500,
-    body,
-    headers: {}
-  };
-}
-function is_string(s22) {
-  return typeof s22 === "string" || s22 instanceof String;
-}
-var text_types = new Set([
-  "application/xml",
-  "application/json",
-  "application/x-www-form-urlencoded",
-  "multipart/form-data"
-]);
-function is_text(content_type) {
-  if (!content_type)
-    return true;
-  const type = content_type.split(";")[0].toLowerCase();
-  return type.startsWith("text/") || type.endsWith("+xml") || text_types.has(type);
-}
-async function render_endpoint(request, route, match) {
-  const mod = await route.load();
-  const handler = mod[request.method.toLowerCase().replace("delete", "del")];
-  if (!handler) {
-    return;
-  }
-  request.params = route.params ? decode_params(route.params(match)) : {};
-  const response = await handler(request);
-  const preface = `Invalid response from route ${request.url.pathname}`;
-  if (typeof response !== "object") {
-    return error(`${preface}: expected an object, got ${typeof response}`);
-  }
-  if (response.fallthrough) {
-    return;
-  }
-  let { status = 200, body, headers = {} } = response;
-  headers = lowercase_keys(headers);
-  const type = get_single_valued_header(headers, "content-type");
-  if (!is_text(type) && !(body instanceof Uint8Array || is_string(body))) {
-    return error(`${preface}: body must be an instance of string or Uint8Array if content-type is not a supported textual content-type`);
-  }
-  let normalized_body;
-  if ((typeof body === "object" || typeof body === "undefined") && !(body instanceof Uint8Array) && (!type || type.startsWith("application/json"))) {
-    headers = __spreadProps(__spreadValues({}, headers), { "content-type": "application/json; charset=utf-8" });
-    normalized_body = JSON.stringify(typeof body === "undefined" ? {} : body);
-  } else {
-    normalized_body = body;
-  }
-  return { status, body: normalized_body, headers };
-}
-var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$";
-var unsafeChars = /[<>\b\f\n\r\t\0\u2028\u2029]/g;
-var reserved = /^(?:do|if|in|for|int|let|new|try|var|byte|case|char|else|enum|goto|long|this|void|with|await|break|catch|class|const|final|float|short|super|throw|while|yield|delete|double|export|import|native|return|switch|throws|typeof|boolean|default|extends|finally|package|private|abstract|continue|debugger|function|volatile|interface|protected|transient|implements|instanceof|synchronized)$/;
-var escaped2 = {
-  "<": "\\u003C",
-  ">": "\\u003E",
-  "/": "\\u002F",
-  "\\": "\\\\",
-  "\b": "\\b",
-  "\f": "\\f",
-  "\n": "\\n",
-  "\r": "\\r",
-  "	": "\\t",
-  "\0": "\\0",
-  "\u2028": "\\u2028",
-  "\u2029": "\\u2029"
-};
-var objectProtoOwnPropertyNames = Object.getOwnPropertyNames(Object.prototype).sort().join("\0");
-function devalue(value) {
-  var counts = new Map();
-  function walk(thing) {
-    if (typeof thing === "function") {
-      throw new Error("Cannot stringify a function");
-    }
-    if (counts.has(thing)) {
-      counts.set(thing, counts.get(thing) + 1);
-      return;
-    }
-    counts.set(thing, 1);
-    if (!isPrimitive(thing)) {
-      var type = getType(thing);
-      switch (type) {
-        case "Number":
-        case "String":
-        case "Boolean":
-        case "Date":
-        case "RegExp":
-          return;
-        case "Array":
-          thing.forEach(walk);
-          break;
-        case "Set":
-        case "Map":
-          Array.from(thing).forEach(walk);
-          break;
-        default:
-          var proto = Object.getPrototypeOf(thing);
-          if (proto !== Object.prototype && proto !== null && Object.getOwnPropertyNames(proto).sort().join("\0") !== objectProtoOwnPropertyNames) {
-            throw new Error("Cannot stringify arbitrary non-POJOs");
-          }
-          if (Object.getOwnPropertySymbols(thing).length > 0) {
-            throw new Error("Cannot stringify POJOs with symbolic keys");
-          }
-          Object.keys(thing).forEach(function(key) {
-            return walk(thing[key]);
-          });
-      }
-    }
-  }
-  walk(value);
-  var names = new Map();
-  Array.from(counts).filter(function(entry9) {
-    return entry9[1] > 1;
-  }).sort(function(a, b) {
-    return b[1] - a[1];
-  }).forEach(function(entry9, i2) {
-    names.set(entry9[0], getName(i2));
-  });
-  function stringify(thing) {
-    if (names.has(thing)) {
-      return names.get(thing);
-    }
-    if (isPrimitive(thing)) {
-      return stringifyPrimitive(thing);
-    }
-    var type = getType(thing);
-    switch (type) {
-      case "Number":
-      case "String":
-      case "Boolean":
-        return "Object(" + stringify(thing.valueOf()) + ")";
-      case "RegExp":
-        return "new RegExp(" + stringifyString(thing.source) + ', "' + thing.flags + '")';
-      case "Date":
-        return "new Date(" + thing.getTime() + ")";
-      case "Array":
-        var members = thing.map(function(v, i2) {
-          return i2 in thing ? stringify(v) : "";
-        });
-        var tail = thing.length === 0 || thing.length - 1 in thing ? "" : ",";
-        return "[" + members.join(",") + tail + "]";
-      case "Set":
-      case "Map":
-        return "new " + type + "([" + Array.from(thing).map(stringify).join(",") + "])";
-      default:
-        var obj = "{" + Object.keys(thing).map(function(key) {
-          return safeKey(key) + ":" + stringify(thing[key]);
-        }).join(",") + "}";
-        var proto = Object.getPrototypeOf(thing);
-        if (proto === null) {
-          return Object.keys(thing).length > 0 ? "Object.assign(Object.create(null)," + obj + ")" : "Object.create(null)";
-        }
-        return obj;
-    }
-  }
-  var str = stringify(value);
-  if (names.size) {
-    var params_1 = [];
-    var statements_1 = [];
-    var values_1 = [];
-    names.forEach(function(name, thing) {
-      params_1.push(name);
-      if (isPrimitive(thing)) {
-        values_1.push(stringifyPrimitive(thing));
-        return;
-      }
-      var type = getType(thing);
-      switch (type) {
-        case "Number":
-        case "String":
-        case "Boolean":
-          values_1.push("Object(" + stringify(thing.valueOf()) + ")");
-          break;
-        case "RegExp":
-          values_1.push(thing.toString());
-          break;
-        case "Date":
-          values_1.push("new Date(" + thing.getTime() + ")");
-          break;
-        case "Array":
-          values_1.push("Array(" + thing.length + ")");
-          thing.forEach(function(v, i2) {
-            statements_1.push(name + "[" + i2 + "]=" + stringify(v));
-          });
-          break;
-        case "Set":
-          values_1.push("new Set");
-          statements_1.push(name + "." + Array.from(thing).map(function(v) {
-            return "add(" + stringify(v) + ")";
-          }).join("."));
-          break;
-        case "Map":
-          values_1.push("new Map");
-          statements_1.push(name + "." + Array.from(thing).map(function(_a4) {
-            var k = _a4[0], v = _a4[1];
-            return "set(" + stringify(k) + ", " + stringify(v) + ")";
-          }).join("."));
-          break;
-        default:
-          values_1.push(Object.getPrototypeOf(thing) === null ? "Object.create(null)" : "{}");
-          Object.keys(thing).forEach(function(key) {
-            statements_1.push("" + name + safeProp(key) + "=" + stringify(thing[key]));
-          });
-      }
-    });
-    statements_1.push("return " + str);
-    return "(function(" + params_1.join(",") + "){" + statements_1.join(";") + "}(" + values_1.join(",") + "))";
-  } else {
-    return str;
-  }
-}
-function getName(num) {
-  var name = "";
-  do {
-    name = chars[num % chars.length] + name;
-    num = ~~(num / chars.length) - 1;
-  } while (num >= 0);
-  return reserved.test(name) ? name + "_" : name;
-}
-function isPrimitive(thing) {
-  return Object(thing) !== thing;
-}
-function stringifyPrimitive(thing) {
-  if (typeof thing === "string")
-    return stringifyString(thing);
-  if (thing === void 0)
-    return "void 0";
-  if (thing === 0 && 1 / thing < 0)
-    return "-0";
-  var str = String(thing);
-  if (typeof thing === "number")
-    return str.replace(/^(-)?0\./, "$1.");
-  return str;
-}
-function getType(thing) {
-  return Object.prototype.toString.call(thing).slice(8, -1);
-}
-function escapeUnsafeChar(c) {
-  return escaped2[c] || c;
-}
-function escapeUnsafeChars(str) {
-  return str.replace(unsafeChars, escapeUnsafeChar);
-}
-function safeKey(key) {
-  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? key : escapeUnsafeChars(JSON.stringify(key));
-}
-function safeProp(key) {
-  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? "." + key : "[" + escapeUnsafeChars(JSON.stringify(key)) + "]";
-}
-function stringifyString(str) {
-  var result = '"';
-  for (var i2 = 0; i2 < str.length; i2 += 1) {
-    var char = str.charAt(i2);
-    var code = char.charCodeAt(0);
-    if (char === '"') {
-      result += '\\"';
-    } else if (char in escaped2) {
-      result += escaped2[char];
-    } else if (code >= 55296 && code <= 57343) {
-      var next = str.charCodeAt(i2 + 1);
-      if (code <= 56319 && (next >= 56320 && next <= 57343)) {
-        result += char + str[++i2];
-      } else {
-        result += "\\u" + code.toString(16).toUpperCase();
-      }
-    } else {
-      result += char;
-    }
-  }
-  result += '"';
-  return result;
-}
-function noop3() {
-}
-function safe_not_equal(a, b) {
-  return a != a ? b == b : a !== b || (a && typeof a === "object" || typeof a === "function");
-}
-Promise.resolve();
-var subscriber_queue = [];
-function writable(value, start = noop3) {
-  let stop;
-  const subscribers = new Set();
-  function set(new_value) {
-    if (safe_not_equal(value, new_value)) {
-      value = new_value;
-      if (stop) {
-        const run_queue = !subscriber_queue.length;
-        for (const subscriber of subscribers) {
-          subscriber[1]();
-          subscriber_queue.push(subscriber, value);
-        }
-        if (run_queue) {
-          for (let i2 = 0; i2 < subscriber_queue.length; i2 += 2) {
-            subscriber_queue[i2][0](subscriber_queue[i2 + 1]);
-          }
-          subscriber_queue.length = 0;
-        }
-      }
-    }
-  }
-  function update(fn) {
-    set(fn(value));
-  }
-  function subscribe2(run2, invalidate = noop3) {
-    const subscriber = [run2, invalidate];
-    subscribers.add(subscriber);
-    if (subscribers.size === 1) {
-      stop = start(set) || noop3;
-    }
-    run2(value);
-    return () => {
-      subscribers.delete(subscriber);
-      if (subscribers.size === 0) {
-        stop();
-        stop = null;
-      }
-    };
-  }
-  return { set, update, subscribe: subscribe2 };
-}
-function coalesce_to_error(err) {
-  return err instanceof Error || err && err.name && err.message ? err : new Error(JSON.stringify(err));
-}
-function hash(value) {
-  let hash2 = 5381;
-  let i2 = value.length;
-  if (typeof value === "string") {
-    while (i2)
-      hash2 = hash2 * 33 ^ value.charCodeAt(--i2);
-  } else {
-    while (i2)
-      hash2 = hash2 * 33 ^ value[--i2];
-  }
-  return (hash2 >>> 0).toString(36);
-}
-var escape_json_string_in_html_dict = {
-  '"': '\\"',
-  "<": "\\u003C",
-  ">": "\\u003E",
-  "/": "\\u002F",
-  "\\": "\\\\",
-  "\b": "\\b",
-  "\f": "\\f",
-  "\n": "\\n",
-  "\r": "\\r",
-  "	": "\\t",
-  "\0": "\\0",
-  "\u2028": "\\u2028",
-  "\u2029": "\\u2029"
-};
-function escape_json_string_in_html(str) {
-  return escape2(str, escape_json_string_in_html_dict, (code) => `\\u${code.toString(16).toUpperCase()}`);
-}
-var escape_html_attr_dict = {
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;"
-};
-function escape_html_attr(str) {
-  return '"' + escape2(str, escape_html_attr_dict, (code) => `&#${code};`) + '"';
-}
-function escape2(str, dict, unicode_encoder) {
-  let result = "";
-  for (let i2 = 0; i2 < str.length; i2 += 1) {
-    const char = str.charAt(i2);
-    const code = char.charCodeAt(0);
-    if (char in dict) {
-      result += dict[char];
-    } else if (code >= 55296 && code <= 57343) {
-      const next = str.charCodeAt(i2 + 1);
-      if (code <= 56319 && next >= 56320 && next <= 57343) {
-        result += char + str[++i2];
-      } else {
-        result += unicode_encoder(code);
-      }
-    } else {
-      result += char;
-    }
-  }
-  return result;
-}
-var s2 = JSON.stringify;
-function create_prerendering_url_proxy(url) {
-  return new Proxy(url, {
-    get: (target, prop, receiver) => {
-      if (prop === "search" || prop === "searchParams") {
-        throw new Error(`Cannot access url.${prop} on a page with prerendering enabled`);
-      }
-      return Reflect.get(target, prop, receiver);
-    }
-  });
-}
-async function render_response({
-  branch,
-  options,
-  state,
-  $session,
-  page_config,
-  status,
-  error: error2,
-  url,
-  params,
-  ssr,
-  stuff
-}) {
-  const css17 = new Set(options.manifest._.entry.css);
-  const js9 = new Set(options.manifest._.entry.js);
-  const styles = new Map();
-  const serialized_data = [];
-  let rendered;
-  let is_private = false;
-  let maxage;
-  if (error2) {
-    error2.stack = options.get_stack(error2);
-  }
-  if (ssr) {
-    branch.forEach(({ node, loaded, fetched, uses_credentials }) => {
-      if (node.css)
-        node.css.forEach((url2) => css17.add(url2));
-      if (node.js)
-        node.js.forEach((url2) => js9.add(url2));
-      if (node.styles)
-        Object.entries(node.styles).forEach(([k, v]) => styles.set(k, v));
-      if (fetched && page_config.hydrate)
-        serialized_data.push(...fetched);
-      if (uses_credentials)
-        is_private = true;
-      maxage = loaded.maxage;
-    });
-    const session = writable($session);
-    const props = {
-      stores: {
-        page: writable(null),
-        navigating: writable(null),
-        session
-      },
-      page: {
-        url: state.prerender ? create_prerendering_url_proxy(url) : url,
-        params,
-        status,
-        error: error2,
-        stuff
-      },
-      components: branch.map(({ node }) => node.module.default)
-    };
-    const print_error = (property, replacement) => {
-      Object.defineProperty(props.page, property, {
-        get: () => {
-          throw new Error(`$page.${property} has been replaced by $page.url.${replacement}`);
-        }
-      });
-    };
-    print_error("origin", "origin");
-    print_error("path", "pathname");
-    print_error("query", "searchParams");
-    for (let i2 = 0; i2 < branch.length; i2 += 1) {
-      props[`props_${i2}`] = await branch[i2].loaded.props;
-    }
-    let session_tracking_active = false;
-    const unsubscribe = session.subscribe(() => {
-      if (session_tracking_active)
-        is_private = true;
-    });
-    session_tracking_active = true;
-    try {
-      rendered = options.root.render(props);
-    } finally {
-      unsubscribe();
-    }
-  } else {
-    rendered = { head: "", html: "", css: { code: "", map: null } };
-  }
-  let { head, html: body } = rendered;
-  const inlined_style = Array.from(styles.values()).join("\n");
-  if (options.amp) {
-    head += `
-		<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
-		<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-		<script async src="https://cdn.ampproject.org/v0.js"><\/script>
-
-		<style amp-custom>${inlined_style}
-${rendered.css.code}</style>`;
-    if (options.service_worker) {
-      head += '<script async custom-element="amp-install-serviceworker" src="https://cdn.ampproject.org/v0/amp-install-serviceworker-0.1.js"><\/script>';
-      body += `<amp-install-serviceworker src="${options.service_worker}" layout="nodisplay"></amp-install-serviceworker>`;
-    }
-  } else {
-    if (inlined_style) {
-      head += `
-	<style${options.dev ? " data-svelte" : ""}>${inlined_style}</style>`;
-    }
-    head += Array.from(css17).map((dep) => `
-	<link${styles.has(dep) ? " disabled" : ""} rel="stylesheet" href="${options.prefix + dep}">`).join("");
-    if (page_config.router || page_config.hydrate) {
-      head += Array.from(js9).map((dep) => `
-	<link rel="modulepreload" href="${options.prefix + dep}">`).join("");
-      head += `
-			<script type="module">
-				import { start } from ${s2(options.prefix + options.manifest._.entry.file)};
-				start({
-					target: ${options.target ? `document.querySelector(${s2(options.target)})` : "document.body"},
-					paths: ${s2(options.paths)},
-					session: ${try_serialize($session, (error3) => {
-        throw new Error(`Failed to serialize session data: ${error3.message}`);
-      })},
-					route: ${!!page_config.router},
-					spa: ${!ssr},
-					trailing_slash: ${s2(options.trailing_slash)},
-					hydrate: ${ssr && page_config.hydrate ? `{
-						status: ${status},
-						error: ${serialize_error(error2)},
-						nodes: [
-							${(branch || []).map(({ node }) => `import(${s2(options.prefix + node.entry)})`).join(",\n						")}
-						],
-						url: new URL(${s2(url.href)}),
-						params: ${devalue(params)}
-					}` : "null"}
-				});
-			<\/script>${options.service_worker ? `
-			<script>
-				if ('serviceWorker' in navigator) {
-					navigator.serviceWorker.register('${options.service_worker}');
-				}
-			<\/script>` : ""}`;
-      body += serialized_data.map(({ url: url2, body: body2, json }) => {
-        let attributes = `type="application/json" data-type="svelte-data" data-url=${escape_html_attr(url2)}`;
-        if (body2)
-          attributes += ` data-body="${hash(body2)}"`;
-        return `<script ${attributes}>${json}<\/script>`;
-      }).join("\n\n	");
-    }
-  }
-  const headers = {
-    "content-type": "text/html"
-  };
-  if (maxage) {
-    headers["cache-control"] = `${is_private ? "private" : "public"}, max-age=${maxage}`;
-  }
-  if (!options.floc) {
-    headers["permissions-policy"] = "interest-cohort=()";
-  }
-  const segments = url.pathname.slice(options.paths.base.length).split("/").slice(2);
-  const assets2 = options.paths.assets || (segments.length > 0 ? segments.map(() => "..").join("/") : ".");
-  return {
-    status,
-    headers,
-    body: options.template({
-      head,
-      body,
-      assets: assets2
-    })
-  };
-}
-function try_serialize(data, fail) {
-  try {
-    return devalue(data);
-  } catch (err) {
-    if (fail)
-      fail(coalesce_to_error(err));
-    return null;
-  }
-}
-function serialize_error(error2) {
-  if (!error2)
-    return null;
-  let serialized = try_serialize(error2);
-  if (!serialized) {
-    const { name, message, stack } = error2;
-    serialized = try_serialize(__spreadProps(__spreadValues({}, error2), { name, message, stack }));
-  }
-  if (!serialized) {
-    serialized = "{}";
-  }
-  return serialized;
-}
-function normalize(loaded) {
-  const has_error_status = loaded.status && loaded.status >= 400 && loaded.status <= 599 && !loaded.redirect;
-  if (loaded.error || has_error_status) {
-    const status = loaded.status;
-    if (!loaded.error && has_error_status) {
-      return {
-        status: status || 500,
-        error: new Error()
-      };
-    }
-    const error2 = typeof loaded.error === "string" ? new Error(loaded.error) : loaded.error;
-    if (!(error2 instanceof Error)) {
-      return {
-        status: 500,
-        error: new Error(`"error" property returned from load() must be a string or instance of Error, received type "${typeof error2}"`)
-      };
-    }
-    if (!status || status < 400 || status > 599) {
-      console.warn('"error" returned from load() without a valid status code \u2014 defaulting to 500');
-      return { status: 500, error: error2 };
-    }
-    return { status, error: error2 };
-  }
-  if (loaded.redirect) {
-    if (!loaded.status || Math.floor(loaded.status / 100) !== 3) {
-      return {
-        status: 500,
-        error: new Error('"redirect" property returned from load() must be accompanied by a 3xx status code')
-      };
-    }
-    if (typeof loaded.redirect !== "string") {
-      return {
-        status: 500,
-        error: new Error('"redirect" property returned from load() must be a string')
-      };
-    }
-  }
-  if (loaded.context) {
-    throw new Error('You are returning "context" from a load function. "context" was renamed to "stuff", please adjust your code accordingly.');
-  }
-  return loaded;
-}
-var absolute = /^([a-z]+:)?\/?\//;
-var scheme = /^[a-z]+:/;
-function resolve(base2, path) {
-  if (scheme.test(path))
-    return path;
-  const base_match = absolute.exec(base2);
-  const path_match = absolute.exec(path);
-  if (!base_match) {
-    throw new Error(`bad base path: "${base2}"`);
-  }
-  const baseparts = path_match ? [] : base2.slice(base_match[0].length).split("/");
-  const pathparts = path_match ? path.slice(path_match[0].length).split("/") : path.split("/");
-  baseparts.pop();
-  for (let i2 = 0; i2 < pathparts.length; i2 += 1) {
-    const part = pathparts[i2];
-    if (part === ".")
-      continue;
-    else if (part === "..")
-      baseparts.pop();
-    else
-      baseparts.push(part);
-  }
-  const prefix = path_match && path_match[0] || base_match && base_match[0] || "";
-  return `${prefix}${baseparts.join("/")}`;
-}
-function is_root_relative(path) {
-  return path[0] === "/" && path[1] !== "/";
-}
-async function load_node({
-  request,
-  options,
-  state,
-  route,
-  url,
-  params,
-  node,
-  $session,
-  stuff,
-  is_error,
-  status,
-  error: error2
-}) {
-  const { module: module2 } = node;
-  let uses_credentials = false;
-  const fetched = [];
-  let set_cookie_headers = [];
-  let loaded;
-  if (module2.load) {
-    const load_input = {
-      url: state.prerender ? create_prerendering_url_proxy(url) : url,
-      params,
-      get session() {
-        uses_credentials = true;
-        return $session;
-      },
-      fetch: async (resource, opts = {}) => {
-        let requested;
-        if (typeof resource === "string") {
-          requested = resource;
-        } else {
-          requested = resource.url;
-          opts = __spreadValues({
-            method: resource.method,
-            headers: resource.headers,
-            body: resource.body,
-            mode: resource.mode,
-            credentials: resource.credentials,
-            cache: resource.cache,
-            redirect: resource.redirect,
-            referrer: resource.referrer,
-            integrity: resource.integrity
-          }, opts);
-        }
-        opts.headers = new Headers(opts.headers);
-        const resolved = resolve(request.url.pathname, requested.split("?")[0]);
-        let response;
-        const prefix = options.paths.assets || options.paths.base;
-        const filename = (resolved.startsWith(prefix) ? resolved.slice(prefix.length) : resolved).slice(1);
-        const filename_html = `${filename}/index.html`;
-        const is_asset = options.manifest.assets.has(filename);
-        const is_asset_html = options.manifest.assets.has(filename_html);
-        if (is_asset || is_asset_html) {
-          const file = is_asset ? filename : filename_html;
-          if (options.read) {
-            const type = is_asset ? options.manifest._.mime[filename.slice(filename.lastIndexOf("."))] : "text/html";
-            response = new Response(options.read(file), {
-              headers: type ? { "content-type": type } : {}
-            });
-          } else {
-            response = await fetch(`${url.origin}/${file}`, opts);
-          }
-        } else if (is_root_relative(resolved)) {
-          const relative = resolved;
-          if (opts.credentials !== "omit") {
-            uses_credentials = true;
-            if (request.headers.cookie) {
-              opts.headers.set("cookie", request.headers.cookie);
-            }
-            if (request.headers.authorization && !opts.headers.has("authorization")) {
-              opts.headers.set("authorization", request.headers.authorization);
-            }
-          }
-          if (opts.body && typeof opts.body !== "string") {
-            throw new Error("Request body must be a string");
-          }
-          const rendered = await respond({
-            url: new URL(requested, request.url),
-            method: opts.method || "GET",
-            headers: Object.fromEntries(opts.headers),
-            rawBody: opts.body == null ? null : new TextEncoder().encode(opts.body)
-          }, options, {
-            fetched: requested,
-            initiator: route
-          });
-          if (rendered) {
-            if (state.prerender) {
-              state.prerender.dependencies.set(relative, rendered);
-            }
-            response = new Response(rendered.body, {
-              status: rendered.status,
-              headers: rendered.headers
-            });
-          } else {
-            return fetch(new URL(requested, request.url).href, {
-              method: opts.method || "GET",
-              headers: opts.headers
-            });
-          }
-        } else {
-          if (resolved.startsWith("//")) {
-            throw new Error(`Cannot request protocol-relative URL (${requested}) in server-side fetch`);
-          }
-          if (`.${new URL(requested).hostname}`.endsWith(`.${request.url.hostname}`) && opts.credentials !== "omit") {
-            uses_credentials = true;
-            opts.headers.set("cookie", request.headers.cookie);
-          }
-          const external_request = new Request(requested, opts);
-          response = await options.hooks.externalFetch.call(null, external_request);
-        }
-        if (response) {
-          const proxy = new Proxy(response, {
-            get(response2, key, _receiver) {
-              async function text() {
-                const body = await response2.text();
-                const headers = {};
-                for (const [key2, value] of response2.headers) {
-                  if (key2 === "set-cookie") {
-                    set_cookie_headers = set_cookie_headers.concat(value);
-                  } else if (key2 !== "etag") {
-                    headers[key2] = value;
-                  }
-                }
-                if (!opts.body || typeof opts.body === "string") {
-                  fetched.push({
-                    url: requested,
-                    body: opts.body,
-                    json: `{"status":${response2.status},"statusText":${s2(response2.statusText)},"headers":${s2(headers)},"body":"${escape_json_string_in_html(body)}"}`
-                  });
-                }
-                return body;
-              }
-              if (key === "text") {
-                return text;
-              }
-              if (key === "json") {
-                return async () => {
-                  return JSON.parse(await text());
-                };
-              }
-              return Reflect.get(response2, key, response2);
-            }
-          });
-          return proxy;
-        }
-        return response || new Response("Not found", {
-          status: 404
-        });
-      },
-      stuff: __spreadValues({}, stuff)
-    };
-    if (options.dev) {
-      Object.defineProperty(load_input, "page", {
-        get: () => {
-          throw new Error("`page` in `load` functions has been replaced by `url` and `params`");
-        }
-      });
-    }
-    if (is_error) {
-      load_input.status = status;
-      load_input.error = error2;
-    }
-    loaded = await module2.load.call(null, load_input);
-    if (!loaded) {
-      throw new Error(`load function must return a value${options.dev ? ` (${node.entry})` : ""}`);
-    }
-  } else {
-    loaded = {};
-  }
-  if (loaded.fallthrough && !is_error) {
-    return;
-  }
-  return {
-    node,
-    loaded: normalize(loaded),
-    stuff: loaded.stuff || stuff,
-    fetched,
-    set_cookie_headers,
-    uses_credentials
-  };
-}
-async function respond_with_error({
-  request,
-  options,
-  state,
-  $session,
-  status,
-  error: error2,
-  ssr
-}) {
-  try {
-    const default_layout = await options.manifest._.nodes[0]();
-    const default_error = await options.manifest._.nodes[1]();
-    const params = {};
-    const layout_loaded = await load_node({
-      request,
-      options,
-      state,
-      route: null,
-      url: request.url,
-      params,
-      node: default_layout,
-      $session,
-      stuff: {},
-      is_error: false
-    });
-    const error_loaded = await load_node({
-      request,
-      options,
-      state,
-      route: null,
-      url: request.url,
-      params,
-      node: default_error,
-      $session,
-      stuff: layout_loaded ? layout_loaded.stuff : {},
-      is_error: true,
-      status,
-      error: error2
-    });
-    return await render_response({
-      options,
-      state,
-      $session,
-      page_config: {
-        hydrate: options.hydrate,
-        router: options.router
-      },
-      stuff: error_loaded.stuff,
-      status,
-      error: error2,
-      branch: [layout_loaded, error_loaded],
-      url: request.url,
-      params,
-      ssr
-    });
-  } catch (err) {
-    const error3 = coalesce_to_error(err);
-    options.handle_error(error3, request);
-    return {
-      status: 500,
-      headers: {},
-      body: error3.stack
-    };
-  }
-}
-async function respond$1(opts) {
-  const { request, options, state, $session, route, ssr } = opts;
-  let nodes;
-  if (!ssr) {
-    return await render_response(__spreadProps(__spreadValues({}, opts), {
-      branch: [],
-      page_config: {
-        hydrate: true,
-        router: true
-      },
-      status: 200,
-      url: request.url,
-      stuff: {}
-    }));
-  }
-  try {
-    nodes = await Promise.all(route.a.map((n) => options.manifest._.nodes[n] && options.manifest._.nodes[n]()));
-  } catch (err) {
-    const error3 = coalesce_to_error(err);
-    options.handle_error(error3, request);
-    return await respond_with_error({
-      request,
-      options,
-      state,
-      $session,
-      status: 500,
-      error: error3,
-      ssr
-    });
-  }
-  const leaf = nodes[nodes.length - 1].module;
-  let page_config = get_page_config(leaf, options);
-  if (!leaf.prerender && state.prerender && !state.prerender.all) {
-    return {
-      status: 204,
-      headers: {}
-    };
-  }
-  let branch = [];
-  let status = 200;
-  let error2;
-  let set_cookie_headers = [];
-  let stuff = {};
-  ssr:
-    if (ssr) {
-      for (let i2 = 0; i2 < nodes.length; i2 += 1) {
-        const node = nodes[i2];
-        let loaded;
-        if (node) {
-          try {
-            loaded = await load_node(__spreadProps(__spreadValues({}, opts), {
-              url: request.url,
-              node,
-              stuff,
-              is_error: false
-            }));
-            if (!loaded)
-              return;
-            set_cookie_headers = set_cookie_headers.concat(loaded.set_cookie_headers);
-            if (loaded.loaded.redirect) {
-              return with_cookies({
-                status: loaded.loaded.status,
-                headers: {
-                  location: encodeURI(loaded.loaded.redirect)
-                }
-              }, set_cookie_headers);
-            }
-            if (loaded.loaded.error) {
-              ({ status, error: error2 } = loaded.loaded);
-            }
-          } catch (err) {
-            const e2 = coalesce_to_error(err);
-            options.handle_error(e2, request);
-            status = 500;
-            error2 = e2;
-          }
-          if (loaded && !error2) {
-            branch.push(loaded);
-          }
-          if (error2) {
-            while (i2--) {
-              if (route.b[i2]) {
-                const error_node = await options.manifest._.nodes[route.b[i2]]();
-                let node_loaded;
-                let j = i2;
-                while (!(node_loaded = branch[j])) {
-                  j -= 1;
-                }
-                try {
-                  const error_loaded = await load_node(__spreadProps(__spreadValues({}, opts), {
-                    url: request.url,
-                    node: error_node,
-                    stuff: node_loaded.stuff,
-                    is_error: true,
-                    status,
-                    error: error2
-                  }));
-                  if (error_loaded.loaded.error) {
-                    continue;
-                  }
-                  page_config = get_page_config(error_node.module, options);
-                  branch = branch.slice(0, j + 1).concat(error_loaded);
-                  stuff = __spreadValues(__spreadValues({}, node_loaded.stuff), error_loaded.stuff);
-                  break ssr;
-                } catch (err) {
-                  const e2 = coalesce_to_error(err);
-                  options.handle_error(e2, request);
-                  continue;
-                }
-              }
-            }
-            return with_cookies(await respond_with_error({
-              request,
-              options,
-              state,
-              $session,
-              status,
-              error: error2,
-              ssr
-            }), set_cookie_headers);
-          }
-        }
-        if (loaded && loaded.loaded.stuff) {
-          stuff = __spreadValues(__spreadValues({}, stuff), loaded.loaded.stuff);
-        }
-      }
-    }
-  try {
-    return with_cookies(await render_response(__spreadProps(__spreadValues({}, opts), {
-      stuff,
-      url: request.url,
-      page_config,
-      status,
-      error: error2,
-      branch: branch.filter(Boolean)
-    })), set_cookie_headers);
-  } catch (err) {
-    const error3 = coalesce_to_error(err);
-    options.handle_error(error3, request);
-    return with_cookies(await respond_with_error(__spreadProps(__spreadValues({}, opts), {
-      status: 500,
-      error: error3
-    })), set_cookie_headers);
-  }
-}
-function get_page_config(leaf, options) {
-  if ("ssr" in leaf) {
-    throw new Error("`export const ssr` has been removed \u2014 use the handle hook instead: https://kit.svelte.dev/docs#hooks-handle");
-  }
-  return {
-    router: "router" in leaf ? !!leaf.router : options.router,
-    hydrate: "hydrate" in leaf ? !!leaf.hydrate : options.hydrate
-  };
-}
-function with_cookies(response, set_cookie_headers) {
-  if (set_cookie_headers.length) {
-    response.headers["set-cookie"] = set_cookie_headers;
-  }
-  return response;
-}
-async function render_page(request, route, match, options, state, ssr) {
-  if (state.initiator === route) {
-    return {
-      status: 404,
-      headers: {},
-      body: `Not found: ${request.url.pathname}`
-    };
-  }
-  const params = route.params ? decode_params(route.params(match)) : {};
-  const $session = await options.hooks.getSession(request);
-  const response = await respond$1({
-    request,
-    options,
-    state,
-    $session,
-    route,
-    params,
-    ssr
-  });
-  if (response) {
-    return response;
-  }
-  if (state.fetched) {
-    return {
-      status: 500,
-      headers: {},
-      body: `Bad request in load function: failed to fetch ${state.fetched}`
-    };
-  }
-}
-function read_only_form_data() {
-  const map = new Map();
-  return {
-    append(key, value) {
-      const existing_values = map.get(key);
-      if (existing_values) {
-        existing_values.push(value);
-      } else {
-        map.set(key, [value]);
-      }
-    },
-    data: new ReadOnlyFormData(map)
-  };
-}
-var ReadOnlyFormData = class {
-  constructor(map) {
-    __privateAdd2(this, _map, void 0);
-    __privateSet2(this, _map, map);
-  }
-  get(key) {
-    const value = __privateGet2(this, _map).get(key);
-    if (!value) {
-      return null;
-    }
-    return value[0];
-  }
-  getAll(key) {
-    return __privateGet2(this, _map).get(key) || [];
-  }
-  has(key) {
-    return __privateGet2(this, _map).has(key);
-  }
-  *[Symbol.iterator]() {
-    for (const [key, value] of __privateGet2(this, _map)) {
-      for (let i2 = 0; i2 < value.length; i2 += 1) {
-        yield [key, value[i2]];
-      }
-    }
-  }
-  *entries() {
-    for (const [key, value] of __privateGet2(this, _map)) {
-      for (let i2 = 0; i2 < value.length; i2 += 1) {
-        yield [key, value[i2]];
-      }
-    }
-  }
-  *keys() {
-    for (const [key] of __privateGet2(this, _map))
-      yield key;
-  }
-  *values() {
-    for (const [, value] of __privateGet2(this, _map)) {
-      for (let i2 = 0; i2 < value.length; i2 += 1) {
-        yield value[i2];
-      }
-    }
-  }
-};
-_map = new WeakMap();
-function parse_body(raw, headers) {
-  if (!raw)
-    return raw;
-  const content_type = headers["content-type"];
-  const [type, ...directives] = content_type ? content_type.split(/;\s*/) : [];
-  const text = () => new TextDecoder(headers["content-encoding"] || "utf-8").decode(raw);
-  switch (type) {
-    case "text/plain":
-      return text();
-    case "application/json":
-      return JSON.parse(text());
-    case "application/x-www-form-urlencoded":
-      return get_urlencoded(text());
-    case "multipart/form-data": {
-      const boundary = directives.find((directive) => directive.startsWith("boundary="));
-      if (!boundary)
-        throw new Error("Missing boundary");
-      return get_multipart(text(), boundary.slice("boundary=".length));
-    }
-    default:
-      return raw;
-  }
-}
-function get_urlencoded(text) {
-  const { data, append } = read_only_form_data();
-  text.replace(/\+/g, " ").split("&").forEach((str) => {
-    const [key, value] = str.split("=");
-    append(decodeURIComponent(key), decodeURIComponent(value));
-  });
-  return data;
-}
-function get_multipart(text, boundary) {
-  const parts = text.split(`--${boundary}`);
-  if (parts[0] !== "" || parts[parts.length - 1].trim() !== "--") {
-    throw new Error("Malformed form data");
-  }
-  const { data, append } = read_only_form_data();
-  parts.slice(1, -1).forEach((part) => {
-    const match = /\s*([\s\S]+?)\r\n\r\n([\s\S]*)\s*/.exec(part);
-    if (!match) {
-      throw new Error("Malformed form data");
-    }
-    const raw_headers = match[1];
-    const body = match[2].trim();
-    let key;
-    const headers = {};
-    raw_headers.split("\r\n").forEach((str) => {
-      const [raw_header, ...raw_directives] = str.split("; ");
-      let [name, value] = raw_header.split(": ");
-      name = name.toLowerCase();
-      headers[name] = value;
-      const directives = {};
-      raw_directives.forEach((raw_directive) => {
-        const [name2, value2] = raw_directive.split("=");
-        directives[name2] = JSON.parse(value2);
-      });
-      if (name === "content-disposition") {
-        if (value !== "form-data")
-          throw new Error("Malformed form data");
-        if (directives.filename) {
-          throw new Error("File upload is not yet implemented");
-        }
-        if (directives.name) {
-          key = directives.name;
-        }
-      }
-    });
-    if (!key)
-      throw new Error("Malformed form data");
-    append(key, body);
-  });
-  return data;
-}
-async function respond(incoming, options, state = {}) {
-  var _a4;
-  if (incoming.url.pathname !== "/" && options.trailing_slash !== "ignore") {
-    const has_trailing_slash = incoming.url.pathname.endsWith("/");
-    if (has_trailing_slash && options.trailing_slash === "never" || !has_trailing_slash && options.trailing_slash === "always" && !(incoming.url.pathname.split("/").pop() || "").includes(".")) {
-      incoming.url.pathname = has_trailing_slash ? incoming.url.pathname.slice(0, -1) : incoming.url.pathname + "/";
-      if (incoming.url.search === "?")
-        incoming.url.search = "";
-      return {
-        status: 301,
-        headers: {
-          location: incoming.url.pathname + incoming.url.search
-        }
-      };
-    }
-  }
-  const headers = lowercase_keys(incoming.headers);
-  const request = __spreadProps(__spreadValues({}, incoming), {
-    headers,
-    body: parse_body(incoming.rawBody, headers),
-    params: {},
-    locals: {}
-  });
-  const { parameter, allowed } = options.method_override;
-  const method_override = (_a4 = incoming.url.searchParams.get(parameter)) == null ? void 0 : _a4.toUpperCase();
-  if (method_override) {
-    if (request.method.toUpperCase() === "POST") {
-      if (allowed.includes(method_override)) {
-        request.method = method_override;
-      } else {
-        const verb = allowed.length === 0 ? "enabled" : "allowed";
-        const body = `${parameter}=${method_override} is not ${verb}. See https://kit.svelte.dev/docs#configuration-methodoverride`;
-        return {
-          status: 400,
-          headers: {},
-          body
-        };
-      }
-    } else {
-      throw new Error(`${parameter}=${method_override} is only allowed with POST requests`);
-    }
-  }
-  const print_error = (property, replacement) => {
-    Object.defineProperty(request, property, {
-      get: () => {
-        throw new Error(`request.${property} has been replaced by request.url.${replacement}`);
-      }
-    });
-  };
-  print_error("origin", "origin");
-  print_error("path", "pathname");
-  print_error("query", "searchParams");
-  let ssr = true;
-  try {
-    return await options.hooks.handle({
-      request,
-      resolve: async (request2, opts) => {
-        if (opts && "ssr" in opts)
-          ssr = opts.ssr;
-        if (state.prerender && state.prerender.fallback) {
-          return await render_response({
-            url: request2.url,
-            params: request2.params,
-            options,
-            state,
-            $session: await options.hooks.getSession(request2),
-            page_config: { router: true, hydrate: true },
-            stuff: {},
-            status: 200,
-            branch: [],
-            ssr: false
-          });
-        }
-        const decoded = decodeURI(request2.url.pathname).replace(options.paths.base, "");
-        for (const route of options.manifest._.routes) {
-          const match = route.pattern.exec(decoded);
-          if (!match)
-            continue;
-          const response = route.type === "endpoint" ? await render_endpoint(request2, route, match) : await render_page(request2, route, match, options, state, ssr);
-          if (response) {
-            if (response.status === 200) {
-              const cache_control = get_single_valued_header(response.headers, "cache-control");
-              if (!cache_control || !/(no-store|immutable)/.test(cache_control)) {
-                let if_none_match_value = request2.headers["if-none-match"];
-                if (if_none_match_value == null ? void 0 : if_none_match_value.startsWith('W/"')) {
-                  if_none_match_value = if_none_match_value.substring(2);
-                }
-                const etag = `"${hash(response.body || "")}"`;
-                if (if_none_match_value === etag) {
-                  const headers2 = { etag };
-                  for (const key of [
-                    "cache-control",
-                    "content-location",
-                    "date",
-                    "expires",
-                    "vary"
-                  ]) {
-                    if (key in response.headers) {
-                      headers2[key] = response.headers[key];
-                    }
-                  }
-                  return {
-                    status: 304,
-                    headers: headers2
-                  };
-                }
-                response.headers["etag"] = etag;
-              }
-            }
-            return response;
-          }
-        }
-        if (!state.initiator) {
-          const $session = await options.hooks.getSession(request2);
-          return await respond_with_error({
-            request: request2,
-            options,
-            state,
-            $session,
-            status: 404,
-            error: new Error(`Not found: ${request2.url.pathname}`),
-            ssr
-          });
-        }
-      }
-    });
-  } catch (e2) {
-    const error2 = coalesce_to_error(e2);
-    options.handle_error(error2, request);
-    try {
-      const $session = await options.hooks.getSession(request);
-      return await respond_with_error({
-        request,
-        options,
-        state,
-        $session,
-        status: 500,
-        error: error2,
-        ssr
-      });
-    } catch (e22) {
-      const error3 = coalesce_to_error(e22);
-      return {
-        status: 500,
-        headers: {},
-        body: options.dev ? error3.stack : error3.message
-      };
-    }
-  }
-}
-var base = "";
-var assets = "";
-function set_paths(paths) {
-  base = paths.base;
-  assets = paths.assets || base;
-}
-var user_hooks = /* @__PURE__ */ Object.freeze({
-  __proto__: null,
-  [Symbol.toStringTag]: "Module"
-});
-var template = ({ head, body, assets: assets2 }) => '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="utf-8">\n    <link rel="icon" href="favicon.png">\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n\n    <!-- Import Ionicon icons & Google Fonts relies on -->\n    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">\n    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic"\n          rel="stylesheet" type="text/css">\n\n    ' + head + '\n</head>\n<body>\n<div id="svelte">' + body + "</div>\n</body>\n\n<style>\n    * {\n        font-family: 'Titillium Web', system-ui, sans-serif;\n    }\n\n    html, body {\n        margin: 0;\n        padding: 0;\n        overflow-x: hidden;\n    }\n</style>\n</html>\n";
-var read = null;
-set_paths({ "base": "", "assets": "" });
-var get_hooks = (hooks) => ({
-  getSession: hooks.getSession || (() => ({})),
-  handle: hooks.handle || (({ request, resolve: resolve2 }) => resolve2(request)),
-  handleError: hooks.handleError || (({ error: error2 }) => console.error(error2.stack)),
-  externalFetch: hooks.externalFetch || fetch
-});
-var default_protocol = "https";
-var App = class {
-  constructor(manifest2) {
-    const hooks = get_hooks(user_hooks);
-    this.options = {
-      amp: false,
-      dev: false,
-      floc: false,
-      get_stack: (error2) => String(error2),
-      handle_error: (error2, request) => {
-        hooks.handleError({ error: error2, request });
-        error2.stack = this.options.get_stack(error2);
-      },
-      hooks,
-      hydrate: true,
-      manifest: manifest2,
-      method_override: { "parameter": "_method", "allowed": [] },
-      paths: { base, assets },
-      prefix: assets + "/_app/",
-      prerender: true,
-      read,
-      root: Root,
-      service_worker: null,
-      router: true,
-      target: "#svelte",
-      template,
-      trailing_slash: "never"
-    };
-  }
-  render(request, {
-    prerender
-  } = {}) {
-    if (Object.keys(request).sort().join() !== "headers,method,rawBody,url") {
-      throw new Error("Adapters should call app.render({ url, method, headers, rawBody })");
-    }
-    const host = request.headers["host"];
-    const protocol = default_protocol;
-    return respond(__spreadProps(__spreadValues({}, request), { url: new URL(request.url, protocol + "://" + host) }), this.options, { prerender });
-  }
-};
-
-// .svelte-kit/vercel-tmp/manifest.js
-var manifest = {
-  appDir: "_app",
-  assets: new Set(["arrow-down.svg", "arrow-up.svg", "favicon.png", "logo-stackshare.png", "logo.svg", "register.svg"]),
-  _: {
-    mime: { ".svg": "image/svg+xml", ".png": "image/png" },
-    entry: { "file": "start-86312098.js", "js": ["start-86312098.js", "chunks/vendor-e79db4d0.js"], "css": ["assets/vendor-62c95adb.css"] },
-    nodes: [
-      () => Promise.resolve().then(() => (init__(), __exports)),
-      () => Promise.resolve().then(() => (init__2(), __exports2)),
-      () => Promise.resolve().then(() => (init__3(), __exports3)),
-      () => Promise.resolve().then(() => (init__4(), __exports4)),
-      () => Promise.resolve().then(() => (init__5(), __exports5)),
-      () => Promise.resolve().then(() => (init__6(), __exports6)),
-      () => Promise.resolve().then(() => (init__7(), __exports7)),
-      () => Promise.resolve().then(() => (init__8(), __exports8))
-    ],
-    routes: [
-      {
-        type: "page",
-        pattern: /^\/$/,
-        params: null,
-        path: "/",
-        a: [0, 2],
-        b: [1]
-      },
-      {
-        type: "page",
-        pattern: /^\/authenticate\/?$/,
-        params: null,
-        path: "/authenticate",
-        a: [0, 3],
-        b: [1]
-      },
-      {
-        type: "page",
-        pattern: /^\/questions\/?$/,
-        params: null,
-        path: "/questions",
-        a: [0, 4],
-        b: [1]
-      },
-      {
-        type: "page",
-        pattern: /^\/questions\/([^/]+?)\/?$/,
-        params: (m2) => ({ question: m2[1] }),
-        path: null,
-        a: [0, 5],
-        b: [1]
-      },
-      {
-        type: "page",
-        pattern: /^\/profile\/?$/,
-        params: null,
-        path: "/profile",
-        a: [0, 6],
-        b: [1]
-      },
-      {
-        type: "page",
-        pattern: /^\/add\/question\/?$/,
-        params: null,
-        path: "/add/question",
-        a: [0, 7],
-        b: [1]
-      }
-    ]
-  }
-};
-
-// .svelte-kit/vercel-tmp/entry.js
-__fetch_polyfill();
-var app = new App(manifest);
+// .svelte-kit/vercel/entry.js
+init();
 var entry_default = async (req, res) => {
+  const { pathname, searchParams } = new URL(req.url || "", "http://localhost");
   let body;
   try {
     body = await getRawBody(req);
@@ -8267,10 +8004,11 @@ var entry_default = async (req, res) => {
     res.statusCode = err.status || 400;
     return res.end(err.reason || "Invalid request body");
   }
-  const rendered = await app.render({
-    url: req.url,
+  const rendered = await render({
     method: req.method,
     headers: req.headers,
+    path: pathname,
+    query: searchParams,
     rawBody: body
   });
   if (rendered) {
