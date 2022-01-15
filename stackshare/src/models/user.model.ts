@@ -5,6 +5,6 @@ export interface User {
     name: string;
     uuid: string;
     username: string;
-    password: string;
+    password?: string;
     passwordConfirm?: string;
 }

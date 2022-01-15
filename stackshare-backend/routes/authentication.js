@@ -56,4 +56,10 @@ router.post('/register', async (req, res, next) => {
     }
 });
 
+// Get question by id
+router.get('/user/:userId', async (req, res) => {
+    const user = await User.findOne({_id: req.params.userId});
+    res.json(user);
+});
+
 module.exports = router;

@@ -3,6 +3,7 @@ export class RouteLiterals {
     static login = 'login';
     static register = 'register';
     static status = 'status';
+    static user = 'user';
 
     static questions = 'questions';
     static categories = 'categories';

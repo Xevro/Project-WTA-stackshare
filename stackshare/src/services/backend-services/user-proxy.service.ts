@@ -30,4 +30,14 @@ export class UserProxyService extends CrudDatabase<User> {
         };
         return await this.getRequest(url, headers);
     }
+
+    async getUserData(objectId: string): Promise<any> {
+        const authToken = new StoreCookie().getCookie('stackshare');
+        const url = RoutesModel.getUser + '/' + objectId;
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+        };
+        return await this.getRequest(url, headers);
+    }
 }
