@@ -17,7 +17,7 @@
     let editCommentButtonText = 'Edit comment';
     let error, errorComments, messageError, errorAddComment = null;
     let inProgress, isLoggedIn, didCountUp, didCountDown, editView, editCommentView, editTitleError,
-        editDescriptionError = false;
+        editDescriptionError, errorCommentMessage = false;
 
     const questionsProxy = new QuestionsProxyService();
     const categoriesProxy = new CategoriesProxyService();
@@ -196,16 +196,17 @@
         }
     }
 
-    function toggleEditCommentView() {
+    function toggleEditCommentView(comment = {}) {
         editCommentView = !editCommentView;
         if (editCommentView) {
-            editCommentButtonText = 'Cancel edit';
+            editCommentButtonText = 'Save';
         } else {
+            submitEditCommentForm(comment);
             editCommentButtonText = 'Edit comment';
         }
     }
 
-    function submitEditForm() {
+    function submitEditQuestionForm() {
         editTitleError = question.title === '';
         editDescriptionError = question.description === '';
         if (question.user._id !== storeService.getCookie('stackshare-id')) {
@@ -226,6 +227,21 @@
                     alert("You can't edit a question that is not yours");
                 });
             }
+        }
+    }
+
+    function submitEditCommentForm(comment) {
+        errorCommentMessage = (comment.message === '');
+        if (comment.user._id !== storeService.getCookie('stackshare-id')) {
+            alert("You can't edit a comment that is not yours");
+        } else {
+            questionsProxy.updateComment(comment.uuid, {
+                message: comment.message
+            }).then(() => {
+                editCommentView = false;
+            }).catch((err) => {
+                alert("You can't edit a comment that is not yours");
+            });
         }
     }
 </script>
@@ -279,7 +295,7 @@
             </div>
         {:else}
             <div class="edit-question">
-                <form on:submit|preventDefault="{submitEditForm}" class="edit-question-form">
+                <form on:submit|preventDefault="{submitEditQuestionForm}" class="edit-question-form">
                     <p>Update the information</p>
                     <label>Title</label>
                     {#if editTitleError}
@@ -316,9 +332,13 @@
             <div class="comment-content">
                 <div class="buttons-group">
                     {#if isLoggedIn}
-                        <button on:click={toggleEditCommentView}
+                        <button on:click={toggleEditCommentView(comment)}
                                 class="button-edit-small">{editCommentButtonText}</button>
-                        <button on:click={deleteComment(comment)} class="button-delete">Delete</button>
+                        {#if !editCommentView}
+                            <button on:click={deleteComment(comment)} class="button-delete">Delete</button>
+                        {:else}
+                            <button on:click={toggleEditCommentView} class="button-delete">Cancel</button>
+                        {/if}
                     {/if}
                 </div>
                 {#if !editCommentView}
@@ -345,15 +365,15 @@
                     </div>
                 {:else}
                     <div class="comment-info">
-                        <form on:submit|preventDefault="{submitEditForm}" class="edit-question-form">
+                        <form on:submit|preventDefault="{submitEditCommentForm}" class="edit-question-form">
                             <div class="message">
-                                {#if editDescriptionError}
+                                {#if errorCommentMessage}
                                     <div class="error">
-                                        <span class="error-message">The description can't be empty</span>
+                                        <span class="error-message">The message can't be empty</span>
                                     </div>
                                 {/if}
                                 <div class="textarea-field">
-                                    <textarea rows="5" bind:value="{comment.description}"
+                                    <textarea rows="5" bind:value="{comment.message}"
                                               placeholder="Message"></textarea>
                                 </div>
                             </div>
@@ -488,6 +508,32 @@
 
       .comment-info {
         display: flex;
+
+        .textarea-field {
+          background-color: #f0f0f0;
+          margin: 10px 0;
+          height: 110px;
+          border-radius: 15px;
+          display: grid;
+          grid-template-columns: 100%;
+          padding: 10px .7rem;
+          position: relative;
+
+          textarea {
+            background: none;
+            outline: none;
+            border: none;
+            line-height: 1;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #333;
+
+            &::placeholder {
+              color: #aaa;
+              font-weight: 500;
+            }
+          }
+        }
 
         .comment-likes {
           width: 40px;

@@ -78,6 +78,23 @@ router.post('/:questionId/comment/add', passport.authenticate('jwt', {session: f
     }
 });
 
+// Update a comment
+router.patch('/comment/:commentId', (req, res) => {
+    Comments.updateOne({uuid: req.params.commentId}, req.body,
+        (err) => {
+            if (err) {
+                res.json({
+                    err: err,
+                    success: false,
+                    msg: 'Failed to update the comment'
+                })
+            } else {
+                res.json({success: true})
+            }
+        }
+    )
+});
+
 // Update the count of a question
 router.patch('/:questionId/count', (req, res) => {
     Questions.updateOne({uuid: req.params.questionId}, req.body,

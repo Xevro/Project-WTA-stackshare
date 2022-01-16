@@ -44,8 +44,6 @@
     };
 
     function saveProfile() {
-        editProfile = false;
-
         if (!validateEmail(user.email)) {
             errorEmail = 'Email field is not in the right format';
         } else {
@@ -67,9 +65,9 @@
                 name: user.name,
                 username: user.username,
                 email: user.email
-            }).catch((err) => {
+            }).then(() => editProfile = false).catch((err) => {
                 alert("Something went wrong while uploading the profile data.");
-            }); //.then(() => window.location.reload())
+            });
         }
     }
 
@@ -104,12 +102,27 @@
             <div class="profile-edit">
                 <form on:submit|preventDefault="{saveProfile}" class="edit-profile-form">
                     <div class="message">
+                        {#if errorName}
+                            <div class="error">
+                                <span class="error-message">The name field can't be empty</span>
+                            </div>
+                        {/if}
                         <div class="input-field">
                             <input type="text" bind:value="{user.name}" placeholder="Name">
                         </div>
+                        {#if errorUsername}
+                            <div class="error">
+                                <span class="error-message">The username field can't be empty</span>
+                            </div>
+                        {/if}
                         <div class="input-field">
                             <input type="text" bind:value="{user.username}" placeholder="Username">
                         </div>
+                        {#if errorEmail}
+                            <div class="error">
+                                <span class="error-message">The email field can't be empty</span>
+                            </div>
+                        {/if}
                         <div class="input-field">
                             <input type="email" bind:value="{user.email}" placeholder="Email">
                         </div>
@@ -218,6 +231,16 @@
 
     .profile-edit {
       .edit-profile-form {
+        .error {
+          width: 390px;
+          margin-left: 10px;
+          margin-top: 8px;
+          font-size: 1rem;
+
+          .error-message {
+            color: #de3232;
+          }
+        }
 
         .input-field {
           background-color: #f0f0f0;
