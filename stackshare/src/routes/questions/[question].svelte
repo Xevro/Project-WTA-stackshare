@@ -425,7 +425,7 @@
         background-color: #ce2d2d;
 
         &:hover {
-          background-color: #4539c4;
+          background-color: #9f1111;
         }
       }
     }

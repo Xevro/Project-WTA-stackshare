@@ -1,23 +1,46 @@
 <script lang="ts">
     import {StoreCookie} from '../../services/core-services/store-cookie';
-    import {UserProxyService} from "../../services/backend-services";
-    import type {User} from '../../models';
+    import {QuestionsProxyService, UserProxyService} from '../../services/backend-services';
+    import type {Questions, User} from '../../models';
 
     let user: User = {} as User;
+    let userQuestions: Questions = {} as Questions;
     let loggedIn = false;
-    let loading = true;
+    let loading, loadingQuestions = true;
+    let editProfile = false;
 
     const cookie = new StoreCookie();
     const userProxy = new UserProxyService();
+    const questionsProxy = new QuestionsProxyService();
 
-    userProxy.getUserData(cookie.getCookie('stackshare-id')).then(response => response.json()).then((result ) => {
+    userProxy.getUserData(cookie.getCookie('stackshare-id')).then(response => response.json()).then((result) => {
         user = result;
         loggedIn = true;
-        loading = false;
     }).catch(() => {
         loggedIn = false;
+    }).finally(() => {
         loading = false;
     });
+
+    questionsProxy.getAllQuestionsForAUserById(cookie.getCookie('stackshare-id'))
+        .then(response => response.json()).then((result) => {
+        userQuestions = result;
+        for (let question of userQuestions.data) {
+            let date = new Date(question.created_at);
+            question.created_date = date.toDateString() + ' ' + date.getHours() + ':' + ('0' + date.getMinutes()).substr(-2);
+        }
+    }).catch(() => {
+    }).finally(() => {
+        loadingQuestions = false;
+    });
+
+    function toggleEditView() {
+        editProfile = !editProfile;
+    }
+
+    function saveProfile() {
+        editProfile = false;
+    }
 
     function logout() {
         cookie.deleteCookie('stackshare');
@@ -31,13 +54,62 @@
 </svelte:head>
 
 <div class="profile">
+    <div class="logout-section">
+        <button class="button" on:click={logout}>Log out</button>
+    </div>
+    {#if loading}
+        <p>Loading the profile information...</p>
+    {/if}
     {#if loggedIn}
-        <button on:click={logout}>Log out</button>
-        <p style="color: red">todo: Add information and edit option</p>
-        <p>Name: { user.name }</p>
-        <p>Username: { user.username }</p>
-        <p>Email: { user.email }</p>
-        <button>Edit information</button>
+        {#if !editProfile}
+            <div class="profile-info">
+                <h3>Profile information</h3>
+                <p>Name: { user.name }</p>
+                <p>Username: { user.username }</p>
+                <p>Email: { user.email }</p>
+                <button class="button" on:click={toggleEditView}>Edit information</button>
+            </div>
+        {:else}
+            <div class="profile-edit">
+                <button class="save-button" on:click={saveProfile}>Save</button>
+                <button class="cancel-button" on:click={toggleEditView}>Cancel</button>
+            </div>
+        {/if}
+
+        <div class="posts-overview">
+            <h3>My questions</h3>
+            {#if loadingQuestions}
+                <p>Loading the questions...</p>
+            {/if}
+            {#if userQuestions.data}
+                {#each userQuestions.data.sort((q1, q2) => q1.created_at < q2.created_at) as question}
+                    <a href="/questions/{question.uuid}">
+                        <div class="question-content">
+                            <div class="title-section">
+                                <p>{question.title}</p>
+                                <div class="written-by">
+                                    <p>Written on {question?.created_date}</p>
+                                </div>
+                            </div>
+                            <p id="description">
+                                { question?.description?.length > 250 ? question?.description.substring(0, 250 - 3) + '...' : question?.description }
+                            </p>
+                            {#if question.categories}
+                                <div class="categories">
+                                    {#each question?.categories as category}
+                                        <p>{category.name}</p>
+                                    {/each}
+                                </div>
+                            {/if}
+                        </div>
+                    </a>
+                {/each}
+            {:else}
+                <div class="no-questions">
+                    <p>You have currently no questions on your profile.</p>
+                </div>
+            {/if}
+        </div>
     {:else}
         <div class="not-logged-in">
             <p>You have to be logged in to see your profile.</p>
@@ -51,6 +123,135 @@
   .profile {
     margin-left: 15%;
     margin-right: 15%;
+
+    h3 {
+      font-size: 1.45rem;
+    }
+
+    .logout-section {
+      float: right;
+
+      .button {
+        width: 90px;
+        background-color: #6151ee;
+        border: none;
+        outline: none;
+        height: 35px;
+        border-radius: 49px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 1rem;
+        margin: 10px 0;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #4539c4;
+        }
+      }
+    }
+
+    .profile-info {
+      margin-top: 40px;
+
+      .button {
+        width: 155px;
+        background-color: #6151ee;
+        border: none;
+        outline: none;
+        height: 35px;
+        border-radius: 49px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 1rem;
+        margin: 10px 0;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #4539c4;
+        }
+      }
+    }
+
+    .profile-edit {
+      .save-button, .cancel-button {
+        border: none;
+        outline: none;
+        height: 30px;
+        border-radius: 49px;
+        color: #fff;
+        font-size: .9rem;
+        margin: 10px 0;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #4539c4;
+        }
+      }
+
+      .save-button {
+        width: 85px;
+        background-color: #6151ee;
+
+        &:hover {
+          background-color: #4539c4;
+        }
+      }
+
+      .cancel-button {
+        width: 85px;
+        background-color: #ce2d2d;
+
+        &:hover {
+          background-color: #9f1111;
+        }
+      }
+    }
+
+    .posts-overview {
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .question-content {
+        margin-top: 20px;
+        border-radius: 10px;
+        background-color: #f3f3f3;
+        padding: 4px 20px;
+
+        .title-section {
+          p:first-of-type {
+            font-size: 1.3rem;
+            margin: 2px 0 4px;
+          }
+
+          .written-by p {
+            font-size: .9rem;
+          }
+        }
+
+        #description {
+          color: #989898;
+        }
+
+        .categories {
+          display: flex;
+
+          p {
+            color: #FFF;
+            padding: 4px 10px;
+            margin: 4px;
+            background-color: #5148D5;
+            border-radius: 20px;
+          }
+        }
+      }
+    }
+
+    .no-questions {
+      font-size: 1.1rem;
+    }
 
     .not-logged-in {
       font-size: 1.1rem;

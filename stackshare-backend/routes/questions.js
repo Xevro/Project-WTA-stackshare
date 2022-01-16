@@ -29,12 +29,16 @@ router.get('/:questionId', async (req, res) => {
     res.json(question);
 });
 
+// Get all question by the user id
+router.get('/user/:userId', async (req, res) => {
+    const questions = await Questions.find({user: req.params.userId}).populate('categories');
+    res.json({data: questions});
+});
+
 // Get question by id
 router.get('/:questionId/comments', async (req, res) => {
     const comments = await Comments.find({question_uuid: req.params.questionId}).populate('user');
-    res.json({
-        data: comments,
-    });
+    res.json({data: comments});
 });
 
 // Add new question
