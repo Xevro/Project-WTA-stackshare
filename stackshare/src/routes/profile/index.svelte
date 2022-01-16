@@ -8,6 +8,7 @@
     let loggedIn = false;
     let loading, loadingQuestions = true;
     let editProfile = false;
+    let errorEmail, errorName, errorUsername = null;
 
     const cookie = new StoreCookie();
     const userProxy = new UserProxyService();
@@ -38,8 +39,38 @@
         editProfile = !editProfile;
     }
 
+    const validateEmail = (email) => {
+        return String(email).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    };
+
     function saveProfile() {
         editProfile = false;
+
+        if (!validateEmail(user.email)) {
+            errorEmail = 'Email field is not in the right format';
+        } else {
+            errorEmail = null;
+        }
+        if (user.name === '') {
+            errorName = 'Name can\'t be empty';
+        } else {
+            errorName = null;
+        }
+        if (user.username === '') {
+            errorUsername = 'Username can\'t be empty';
+        } else {
+            errorUsername = null;
+        }
+
+        if (errorEmail === null && errorName === null && errorUsername === null) {
+            userProxy.updateUser(user.uuid, {
+                name: user.name,
+                username: user.username,
+                email: user.email
+            }).catch((err) => {
+                alert("Something went wrong while uploading the profile data.");
+            }); //.then(() => window.location.reload())
+        }
     }
 
     function logout() {
@@ -61,9 +92,9 @@
         <p>Loading the profile information...</p>
     {/if}
     {#if loggedIn}
+        <h3>Profile information</h3>
         {#if !editProfile}
             <div class="profile-info">
-                <h3>Profile information</h3>
                 <p>Name: { user.name }</p>
                 <p>Username: { user.username }</p>
                 <p>Email: { user.email }</p>
@@ -71,8 +102,21 @@
             </div>
         {:else}
             <div class="profile-edit">
-                <button class="save-button" on:click={saveProfile}>Save</button>
-                <button class="cancel-button" on:click={toggleEditView}>Cancel</button>
+                <form on:submit|preventDefault="{saveProfile}" class="edit-profile-form">
+                    <div class="message">
+                        <div class="input-field">
+                            <input type="text" bind:value="{user.name}" placeholder="Name">
+                        </div>
+                        <div class="input-field">
+                            <input type="text" bind:value="{user.username}" placeholder="Username">
+                        </div>
+                        <div class="input-field">
+                            <input type="email" bind:value="{user.email}" placeholder="Email">
+                        </div>
+                    </div>
+                    <input type="submit" class="save-button" value="Save"/>
+                    <button class="cancel-button" on:click={toggleEditView}>Cancel</button>
+                </form>
             </div>
         {/if}
 
@@ -173,6 +217,35 @@
     }
 
     .profile-edit {
+      .edit-profile-form {
+
+        .input-field {
+          background-color: #f0f0f0;
+          margin: 10px 0;
+          width: 300px;
+          height: 40px;
+          border-radius: 55px;
+          display: grid;
+          padding: 0 1rem;
+          position: relative;
+
+          input {
+            background: none;
+            outline: none;
+            border: none;
+            line-height: 1;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #333;
+
+            &::placeholder {
+              color: #aaa;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+
       .save-button, .cancel-button {
         border: none;
         outline: none;

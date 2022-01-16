@@ -316,7 +316,8 @@
             <div class="comment-content">
                 <div class="buttons-group">
                     {#if isLoggedIn}
-                        <button on:click={toggleEditCommentView} class="button-edit-small">{editCommentButtonText}</button>
+                        <button on:click={toggleEditCommentView}
+                                class="button-edit-small">{editCommentButtonText}</button>
                         <button on:click={deleteComment(comment)} class="button-delete">Delete</button>
                     {/if}
                 </div>
@@ -345,16 +346,17 @@
                 {:else}
                     <div class="comment-info">
                         <form on:submit|preventDefault="{submitEditForm}" class="edit-question-form">
-                        <div class="message">
-                            {#if editDescriptionError}
-                                <div class="error">
-                                    <span class="error-message">The description can't be empty</span>
+                            <div class="message">
+                                {#if editDescriptionError}
+                                    <div class="error">
+                                        <span class="error-message">The description can't be empty</span>
+                                    </div>
+                                {/if}
+                                <div class="textarea-field">
+                                    <textarea rows="5" bind:value="{comment.description}"
+                                              placeholder="Message"></textarea>
                                 </div>
-                            {/if}
-                            <div class="textarea-field">
-                                <textarea rows="5" bind:value="{comment.description}" placeholder="Message"></textarea>
                             </div>
-                        </div>
                         </form>
                     </div>
                 {/if}

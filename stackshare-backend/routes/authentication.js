@@ -56,10 +56,27 @@ router.post('/register', async (req, res, next) => {
     }
 });
 
-// Get question by id
+// Get user data by id
 router.get('/user/:userId', async (req, res) => {
     const user = await User.findOne({_id: req.params.userId});
     res.json(user);
+});
+
+// Update user information
+router.patch('/user/:userId', (req, res) => {
+    User.updateOne({uuid: req.params.userId}, req.body,
+        (err) => {
+            if (err) {
+                res.json({
+                    err: err,
+                    success: false,
+                    msg: 'Failed to update the user'
+                })
+            } else {
+                res.json({success: true})
+            }
+        }
+    );
 });
 
 module.exports = router;
