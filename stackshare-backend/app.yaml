@@ -1,0 +1,6 @@
+runtime: nodejs
+env: flex
+
+env_variables:
+  DATABASE: "mongodb+srv://louis:Xevro12300@cluster0.0lb18.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+  DB_INSTANCE: "stackshare-api:us-central1:sql-instance"

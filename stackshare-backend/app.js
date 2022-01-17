@@ -23,10 +23,10 @@ mongoose.connection.on('error', (err) => {
 
 app.use(cors());
 app.use(bodyParser.json());
+
 app.use('/', require('./routes/authentication'));
 app.use('/questions', require('./routes/questions'));
 app.use('/categories', require('./routes/categories'));
-
 
 app.get('/', (req, res) => {
     res.end('StackShare API V1.0');
@@ -51,14 +51,14 @@ app.options('/login', function (req, res) {
 
 app.use((err, req, res, next) => {
     const error = {
-        status: err?.status || 500,
-        message: err?.message || 'Something went wrong!'
+        status: (err.status) ? error.status : 500,
+        message: (err.messsage) ? error.message : 'Something went wrong!'
     };
     if (process.env.NODE_ENV === 'development') {
-        error['stack'] = err?.stack;
+        error['stack'] = err.stack;
     }
-    res?.status(err?.status || 500).json(error);
+    res.status(err.status || 500).json(error);
 });
 
-const port = process.env.PORT || 5050;
+const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`StackShare backend API is running on port ${port}`));
