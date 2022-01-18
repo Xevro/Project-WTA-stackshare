@@ -17,10 +17,6 @@ mongoose.connect(process.env.DATABASE, {
     useUnifiedTopology: true
 });
 
-mongoose.connection.on('error', (err) => {
-    console.error('Database connection error:', err);
-});
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -29,8 +25,8 @@ app.use('/questions', require('./routes/questions'));
 app.use('/categories', require('./routes/categories'));
 
 app.get('/', (req, res) => {
-    res.end('StackShare API V1.0');
-})
+    res.end('StackShare API V1.0  status:' + mongoose.connection.readyState + ' : ' + mongoose.Connection.STATES.connected);
+});
 
 app.get('/status', passport.authenticate('jwt', {session: false}), (req, res) => {
     res.json({'status': true});
@@ -49,6 +45,7 @@ app.options('/login', function (req, res) {
     res.end();
 });
 
+/*
 app.use((err, req, res, next) => {
     const error = {
         status: (err.status) ? error.status : 500,
@@ -59,6 +56,6 @@ app.use((err, req, res, next) => {
     }
     res.status(err.status || 500).json(error);
 });
-
+*/
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`StackShare backend API is running on port ${port}`));
