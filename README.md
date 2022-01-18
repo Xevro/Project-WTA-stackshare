@@ -41,8 +41,9 @@ The compiler is written in [TypeScript](https://www.typescriptlang.org/), but do
 The project is hosted on Vercel where it is simple to host a new project online.
 First create a new account and type ```vercel``` in the terminal window of the stackshare project, this terminal menu will guide out to publish the build files that ```npm run build``` created.
 Make sure to change the variable ```production``` in the ```route-literals.model.ts``` file to change the used API url in the project.
+Vercel will create a ```.vercel_build_output``` hidden output folder with config settings and static bundled files.
 
-Visit the website [here](https://stackshare-3746996ws-xevro.vercel.app).
+Visit the published website [here](https://stackshare-3746996ws-xevro.vercel.app).
 
 ## Development NodeJS project
 
