@@ -372,7 +372,7 @@
                                         <span class="error-message">The message can't be empty</span>
                                     </div>
                                 {/if}
-                                <div class="textarea-field">
+                                <div class="textarea-field-edit">
                                     <textarea rows="5" bind:value="{comment.message}"
                                               placeholder="Message"></textarea>
                                 </div>
@@ -509,15 +509,15 @@
       .comment-info {
         display: flex;
 
-        .textarea-field {
+        .textarea-field-edit {
           background-color: #f0f0f0;
           margin: 10px 0;
           height: 110px;
+          width: 900px;
           border-radius: 15px;
           display: grid;
           grid-template-columns: 100%;
           padding: 10px .7rem;
-          position: relative;
 
           textarea {
             background: none;
@@ -525,6 +525,7 @@
             border: none;
             line-height: 1;
             font-weight: 500;
+            width: inherit;
             font-size: 1rem;
             color: #333;
 
