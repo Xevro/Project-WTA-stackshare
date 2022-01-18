@@ -1,4 +1,4 @@
-const production = true;
+const production = false;
 export class RouteLiterals {
     static baseUrl = (production) ? 'https://stackshare-api.ew.r.appspot.com' : 'http://localhost:5050';
     static login = 'login';
