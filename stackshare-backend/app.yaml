@@ -1,5 +1,7 @@
-runtime: nodejs
-env: flex
+runtime: nodejs14
+env: standard
+manual_scaling:
+  instances: 1
 
 env_variables:
   DATABASE: "mongodb+srv://louis:Xevro12300@cluster0.0lb18.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
