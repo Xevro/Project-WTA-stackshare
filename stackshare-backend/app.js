@@ -44,7 +44,6 @@ mongoose.connect(process.env.DATABASE, {
         res.end();
     });
 
-
     app.use((err, req, res, next) => {
         const error = {
             status: (err.status) ? error.status : 500,
@@ -58,5 +57,4 @@ mongoose.connect(process.env.DATABASE, {
 
     const port = process.env.PORT || 8080;
     app.listen(port, () => console.log(`StackShare backend API is running on port ${port}`));
-
 });
